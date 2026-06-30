@@ -42,7 +42,7 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
               {t.footer.tagline}
             </p>
             <div className="flex space-x-4">
-              <a href="https://web.facebook.com/profile.php?id=61576362847751&_rdc=1&_rdr#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
+              <a href="https://web.facebook.com/profile.php?id=61576362847751" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
               <a href="https://twitter.com/UmurinziPetros" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
@@ -72,9 +72,9 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
           <div>
             <h3 className="font-semibold mb-6">{t.footer.ourServices}</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors">Internal Medicine</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors">Pulmonology</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors">Pediatrics</a></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">Internal Medicine</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">Pulmonology</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">Pediatrics</button></li>
             </ul>
           </div>
 
