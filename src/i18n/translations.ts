@@ -45,6 +45,11 @@ export interface Translations {
     heading: string; medicalTitle: string; medicalDesc: string;
     researchTitle: string; researchDesc: string;
   };
+  serviceCards?: {
+    depts: Record<string, string>;
+    subDepts: Record<string, string>;
+    cards: Record<string, { title: string; description?: string }>;
+  };
   footer: {
     tagline: string; quickLinks: string; aboutUs: string; ourDoctors: string;
     services: string; researchEd: string; ourServices: string; contactUs: string;
@@ -59,7 +64,7 @@ const en: Translations = {
   },
   hero: {
     welcome: "WELCOME TO UMURINZI PETROS MEDICAL CENTER",
-    tagline: "Excellent, data-driven patient care",
+    tagline: "Care by excellence with data curation",
     subtitle: "At Umurinzi Petros Medical Center, we deliver expert medical care with compassion and precision. Our team of dedicated specialists is committed to your health, your recovery, and your peace of mind at every stage of your journey.",
   },
   about: {
@@ -136,9 +141,9 @@ const rw: Translations = {
     doctors: "Abaganga", contact: "Twandikire",
   },
   hero: {
-    welcome: "MURAKAZA NEZA KU BITARO BYA UMURINZI PETROS",
+    welcome: "MURAKAZA NEZA KU BITARO BY'UMURINZI PETROS",
     tagline: "Ubuvuzi bw'inzobere bushingiye ku makuru y'izewe",
-    subtitle: "Ku Bitaro bya Umurinzi Petros, dutanga ubuvuzi bw'inzobere burangwa n'impuhwe, ubushishozi n'ubunyamwuga. Itsinda ryacu ry'abaganga n'inzobere ryitangira ubuzima bwawe, gukira kwawe n'umutuzo wawe mu buri ntambwe y'urugendo rw'ubuvuzi.",
+    subtitle: "Ku Bitaro by'Umurinzi Petros, dutanga ubuvuzi bw'inzobere burangwa n'ubunyamwuga n'ubushishozi. Itsinda ryacu ry'abaganga biyemeje gushyira imbere ubuzima bwawe no gukira kwawe.",
   },
   about: {
     mission: "Inshingano",
@@ -162,8 +167,8 @@ const rw: Translations = {
     close: "Funga",
   },
   services: {
-    badge: "Serivisi Zacu", heading: "Ubuvuzi bw'Inzobere",
-    subtitle: "Serivisi z'ubuvuzi bw'inzobere mu ndwara z'imbere no mu buvuzi bw'abana.",
+    badge: "Serivisi Zacu", heading: "Ubuvuzi Dufite",
+    subtitle: "Serivisi z'ubuvuzi bw'inzobere mu ndwara z'imbere mumubiri no mu buvuzi bw'abana.",
   },
   doctors: {
     badge: "Itsinda Ryacu ry'Ubuvuzi", heading: "Abaganga Bacu",
@@ -174,22 +179,50 @@ const rw: Translations = {
   research: {
     badge: "Ubushakashatsi n'Uburezi",
     heading: "Guteza Imbere Ubuvuzi Binyuze mu Bushakashatsi n'Uburezi",
-    subtitle: "Ibitaro bya Umurinzi Petros byiyemeje guteza imbere ubuvuzi bwa kliniki binyuze mu bushakashatsi bukomeye bushingiye ku bimenyetso, no mu burezi bw'inzobere buteguye neza.",
+    subtitle: "Ibitaro by'Umurinzi Petros byiyemeje guteza imbere ubuvuzi bwa kliniki binyuze mu bushakashatsi bukomeye bushingiye ku bimenyetso, no mu burezi bw'inzobere buteguye neza.",
     team: "Itsinda Ryacu", areas: "Ibyiciro by'Ubushakashatsi", publications: "Ibyasohotse mu Bushakashatsi",
     education: "Uburezi", partners: "Abafatanyabikorwa mu Bushakashatsi",
     noPublications: "Nta byasohotse birashyirwaho",
     addViaAdmin: "Ongeraho ibyasohotse ukoresheje Akanama k'Ubuyobozi",
     noPhoto: "Ifoto ishyirwaho binyuze mu buyobozi",
   },
+  serviceCards: {
+    depts: {
+      "General Consultation": "Isuzuma Rusange",
+      "Internal Medicine": "Indwara z'Imbere mu Mubiri",
+      "Pediatrics": "Ubuvuzi bw'Abana",
+      "CPD Training": "Amahugurwa ya CPD",
+    },
+    subDepts: {
+      "Pulmonology": "Ubuvuzi bw'Ibihaha",
+      "Cardiology": "Ubuvuzi bw'Umutima",
+      "Hospitalisation": "Kwinjizwa mu Bitaro",
+    },
+    cards: {
+      "general-consultation": { title: "Isuzuma Rusange", description: "Isuzuma ry'ubuvuzi rya mbere rigenewe abarwayi bo mu myaka yose." },
+      "spirometry": { title: "Spirometri", description: "Ikizamini gipima ingufu zo guhumeka kw'ibihaha kigamije kugaragaza no gukurikirana indwara z'ubuhumecyero." },
+      "epet": { title: "Ikizamini cy'Imyitozo (EPET)", description: "Ikizamini cy'inzobere gipima uko umutima n'ibihaha bikora mu gihe cy'imyitozo y'imubiri." },
+      "chester": { title: "Ikizamini cy'Imyitozo cya Chester", description: "Ikizamini cya standard kigaragaza imbaraga z'umutima." },
+      "endoscopy-pulmo": { title: "Endoskopi (Ibihaha)" },
+      "cardiology": { title: "Ubuvuzi bw'Umutima" },
+      "ecg": { title: "Electrokardiografi (ECG)" },
+      "echocardiography": { title: "Ekokardiografi" },
+      "hospitalisation-internal": { title: "Kwinjizwa mu Bitaro" },
+      "pediatric-consult": { title: "Isuzuma Rusange ry'Abana" },
+      "endoscopy-peds": { title: "Endoskopi (Abana)" },
+      "hospitalisation-peds": { title: "Kwinjizwa mu Bitaro (Abana)" },
+      "cpd-training": { title: "Amahugurwa ya CPD" },
+    },
+  },
   departments: {
-    heading: "Ibyiciro Byacu",
+    heading: "Amashami Yacu",
     medicalTitle: "Ishami ry'Ubuvuzi",
-    medicalDesc: "Ryitabiriye gutanga ubuvuzi bw'inzobere burangwa n'impuhwe, harimo gusuzuma rusange, ubuvuzi bw'imbere, kadiyoloji, ubuvuzi bw'abana, no kwakirwa mu bitaro.",
+    medicalDesc: "Ibitaro bya UPMC bitanga ubuvuzi bw'inzobere burangwa n'ubunyamwuga. Dufite isuzuma rusange, indwara z'imbere mu mubiri, ubuvuzi bw'indwara z'umutima, ubuvuzi bw'abana, hamwe na serivisi zo kwinjizwa mu bitaro.",
     researchTitle: "Ishami ry'Ubushakashatsi",
-    researchDesc: "Rifite inshingano zo guteza imbere ubumenyi bw'ubuvuzi binyuze mu bushakashatsi bushingiye ku makuru y'izewe, amahugurwa ya CPD, n'uburezi buhoraho bw'abaganga n'abahanga b'ubuvuzi.",
+    researchDesc: "Ibitaro bya UPMC byiyemeje guteza imbere ubumenyi bw'ubuvuzi binyuze mu bushakashatsi bushingiye ku makuru, amahugurwa ya CPD, n'uburezi buhoraho bw'inzobere mu mwuga w'ubuvuzi.",
   },
   contact: {
-    heading: "Twandikire ku Bitaro bya Umurinzi Petros",
+    heading: "Twandikire ku Bitaro by'Umurinzi Petros",
     subtitle: "Turi hano kugira ngo tugufashe mu byo ukeneye byose bijyanye n'ubuzima. Twandikire usabe gahunda, amakuru cyangwa ubufasha bwihutirwa.",
     address: "Aderesi", phone: "Telefoni", email: "Imeli", hours: "Amasaha y'Akazi",
     emergency: "Ubutabazi bwihutirwa",
@@ -204,7 +237,7 @@ const rw: Translations = {
     services: "Serivisi", researchEd: "Ubushakashatsi n'Uburezi",
     ourServices: "Serivisi Zacu", contactUs: "Twandikire",
     emergencyHours: "Ubutabazi bwihutirwa: 24/7", generalHours: "Rusange: Kuwa Mbere kugeza Ku Cyumweru",
-    rights: "©Ibitaro bya Umurinzi Petros. Uburenganzira bwose burabitswe.",
+    rights: "©Ibitaro by'Umurinzi Petros. Uburenganzira bwose burabitswe.",
   },
 };
 
@@ -215,7 +248,7 @@ const fr: Translations = {
   },
   hero: {
     welcome: "BIENVENUE AU CENTRE MÉDICAL UMURINZI PETROS",
-    tagline: "Soins d'excellence guidés par les données",
+    tagline: "Soins d'excellence par la curation des données",
     subtitle: "Au Centre Médical Umurinzi Petros, nous offrons des soins médicaux experts avec compassion et précision. Notre équipe de spécialistes dévoués s'engage pour votre santé, votre rétablissement et votre tranquillité d'esprit à chaque étape de votre parcours.",
   },
   about: {
@@ -293,7 +326,7 @@ const sw: Translations = {
   },
   hero: {
     welcome: "KARIBU KATIKA KITUO CHA MATIBABU CHA UMURINZI PETROS",
-    tagline: "Huduma bora kwa wagonjwa inayoongozwa na takwimu",
+    tagline: "Huduma bora kupitia utunzaji wa takwimu",
     subtitle: "Katika Kituo cha Matibabu cha Umurinzi Petros, tunatoa huduma za matibabu ya kitaalamu kwa huruma na usahihi. Timu yetu ya wataalamu waliojitoa inajihusisha na afya yako, kupona kwako, na amani ya akili yako katika kila hatua ya safari yako.",
   },
   about: {

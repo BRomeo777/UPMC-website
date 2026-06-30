@@ -2,7 +2,7 @@ import { ImageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 
-interface SvcCard { id: string; dept: string; subDept: string; title: string; description: string; imageKey: string; }
+interface SvcCard { id: string; dept: string; subDept: string; title: string; description: string; imageKey: string; translations?: { rw?: { title?: string; description?: string }; fr?: { title?: string; description?: string }; sw?: { title?: string; description?: string }; }; }
 
 const DEFAULT_SERVICES: SvcCard[] = [
   { id: "general-consultation", dept: "General Consultation", subDept: "", title: "General Consultation", description: "Comprehensive first-contact medical consultations for patients of all ages.", imageKey: "general-consultation" },
@@ -109,9 +109,21 @@ function SubLabel({ label }: { label: string }) {
 }
 
 export function ServicesSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const services = useServices();
   const depts = Array.from(new Set(services.map(s => s.dept)));
+
+  const tDept = (d: string) => t.serviceCards?.depts[d] ?? d;
+  const tSub = (s: string) => t.serviceCards?.subDepts[s] ?? s;
+  const tCard = (s: SvcCard) => {
+    const lk = lang as "rw" | "fr" | "sw";
+    const stored = ["rw", "fr", "sw"].includes(lang) ? s.translations?.[lk] : undefined;
+    return {
+      title: stored?.title ?? t.serviceCards?.cards[s.id]?.title ?? s.title,
+      description: stored?.description ?? t.serviceCards?.cards[s.id]?.description ?? s.description,
+    };
+  };
+
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -140,25 +152,27 @@ export function ServicesSection() {
         return (
           <div key={dept} className={`py-10 lg:py-14 ${bg}`}>
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <SectionTitle dept="" title={dept} subtitle="" />
+              <SectionTitle dept="" title={tDept(dept)} subtitle="" />
 
               {/* Services without a sub-dept */}
               {noSub.length > 0 && (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
-                  {noSub.map(s => (
-                    <Card key={s.id} imageKey={s.imageKey} tag={s.dept} title={s.title} description={s.description} />
-                  ))}
+                  {noSub.map(s => {
+                    const { title, description } = tCard(s);
+                    return <Card key={s.id} imageKey={s.imageKey} tag={tDept(s.dept)} title={title} description={description} />;
+                  })}
                 </div>
               )}
 
               {/* Services grouped by sub-dept */}
               {subDepts.map(sub => (
                 <div key={sub}>
-                  <SubLabel label={sub} />
+                  <SubLabel label={tSub(sub)} />
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
-                    {deptServices.filter(s => s.subDept === sub).map(s => (
-                      <Card key={s.id} imageKey={s.imageKey} tag={sub} title={s.title} description={s.description} />
-                    ))}
+                    {deptServices.filter(s => s.subDept === sub).map(s => {
+                      const { title, description } = tCard(s);
+                      return <Card key={s.id} imageKey={s.imageKey} tag={tSub(sub)} title={title} description={description} />;
+                    })}
                   </div>
                 </div>
               ))}

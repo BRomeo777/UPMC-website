@@ -458,7 +458,7 @@ const btnStyle = (bg: string, fg = "#fff"): React.CSSProperties => ({ padding: "
 const cardBox: React.CSSProperties = { background: "#fff", border: "1px solid #e2e8f0", borderRadius: 14, padding: "14px 16px", marginBottom: 10 };
 const sectionTitle = (t: string) => <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", margin: "0 0 4px" }}>{t}</h2>;
 
-interface SvcCard { id: string; dept: string; subDept: string; title: string; description: string; imageKey: string; }
+interface SvcCard { id: string; dept: string; subDept: string; title: string; description: string; imageKey: string; translations?: { rw?: { title?: string; description?: string }; fr?: { title?: string; description?: string }; sw?: { title?: string; description?: string }; }; }
 interface DocEntry { id: string; name: string; specialty: string; clinicalSpec: string; research: string; }
 interface TeamMember { id: string; name: string; role: string; bio: string; }
 interface ResArea { id: string; category: string; items: string[]; }
@@ -612,7 +612,8 @@ const ServicesSectionAdmin: React.FC = () => {
   const [editId, setEditId] = useState<string | null>(null);
   const [editSnap, setEditSnap] = useState<SvcCard | null>(null); // snapshot for cancel
   const [addOpen, setAddOpen] = useState(false);
-  const [addForm, setAddForm] = useState<Partial<SvcCard>>({});
+  type AddFormData = Partial<SvcCard> & { title_rw?: string; desc_rw?: string; title_fr?: string; desc_fr?: string; title_sw?: string; desc_sw?: string; };
+  const [addForm, setAddForm] = useState<AddFormData>({});
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [addErr, setAddErr] = useState("");
 
@@ -623,6 +624,9 @@ const ServicesSectionAdmin: React.FC = () => {
 
   const upd = (id: string, key: keyof SvcCard, val: string) =>
     setServices(prev => prev.map(s => s.id === id ? { ...s, [key]: val } : s));
+
+  const updTrans = (id: string, lang: "rw"|"fr"|"sw", key: "title"|"description", val: string) =>
+    setServices(prev => prev.map(s => s.id === id ? { ...s, translations: { ...s.translations, [lang]: { ...s.translations?.[lang], [key]: val } } } : s));
 
   const openEdit = (s: SvcCard) => { setEditSnap({ ...s }); setEditId(s.id); };
 
@@ -648,7 +652,13 @@ const ServicesSectionAdmin: React.FC = () => {
     if (!addForm.title?.trim()) { setAddErr("Title is required."); return; }
     if (!addForm.dept?.trim())  { setAddErr("Department is required."); return; }
     const newId = `custom-${Date.now()}`;
-    const s: SvcCard = { id: newId, dept: addForm.dept || "", subDept: addForm.subDept || "", title: addForm.title || "", description: addForm.description || "", imageKey: newId };
+    const s: SvcCard = { id: newId, dept: addForm.dept || "", subDept: addForm.subDept || "", title: addForm.title || "", description: addForm.description || "", imageKey: newId,
+      translations: {
+        rw: { title: addForm.title_rw || undefined, description: addForm.desc_rw || undefined },
+        fr: { title: addForm.title_fr || undefined, description: addForm.desc_fr || undefined },
+        sw: { title: addForm.title_sw || undefined, description: addForm.desc_sw || undefined },
+      }
+    };
     const u = [...services, s];
     setServices(u); saveServices(u);
     setAddOpen(false); setAddForm({}); setAddErr("");
@@ -687,6 +697,18 @@ const ServicesSectionAdmin: React.FC = () => {
               <LF label="Department *"><input style={field} placeholder="e.g. Internal Medicine" value={addForm.dept || ""} onChange={e => { setAddForm(f => ({ ...f, dept: e.target.value })); setAddErr(""); }} /></LF>
               <LF label="Sub-department"><input style={field} placeholder="e.g. Cardiology (optional)" value={addForm.subDept || ""} onChange={e => setAddForm(f => ({ ...f, subDept: e.target.value }))} /></LF>
               <LF label="Description"><textarea style={{ ...field, resize: "vertical" }} rows={3} placeholder="Short description of this service" value={addForm.description || ""} onChange={e => setAddForm(f => ({ ...f, description: e.target.value }))} /></LF>
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #d1fae5" }}>
+                <p style={{ fontSize: 11, fontWeight: 800, color: "#059669", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>🌍 Translations (optional)</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "0 0 6px" }}>🇷🇼 Kinyarwanda</p>
+                <LF label="Title (Kinyarwanda)"><input style={field} placeholder="Intitulé mu Kinyarwanda" value={addForm.title_rw || ""} onChange={e => setAddForm(f => ({ ...f, title_rw: e.target.value }))} /></LF>
+                <LF label="Description (Kinyarwanda)"><textarea style={{ ...field, resize: "vertical" }} rows={2} placeholder="Ibisobanuro mu Kinyarwanda" value={addForm.desc_rw || ""} onChange={e => setAddForm(f => ({ ...f, desc_rw: e.target.value }))} /></LF>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇫🇷 Français</p>
+                <LF label="Titre (Français)"><input style={field} placeholder="Titre en français" value={addForm.title_fr || ""} onChange={e => setAddForm(f => ({ ...f, title_fr: e.target.value }))} /></LF>
+                <LF label="Description (Français)"><textarea style={{ ...field, resize: "vertical" }} rows={2} placeholder="Description en français" value={addForm.desc_fr || ""} onChange={e => setAddForm(f => ({ ...f, desc_fr: e.target.value }))} /></LF>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇰🇪 Kiswahili</p>
+                <LF label="Kichwa (Kiswahili)"><input style={field} placeholder="Kichwa kwa Kiswahili" value={addForm.title_sw || ""} onChange={e => setAddForm(f => ({ ...f, title_sw: e.target.value }))} /></LF>
+                <LF label="Maelezo (Kiswahili)"><textarea style={{ ...field, resize: "vertical" }} rows={2} placeholder="Maelezo kwa Kiswahili" value={addForm.desc_sw || ""} onChange={e => setAddForm(f => ({ ...f, desc_sw: e.target.value }))} /></LF>
+              </div>
               {addErr && <p style={{ fontSize: 12, color: "#dc2626", marginBottom: 8 }}>⚠ {addErr}</p>}
               <button style={{ ...btnStyle("#166534"), width: "100%", padding: "10px" }} onClick={addService}>
                 ✓ Save Service
@@ -709,6 +731,18 @@ const ServicesSectionAdmin: React.FC = () => {
                       <LF label="Department"><input style={field} value={s.dept} onChange={e => upd(s.id, "dept", e.target.value)} /></LF>
                       <LF label="Sub-department"><input style={field} value={s.subDept} onChange={e => upd(s.id, "subDept", e.target.value)} /></LF>
                       <LF label="Description"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={s.description} onChange={e => upd(s.id, "description", e.target.value)} /></LF>
+                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
+                        <p style={{ fontSize: 11, fontWeight: 800, color: "#059669", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>🌍 Translations</p>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "0 0 6px" }}>🇷🇼 Kinyarwanda</p>
+                        <LF label="Title (Kinyarwanda)"><input style={field} value={s.translations?.rw?.title || ""} onChange={e => updTrans(s.id, "rw", "title", e.target.value)} /></LF>
+                        <LF label="Description (Kinyarwanda)"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={s.translations?.rw?.description || ""} onChange={e => updTrans(s.id, "rw", "description", e.target.value)} /></LF>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇫🇷 Français</p>
+                        <LF label="Titre (Français)"><input style={field} value={s.translations?.fr?.title || ""} onChange={e => updTrans(s.id, "fr", "title", e.target.value)} /></LF>
+                        <LF label="Description (Français)"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={s.translations?.fr?.description || ""} onChange={e => updTrans(s.id, "fr", "description", e.target.value)} /></LF>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇰🇪 Kiswahili</p>
+                        <LF label="Kichwa (Kiswahili)"><input style={field} value={s.translations?.sw?.title || ""} onChange={e => updTrans(s.id, "sw", "title", e.target.value)} /></LF>
+                        <LF label="Maelezo (Kiswahili)"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={s.translations?.sw?.description || ""} onChange={e => updTrans(s.id, "sw", "description", e.target.value)} /></LF>
+                      </div>
                       <div style={{ display: "flex", gap: 8 }}>
                         <button style={{ ...btnStyle("#166534"), flex: 1 }} onClick={save}>✓ Save Changes</button>
                         <button style={{ ...btnStyle("#f1f5f9", "#374151"), flex: 1 }} onClick={cancelEdit}>Cancel</button>

@@ -26,9 +26,11 @@ export function HeroSection() {
           <div className="lg:col-span-6 space-y-8 relative z-10">
             {/* Headline */}
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
-              {t.hero.welcome}{" "}
-              <span className="text-emerald-600">{t.hero.tagline}</span>
+              {t.hero.welcome}
             </h1>
+            <p className="text-lg sm:text-xl font-semibold text-emerald-600 italic mt-1">
+              {t.hero.tagline}
+            </p>
             
             {/* Subheadline */}
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl">
