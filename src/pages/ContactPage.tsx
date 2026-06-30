@@ -131,19 +131,19 @@ export function ContactPage() {
         </div>
       </section>
 
-      {/* Google Map */}
+      {/* Satellite Map */}
       <section className="py-12 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t.contact.findUs}</h2>
-            <p className="text-gray-500 text-sm">{t.contact.findUsSubtitle}</p>
+            <p className="text-gray-500 text-sm">{t.contact.satelliteDesc}</p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100">
             <iframe
-              title="UPMC Muhanga Location"
-              src="https://maps.google.com/maps?q=-2.0810278,29.7680833&z=16&output=embed"
+              title="UPMC Satellite Location"
+              src="https://www.google.com/maps?q=Umurinzi+Petros+Medical+Center+Rwanda&t=k&z=16&output=embed"
               width="100%"
-              height="420"
+              height="480"
               style={{ border: 0, display: "block" }}
               allowFullScreen
               loading="lazy"
@@ -152,7 +152,7 @@ export function ContactPage() {
             <div className="px-6 py-4 bg-gray-50 flex items-center justify-between">
               <p className="text-sm text-gray-600 font-medium">UPMC — Nyamabuye Sector, Muhanga District</p>
               <a
-                href="https://www.google.com/maps/place/2%C2%B004'51.7%22S+29%C2%B046'05.1%22E/@-2.0810278,29.7680833,870m"
+                href="https://www.google.com/maps/search/?api=1&query=Umurinzi+Petros+Medical+Center+Rwanda"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-emerald-700 font-semibold hover:underline flex items-center gap-1"

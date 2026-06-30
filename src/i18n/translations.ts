@@ -14,6 +14,9 @@ export interface Translations {
     honesty: string; honestyDesc: string;
     accountability: string; accountabilityDesc: string;
     dignity: string; dignityDesc: string;
+    execSummary: string; execP1: string; execP2: string; execP3: string;
+    missionVision: string; ourValues: string;
+    excellence: string; excellenceDesc: string;
   };
   philosophy: {
     heading: string; text: string; learnMore: string;
@@ -40,6 +43,7 @@ export interface Translations {
     address: string; phone: string; email: string; hours: string;
     emergency: string; emergencyTitle: string; emergencySubtitle: string;
     findUs: string; findUsSubtitle: string; getDirections: string;
+    satelliteDesc: string;
   };
   departments: {
     heading: string; medicalTitle: string; medicalDesc: string;
@@ -65,7 +69,7 @@ const en: Translations = {
   hero: {
     welcome: "WELCOME TO UMURINZI PETROS MEDICAL CENTER",
     tagline: "Care by excellence with data curation",
-    subtitle: "At Umurinzi Petros Medical Center, we deliver expert medical care with compassion and precision. Our team of dedicated specialists is committed to your health, your recovery, and your peace of mind at every stage of your journey.",
+    subtitle: "Umurinzi Petros Medical Center is a community-based healthcare and research center dedicated to transforming health through clinical excellence, innovation, and data-driven care. Guided by our core values of honesty, accountability, and dignity, our mission is to diagnose, treat, prevent disease, and educate communities and healthcare professionals.",
   },
   about: {
     mission: "Mission",
@@ -76,6 +80,13 @@ const en: Translations = {
     honesty: "Honesty", honestyDesc: "Truth and transparency in every clinical and administrative decision.",
     accountability: "Accountability", accountabilityDesc: "Full responsibility for outcomes, always prioritising patient safety.",
     dignity: "Dignity", dignityDesc: "Every patient treated with utmost respect, regardless of circumstance.",
+    execSummary: "Executive Summary",
+    execP1: "Umurinzi Petros Medical Center is a community-based healthcare and research center dedicated to transforming health through clinical excellence, innovation, and data-driven care. Guided by our core values of honesty, accountability, and dignity, our mission is to diagnose, treat, prevent disease, and educate communities and healthcare professionals.",
+    execP2: "Since commencing operations in Rwanda in January 2024, UPMC has focused on advancing care for chronic diseases, particularly respiratory diseases, while strengthening medical education and research capacity. We actively collaborate with local and international institutions to implement sustainable clinical, research, and training programs that improve health outcomes.",
+    execP3: "UPMC welcomes partnerships with academic institutions, healthcare organizations, researchers, and philanthropic partners who share our vision of building equitable, evidence-based healthcare systems and expanding access to high-quality respiratory care across Rwanda and the region.",
+    missionVision: "Mission & Vision",
+    ourValues: "Our Values",
+    excellence: "Excellence", excellenceDesc: "Delivering the highest standard of clinical care in every interaction, every day.",
   },
   philosophy: {
     heading: "Research and Education",
@@ -124,6 +135,7 @@ const en: Translations = {
     emergencySubtitle: "For life-threatening emergencies, call +250 795 161 628 or come directly to our Emergency Department.",
     findUs: "Find Us", findUsSubtitle: "Rwanda, Northern Province · Muhanga District · Nyamabuye Sector",
     getDirections: "Get Directions",
+    satelliteDesc: "High-resolution satellite view. Click to open Google Maps and get directions.",
   },
   footer: {
     tagline: "Providing exceptional healthcare with compassion and expertise. Your health and wellbeing are our top priorities.",
@@ -154,6 +166,13 @@ const rw: Translations = {
     honesty: "Ubunyangamugayo", honestyDesc: "Ukuri n'umucyo muri buri cyemezo cy'ubuvuzi n'icy'ubuyobozi.",
     accountability: "Kubazwa inshingano", accountabilityDesc: "Kwemera inshingano ku musaruro w'ibikorwa byacu, dushyira imbere buri gihe umutekano w'umurwayi.",
     dignity: "Icyubahiro", dignityDesc: "Buri murwayi afatwa mu cyubahiro gikwiye, hatitawe ku mimerere arimo.",
+    execSummary: "Incamake y'Ibyo Tukora",
+    execP1: "Ibitaro by'Umurinzi Petros ni ibitaro by'ubuvuzi n'ubushakashatsi byashingiye ku muturage, byibanda ku guhindura ubuzima binyuze mu bubasha mu buvuzi, ubuhanga, no gukoresha amakuru mu buvuzi. Biyobora indangagaciro zacu zo gukora neza, kubazwa inshingano, no kubaha agaciro, inshingano yacu ni ugusuzuma, kuvura, kurinda indwara, no kwigisha abaturage n'abakozi b'ubuvuzi.",
+    execP2: "Kuva mu Gushyingo 2024 tugiye gutangira imirimo mu Rwanda, UPMC yibanda ku kuzamura ubuvuzi bw'indwara zikomeye, cyane cyane indwara z'ubuhumekero, mu gihe cyongera imbaraga mu burezi bw'ubuvuzi n'ubushobozi bwo gukora ubushakashatsi. Dufatanya bikorwa n'ibigo bya hano n'by'amahanga mu gushyira mu bikorwa gahunda z'ubuvuzi, ubushakashatsi, n'amahugurwa zikomeza zigira akamaro mu kuzamura ibisubizo by'ubuzima.",
+    execP3: "UPMC yemera gufatanya n'ibigo by'amashuri makuru, ibigo by'ubuvuzi, abashakashatsi, n'abafatanyabikorwa b'impuguke bashyizeho ibyifuzo byacu byo kubaka ubuvuzi bungana bushingiye ku bimenyetso, no kwagura ubuvuzi bw'ubuhumekero bwiza mu Rwanda no mu karere.",
+    missionVision: "Inshingano n'Icyerekezo",
+    ourValues: "Indangagaciro Zacu",
+    excellence: "Ubwiza", excellenceDesc: "Kugaburira igipimo cyisumbuye cy'ubuvuzi mu buri guhera, buri munsi.",
   },
   philosophy: {
     heading: "Ubushakashatsi n'Uburezi",
@@ -230,6 +249,7 @@ const rw: Translations = {
     emergencySubtitle: "Mu bihe byihutirwa bishobora gushyira ubuzima mu kaga, hamagara +250 795 161 628 cyangwa ugane ako kanya ishami ryacu ry'ubutabazi bwihutirwa.",
     findUs: "Aho Duherereye", findUsSubtitle: "Rwanda, Intara y'Amajyaruguru · Akarere ka Muhanga · Umurenge wa Nyamabuye",
     getDirections: "Reba Inzira",
+    satelliteDesc: "Reba aho duherereye ku ikarita y'ijana. Kanda kuri yo kugira ngo ugureho Google Maps ubone inzira.",
   },
   footer: {
     tagline: "Dutanga ubuvuzi buhebuje burangwa n'impuhwe n'ubunararibonye. Ubuzima bwawe n'imibereho myiza yawe ni byo dushyira imbere.",
@@ -260,6 +280,13 @@ const fr: Translations = {
     honesty: "Honnêteté", honestyDesc: "Vérité et transparence dans chaque décision clinique et administrative.",
     accountability: "Responsabilité", accountabilityDesc: "Pleine responsabilité des résultats, en privilégiant toujours la sécurité du patient.",
     dignity: "Dignité", dignityDesc: "Chaque patient traité avec le plus grand respect, quelles que soient les circonstances.",
+    execSummary: "Résumé Exécutif",
+    execP1: "Le Centre Médical Umurinzi Petros est un centre de soins de santé et de recherche basé dans la communauté, dédié à la transformation de la santé par l'excellence clinique, l'innovation et les soins fondés sur les données. Guidé par nos valeurs fondamentales d'honnêteté, de responsabilité et de dignité, notre mission est de diagnostiquer, traiter, prévenir les maladies et éduquer les communautés et les professionnels de santé.",
+    execP2: "Depuis le début de nos opérations au Rwanda en janvier 2024, l'UPMC s'est concentré sur l'amélioration des soins pour les maladies chroniques, en particulier les maladies respiratoires, tout en renforçant l'éducation médicale et la capacité de recherche. Nous collaborons activement avec des institutions locales et internationales pour mettre en œuvre des programmes cliniques, de recherche et de formation durables qui améliorent les résultats de santé.",
+    execP3: "L'UPMC accueille favorablement les partenariats avec les institutions académiques, les organisations de santé, les chercheurs et les partenaires philanthropiques qui partagent notre vision de construire des systèmes de santé équitables et fondés sur des données probantes, et d'élargir l'accès à des soins respiratoires de haute qualité au Rwanda et dans la région.",
+    missionVision: "Mission & Vision",
+    ourValues: "Nos Valeurs",
+    excellence: "Excellence", excellenceDesc: "Offrir le plus haut niveau de soins cliniques à chaque interaction, chaque jour.",
   },
   philosophy: {
     heading: "Recherche et Éducation",
@@ -308,6 +335,7 @@ const fr: Translations = {
     emergencySubtitle: "Pour les urgences vitales, appelez le +250 795 161 628 ou rendez-vous directement aux urgences.",
     findUs: "Nous Trouver", findUsSubtitle: "Rwanda, Province du Nord · District de Muhanga · Secteur de Nyamabuye",
     getDirections: "Obtenir l'Itinéraire",
+    satelliteDesc: "Vue satellite en haute résolution. Cliquez pour ouvrir Google Maps et obtenir l'itinéraire.",
   },
   footer: {
     tagline: "Offrant des soins de santé exceptionnels avec compassion et expertise. Votre santé et votre bien-être sont nos priorités.",
@@ -338,6 +366,13 @@ const sw: Translations = {
     honesty: "Uaminifu", honestyDesc: "Ukweli na uwazi katika kila uamuzi wa kimatibabu na kiutawala.",
     accountability: "Uwajibikaji", accountabilityDesc: "Jukumu kamili la matokeo, huku ikizingatiwa usalama wa mgonjwa.",
     dignity: "Heshima", dignityDesc: "Kila mgonjwa huhudumiwa kwa heshima kubwa, bila kujali hali yake.",
+    execSummary: "Muhtasari Mkuu",
+    execP1: "Kituo cha Matibabu cha Umurinzi Petros ni kituo cha afya na utafiti kinachotegemea jamii, kilichojitolea kubadilisha afya kupitia ubora wa kimatibabu, ubunifu, na huduma zinazotegemea takwimu. Kukiakia maadili yetu msingi ya uaminifu, uwajibikaji, na heshima, dhamira yetu ni kuchunguza, kutibu, kuzuia magonjwa, na kuelimisha jamii na wataalamu wa afya.",
+    execP2: "Tangu kuanza shughuli nchini Rwanda mwezi Januari 2024, UPMC imejikita katika kuboresha huduma kwa magonjwa sugu, hasa magonjwa ya kupumua, huku ikimarisha elimu ya matibabu na uwezo wa utafiti. Tunashirikiana kwa bidii na taasisi za ndani na za kimataifa kutekeleza programu za kimatibabu, utafiti, na mafunzo zinazodumu na kuboresha matokeo ya afya.",
+    execP3: "UPMC kukaribisha ushirikiano na taasisi za kiakademia, mashirika ya afya, watafiti, na wafadhili wanaoshiriki maono yetu ya kujenga mifumo ya afya inayolingana na inayotegemea ushahidi, na kupanua ufikiaji wa huduma bora za matibabu ya kupumua nchini Rwanda na katika eneo hilo.",
+    missionVision: "Dhamira & Maono",
+    ourValues: "Maadili Yetu",
+    excellence: "Ubora", excellenceDesc: "Kutoa kiwango cha juu zaidi cha huduma ya kimatibabu kwenye kila mwingiliano, kila siku.",
   },
   philosophy: {
     heading: "Utafiti na Elimu",
@@ -386,6 +421,7 @@ const sw: Translations = {
     emergencySubtitle: "Kwa dharura zinazotishia maisha, piga simu +250 795 161 628 au nenda moja kwa moja katika idara yetu ya dharura.",
     findUs: "Tupate", findUsSubtitle: "Rwanda, Mkoa wa Kaskazini · Wilaya ya Muhanga · Sekta ya Nyamabuye",
     getDirections: "Pata Mwelekeo",
+    satelliteDesc: "Muonekano wa setilaiti wa resolution ya juu. Bofya kufungua Google Maps na kupata mwelekeo.",
   },
   footer: {
     tagline: "Kutoa huduma za afya bora kwa huruma na utaalamu. Afya yako na ustawi wako ni kipaumbele chetu.",
