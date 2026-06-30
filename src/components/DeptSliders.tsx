@@ -64,7 +64,7 @@ export function DeptSliders() {
         {photos.length > 0 ? (
           <>
             {/* Slider */}
-            <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.1)" }}>
+            <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", maxWidth: 720, margin: "0 auto" }}>
               <div style={{
                 display: "flex",
                 transition: "transform 0.5s ease-in-out",
@@ -75,8 +75,9 @@ export function DeptSliders() {
                     key={i}
                     onClick={() => setLightbox(i)}
                     style={{
-                      minWidth: "100%", height: 420,
+                      minWidth: "100%", height: 300,
                       position: "relative", cursor: "zoom-in",
+                      overflow: "hidden",
                     }}
                   >
                     <img
