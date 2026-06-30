@@ -8,7 +8,14 @@
     </head>
 
     <body>
-      <div id="root"></div>
+      <div id="root">
+        <div id="app-loader" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;z-index:9999;font-family:sans-serif;">
+          <div style="width:52px;height:52px;border:4px solid #d1fae5;border-top-color:#166534;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:18px;"></div>
+          <p style="color:#166534;font-weight:700;font-size:14px;letter-spacing:0.05em;margin:0;">UMURINZI PETROS</p>
+          <p style="color:#6b7280;font-size:12px;margin:4px 0 0;">Loading…</p>
+          <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+        </div>
+      </div>
       <script type="module" src="/src/main.tsx"></script>
     </body>
   </html>
