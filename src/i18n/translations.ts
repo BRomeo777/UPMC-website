@@ -2,7 +2,7 @@ export type Lang = "en" | "rw" | "fr" | "sw";
 
 export interface Translations {
   nav: {
-    home: string; services: string; research: string; doctors: string; contact: string;
+    home: string; services: string; research: string; doctors: string; about: string; contact: string;
   };
   hero: {
     welcome: string; tagline: string; subtitle: string;
@@ -60,7 +60,7 @@ export interface Translations {
 const en: Translations = {
   nav: {
     home: "Home", services: "Services", research: "Research & Education",
-    doctors: "Doctors", contact: "Contact",
+    doctors: "Doctors", about: "About Us", contact: "Contact",
   },
   hero: {
     welcome: "WELCOME TO UMURINZI PETROS MEDICAL CENTER",
@@ -138,7 +138,7 @@ const en: Translations = {
 const rw: Translations = {
   nav: {
     home: "Ahabanza", services: "Serivisi", research: "Ubushakashatsi n'Uburezi",
-    doctors: "Abaganga", contact: "Twandikire",
+    doctors: "Abaganga", about: "Ibitwerekeye", contact: "Twandikire",
   },
   hero: {
     welcome: "MURAKAZA NEZA KU BITARO BY'UMURINZI PETROS",
@@ -244,7 +244,7 @@ const rw: Translations = {
 const fr: Translations = {
   nav: {
     home: "Accueil", services: "Services", research: "Recherche & Éducation",
-    doctors: "Médecins", contact: "Contact",
+    doctors: "Médecins", about: "À Propos", contact: "Contact",
   },
   hero: {
     welcome: "BIENVENUE AU CENTRE MÉDICAL UMURINZI PETROS",
@@ -322,7 +322,7 @@ const fr: Translations = {
 const sw: Translations = {
   nav: {
     home: "Nyumbani", services: "Huduma", research: "Utafiti & Elimu",
-    doctors: "Madaktari", contact: "Wasiliana",
+    doctors: "Madaktari", about: "Kuhusu Sisi", contact: "Wasiliana",
   },
   hero: {
     welcome: "KARIBU KATIKA KITUO CHA MATIBABU CHA UMURINZI PETROS",

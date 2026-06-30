@@ -5,17 +5,44 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>UPMC Clinic</title>
-      <script type="module" crossorigin src="/assets/index-C8ZFOGY4.js"></script>
+      <script type="module" crossorigin src="/assets/index-CJPJnyFk.js"></script>
+      <link rel="modulepreload" crossorigin href="/assets/icons-wMjzQZs2.js">
+      <link rel="modulepreload" crossorigin href="/assets/vendor-DNN_1Vjc.js">
       <link rel="stylesheet" crossorigin href="/assets/index-CoKy4oAs.css">
     </head>
 
     <body>
       <div id="root">
-        <div id="app-loader" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;z-index:9999;font-family:sans-serif;">
-          <div style="width:52px;height:52px;border:4px solid #d1fae5;border-top-color:#166534;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:18px;"></div>
-          <p style="color:#166534;font-weight:700;font-size:14px;letter-spacing:0.05em;margin:0;">UMURINZI PETROS</p>
-          <p style="color:#6b7280;font-size:12px;margin:4px 0 0;">Loading…</p>
-          <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+        <div id="app-loader" style="min-height:100vh;background:#fff;font-family:sans-serif;">
+          <!-- Header bar matching real site -->
+          <div style="background:#14532d;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;">
+                <div style="width:20px;height:20px;border-radius:50%;background:#166534;"></div>
+              </div>
+              <div>
+                <div style="color:#fff;font-weight:800;font-size:13px;letter-spacing:.04em;">UMURINZI PETROS</div>
+                <div style="color:#86efac;font-size:10px;font-weight:600;letter-spacing:.06em;">MEDICAL CENTER</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:20px;">
+              <div style="width:48px;height:10px;background:#ffffff30;border-radius:4px;"></div>
+              <div style="width:60px;height:10px;background:#ffffff30;border-radius:4px;"></div>
+              <div style="width:44px;height:10px;background:#ffffff30;border-radius:4px;"></div>
+            </div>
+          </div>
+          <!-- Page skeleton -->
+          <div style="max-width:900px;margin:60px auto;padding:0 24px;">
+            <div style="width:220px;height:14px;background:#f1f5f9;border-radius:6px;margin-bottom:16px;"></div>
+            <div style="width:460px;max-width:100%;height:36px;background:#f1f5f9;border-radius:8px;margin-bottom:12px;"></div>
+            <div style="width:340px;max-width:100%;height:18px;background:#f1f5f9;border-radius:6px;margin-bottom:32px;"></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+              <div style="height:120px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;"></div>
+              <div style="height:120px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;"></div>
+              <div style="height:120px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;"></div>
+            </div>
+          </div>
+          <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}} #app-loader [style*="background:#f1f5f9"],[style*="background:#f8fafc"]{animation:pulse 1.4s ease-in-out infinite}</style>
         </div>
       </div>
     </body>

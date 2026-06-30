@@ -39,6 +39,7 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
     { name: t.nav.services, key: "services" },
     { name: t.nav.research, key: "research" },
     { name: t.nav.doctors, key: "doctors" },
+    { name: t.nav.about, key: "about" },
     { name: t.nav.contact, key: "contact" },
   ];
 
