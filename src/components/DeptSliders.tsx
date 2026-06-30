@@ -75,17 +75,27 @@ export function DeptSliders() {
                     key={i}
                     onClick={() => setLightbox(i)}
                     style={{
-                      minWidth: "100%", height: 300,
+                      flexShrink: 0, width: "100%", height: 300,
                       position: "relative", cursor: "zoom-in",
                       overflow: "hidden",
+                      background: "#f1f5f9",
+                      display: "flex", alignItems: "center", justifyContent: "center",
                     }}
                   >
                     <img
                       src={photo}
                       alt={`Gallery ${i + 1}`}
+                      onLoad={(e) => {
+                        const img = e.currentTarget;
+                        img.style.width = "100%";
+                        img.style.height = "100%";
+                        img.style.objectFit = "contain";
+                        img.style.objectPosition = "center";
+                      }}
                       style={{
                         width: "100%", height: "100%",
-                        objectFit: "cover", objectPosition: "center",
+                        maxWidth: "100%", maxHeight: "100%",
+                        objectFit: "contain", objectPosition: "center",
                         display: "block",
                       }}
                     />
