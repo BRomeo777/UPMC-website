@@ -13,10 +13,7 @@ export function HomePage() {
       <section style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: "48px 24px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h2 style={{ fontSize: "clamp(18px,2.5vw,26px)", fontWeight: 900, color: "#0f172a", margin: "0 0 6px" }}>Find Us on the Map</h2>
-            <p style={{ fontSize: 13, color: "#6b7280", maxWidth: 380, margin: "0 auto", lineHeight: 1.6 }}>
-              {t.contact.satelliteDesc}
-            </p>
+            <h2 style={{ fontSize: "clamp(18px,2.5vw,26px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>Find Us on the Map</h2>
           </div>
           <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", border: "1px solid #e2e8f0", background: "#fff" }}>
             <iframe

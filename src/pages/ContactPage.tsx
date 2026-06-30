@@ -136,7 +136,6 @@ export function ContactPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t.contact.findUs}</h2>
-            <p className="text-gray-500 text-sm">{t.contact.satelliteDesc}</p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100">
             <iframe
