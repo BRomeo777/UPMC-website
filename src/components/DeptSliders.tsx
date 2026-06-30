@@ -30,7 +30,19 @@ function useGalleryPhotos() {
 
 export function DeptSliders() {
   const photos = useGalleryPhotos();
+  const [current, setCurrent] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
+
+  const next = useCallback(() => setCurrent(c => (c + 1) % Math.max(photos.length, 1)), [photos.length]);
+  const prev = useCallback(() => setCurrent(c => (c - 1 + photos.length) % Math.max(photos.length, 1)), [photos.length]);
+
+  useEffect(() => {
+    if (photos.length <= 1) return;
+    const timer = setInterval(next, 4000);
+    return () => clearInterval(timer);
+  }, [next, photos.length]);
+
+  useEffect(() => { setCurrent(0); }, [photos.length]);
 
   const closeLightbox = () => setLightbox(null);
   const prevLight = () => setLightbox(i => i !== null ? (i - 1 + photos.length) % photos.length : null);
@@ -50,39 +62,69 @@ export function DeptSliders() {
     <section className="py-16 lg:py-20 bg-white border-t border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {photos.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
-            {photos.map((photo, i) => (
-              <div
-                key={i}
-                onClick={() => setLightbox(i)}
-                style={{
-                  position: "relative", height: 220, borderRadius: 14,
-                  overflow: "hidden", cursor: "zoom-in",
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-                  background: "#f1f5f9",
-                }}
-              >
-                <img
-                  src={photo}
-                  alt={`Gallery ${i + 1}`}
-                  style={{
-                    position: "absolute", inset: 0,
-                    width: "100%", height: "100%",
-                    objectFit: "cover", objectPosition: "center",
-                    display: "block",
-                  }}
-                />
-                <div style={{
-                  position: "absolute", inset: 0,
-                  background: "rgba(0,0,0,0)",
-                  transition: "background 0.2s",
-                }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,0,0,0.12)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,0,0,0)")}
-                />
+          <>
+            {/* Slider */}
+            <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.1)" }}>
+              <div style={{
+                display: "flex",
+                transition: "transform 0.5s ease-in-out",
+                transform: `translateX(-${current * 100}%)`,
+              }}>
+                {photos.map((photo, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setLightbox(i)}
+                    style={{
+                      minWidth: "100%", height: 420,
+                      position: "relative", cursor: "zoom-in",
+                    }}
+                  >
+                    <img
+                      src={photo}
+                      alt={`Gallery ${i + 1}`}
+                      style={{
+                        width: "100%", height: "100%",
+                        objectFit: "cover", objectPosition: "center",
+                        display: "block",
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {/* Arrows */}
+              {photos.length > 1 && (
+                <>
+                  <button onClick={prev}
+                    style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+                    <ChevronLeft style={{ width: 22, height: 22, color: "#14532d" }} />
+                  </button>
+                  <button onClick={next}
+                    style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+                    <ChevronRight style={{ width: 22, height: 22, color: "#14532d" }} />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Dots */}
+            {photos.length > 1 && (
+              <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+                {photos.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrent(i)}
+                    style={{
+                      width: 10, height: 10, borderRadius: "50%",
+                      border: "none", cursor: "pointer", padding: 0,
+                      background: i === current ? "#14532d" : "#cbd5e1",
+                      transition: "background 0.2s",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 24px", background: "#f8fafc", borderRadius: 16, border: "1px solid #e2e8f0" }}>
             <div style={{ width: 56, height: 56, borderRadius: 14, background: "#fff", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>

@@ -181,4 +181,4 @@ function te(c,f){for(var d=0;d<f.length;d++){const p=f[d];if(typeof p!="string"&
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */const Ve=[["path",{d:"M12.8 19.6A2 2 0 1 0 14 16H2",key:"148xed"}],["path",{d:"M17.5 8a2.5 2.5 0 1 1 2 4H2",key:"1u4tom"}],["path",{d:"M9.8 4.4A2 2 0 1 1 11 8H2",key:"75valh"}]];n("wind",Ve);export{De as A,Ue as B,Fe as C,Ke as F,Je as G,Xe as I,Ye as L,rt as M,ot as N,ct as P,ce as R,at as T,m as a,Te as b,tt as c,et as d,We as e,Qe as f,Be as g,Ze as h,nt as i,Ge as j,oe as r};
+ */const Ve=[["path",{d:"M12.8 19.6A2 2 0 1 0 14 16H2",key:"148xed"}],["path",{d:"M17.5 8a2.5 2.5 0 1 1 2 4H2",key:"1u4tom"}],["path",{d:"M9.8 4.4A2 2 0 1 1 11 8H2",key:"75valh"}]];n("wind",Ve);export{De as A,Ue as B,Fe as C,Ke as F,Je as G,Xe as I,Ye as L,rt as M,ot as N,ct as P,ce as R,at as T,m as a,Te as b,tt as c,et as d,We as e,Be as f,Ze as g,Qe as h,nt as i,Ge as j,oe as r};
