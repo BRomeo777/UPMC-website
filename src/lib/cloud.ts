@@ -7,12 +7,12 @@ import {
 } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY ?? "",
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? "",
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID ?? "",
+  apiKey:            "AIzaSyBAO1aOwvJja2tzwrFy7blWPzuX2xbxgtc",
+  authDomain:        "upmc-fa85e.firebaseapp.com",
+  projectId:         "upmc-fa85e",
+  storageBucket:     "upmc-fa85e.firebasestorage.app",
+  messagingSenderId: "848453582874",
+  appId:             "1:848453582874:web:ad1c44fdcebbe3c13511a3",
 };
 
 export const isCloudEnabled = (): boolean =>
