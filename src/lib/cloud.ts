@@ -1,11 +1,31 @@
-const CLOUD_NAME    = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME    ?? "";
-const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET ?? "";
-const JSONBIN_KEY   = import.meta.env.VITE_JSONBIN_API_KEY           ?? "";
-const JSONBIN_BIN   = import.meta.env.VITE_JSONBIN_BIN_ID            ?? "";
-const JSONBIN_URL   = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN}`;
+import { initializeApp, getApps } from "firebase/app";
+import {
+  getFirestore, doc, getDoc, setDoc,
+} from "firebase/firestore";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL,
+} from "firebase/storage";
+
+const firebaseConfig = {
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY ?? "",
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? "",
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "",
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? "",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? "",
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID ?? "",
+};
 
 export const isCloudEnabled = (): boolean =>
-  !!(CLOUD_NAME && UPLOAD_PRESET && JSONBIN_KEY && JSONBIN_BIN);
+  !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.storageBucket);
+
+let _app: ReturnType<typeof initializeApp> | null = null;
+function getFirebaseApp() {
+  if (!isCloudEnabled()) return null;
+  if (!_app) {
+    _app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  }
+  return _app;
+}
 
 const toBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -16,31 +36,29 @@ const toBase64 = (file: File): Promise<string> =>
   });
 
 export async function uploadToCloudinary(file: File): Promise<string> {
-  if (!isCloudEnabled()) return toBase64(file);
+  const app = getFirebaseApp();
+  if (!app) return toBase64(file);
   try {
-    const form = new FormData();
-    form.append("file", file);
-    form.append("upload_preset", UPLOAD_PRESET);
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-      { method: "POST", body: form }
-    );
-    if (!res.ok) return toBase64(file);
-    const json = await res.json();
-    return json.secure_url as string;
+    const storage = getStorage(app);
+    const path = `upmc-uploads/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+    const fileRef = ref(storage, path);
+    await uploadBytes(fileRef, file);
+    return await getDownloadURL(fileRef);
   } catch {
     return toBase64(file);
   }
 }
 
+const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
+
 export async function fetchAndSyncFromCloud(): Promise<void> {
-  if (!isCloudEnabled()) return;
+  const app = getFirebaseApp();
+  if (!app) return;
   try {
-    const res = await fetch(`${JSONBIN_URL}/latest`, {
-      headers: { "X-Master-Key": JSONBIN_KEY, "X-Bin-Meta": "false" },
-    });
-    if (!res.ok) return;
-    const record: Record<string, string> = await res.json();
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc));
+    if (!snap.exists()) return;
+    const record = snap.data() as Record<string, string>;
     Object.entries(record).forEach(([k, v]) => {
       if (v != null) localStorage.setItem(k, v);
     });
@@ -49,7 +67,8 @@ export async function fetchAndSyncFromCloud(): Promise<void> {
 
 let _syncTimer: ReturnType<typeof setTimeout> | null = null;
 export function syncAllToCloud(): void {
-  if (!isCloudEnabled()) return;
+  const app = getFirebaseApp();
+  if (!app) return;
   if (_syncTimer) clearTimeout(_syncTimer);
   _syncTimer = setTimeout(async () => {
     try {
@@ -60,11 +79,8 @@ export function syncAllToCloud(): void {
         const val = localStorage.getItem(key);
         if (val && !val.startsWith("data:")) data[key] = val;
       }
-      await fetch(JSONBIN_URL, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_KEY },
-        body: JSON.stringify(data),
-      });
+      const db = getFirestore(app);
+      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), data);
     } catch { /* silent */ }
   }, 600);
 }
