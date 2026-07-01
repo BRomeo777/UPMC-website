@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { fetchAndSyncFromCloud } from "./lib/cloud";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { AdminPanel } from "./components/AdminPanel";
 import { Header } from "./components/Header";
@@ -23,6 +24,16 @@ function AppInner() {
   };
 
   const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    fetchAndSyncFromCloud().then(() => {
+      ["service-photos-updated","site-images-updated","doctors-updated",
+       "researchers-updated","services-updated","contacts-updated",
+       "publications-updated","partners-updated"].forEach(
+        ev => window.dispatchEvent(new Event(ev))
+      );
+    });
+  }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {

@@ -2,6 +2,7 @@
 //  UPMC Full-Page Admin Panel
 // ──────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useRef } from "react";
+import { uploadToCloudinary, syncAllToCloud } from "../lib/cloud";
 
 const STORAGE_KEY = "upmc-partners-v4";
 const ADMIN_PASSWORD = "UPMCADMIN";
@@ -46,6 +47,7 @@ export const loadPartners = (): Partner[] => {
 export const savePartners = (partners: Partner[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(partners));
   window.dispatchEvent(new Event("partners-updated"));
+  syncAllToCloud();
 };
 
 // ─── Password Gate ────────────────────────────────────────────────────────────
@@ -166,11 +168,10 @@ const SiteImageSlot: React.FC<{ storageKey: string; label: string; description: 
   const dispatch = () => window.dispatchEvent(new Event("site-images-updated"));
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => { const url = reader.result as string; localStorage.setItem(storageKey, url); setSrc(url); dispatch(); };
-    reader.readAsDataURL(file); e.target.value = "";
+    e.target.value = "";
+    uploadToCloudinary(file).then(url => { localStorage.setItem(storageKey, url); setSrc(url); syncAllToCloud(); dispatch(); });
   };
-  const remove = () => { localStorage.removeItem(storageKey); setSrc(""); dispatch(); };
+  const remove = () => { localStorage.removeItem(storageKey); setSrc(""); syncAllToCloud(); dispatch(); };
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", background: "#fff", marginBottom: 12 }}>
       <div style={{ background: "#f8fafc", padding: "10px 14px", borderBottom: "1px solid #e5e7eb" }}>
@@ -212,6 +213,7 @@ const PublicationsAdmin: React.FC = () => {
     const updated = [{ id: Date.now().toString(), title: title.trim(), journal: journal.trim(), doi: doi.trim() }, ...pubs];
     setPubs(updated);
     localStorage.setItem('upmc-publications', JSON.stringify(updated));
+    syncAllToCloud();
     dispatch();
     setTitle(''); setJournal(''); setDoi('');
   };
@@ -220,6 +222,7 @@ const PublicationsAdmin: React.FC = () => {
     const updated = pubs.filter(p => p.id !== id);
     setPubs(updated);
     localStorage.setItem('upmc-publications', JSON.stringify(updated));
+    syncAllToCloud();
     dispatch();
   };
 
@@ -276,12 +279,11 @@ const ResearcherAdminSlot: React.FC<{ r: typeof RESEARCHERS_ADMIN[0] }> = ({ r }
   const [name,  setName ] = React.useState(() => localStorage.getItem(nameKey)  || "");
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => { const url = reader.result as string; localStorage.setItem(photoKey, url); setPhoto(url); dispatch(); };
-    reader.readAsDataURL(file); e.target.value = "";
+    e.target.value = "";
+    uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncAllToCloud(); dispatch(); });
   };
-  const saveBio  = () => { localStorage.setItem(bioKey, bio);   dispatch(); };
-  const saveName = () => { localStorage.setItem(nameKey, name); dispatch(); };
+  const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncAllToCloud(); dispatch(); };
+  const saveName = () => { localStorage.setItem(nameKey, name); syncAllToCloud(); dispatch(); };
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", marginBottom: 14, background: "#fff" }}>
       <div style={{ background: "#f1f5f9", padding: "8px 14px", borderBottom: "1px solid #e5e7eb" }}>
@@ -337,13 +339,12 @@ const DoctorAdminSlot: React.FC<{ doc: typeof DOCTORS_ADMIN[0] }> = ({ doc }) =>
 
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => { const url = reader.result as string; localStorage.setItem(photoKey, url); setPhoto(url); dispatch(); };
-    reader.readAsDataURL(file); e.target.value = "";
+    e.target.value = "";
+    uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncAllToCloud(); dispatch(); });
   };
-  const removePhoto = () => { localStorage.removeItem(photoKey); setPhoto(""); dispatch(); };
-  const saveBio = () => { localStorage.setItem(bioKey, bio); dispatch(); };
-  const saveResearch = () => { localStorage.setItem(researchKey, research); dispatch(); };
+  const removePhoto = () => { localStorage.removeItem(photoKey); setPhoto(""); syncAllToCloud(); dispatch(); };
+  const saveBio = () => { localStorage.setItem(bioKey, bio); syncAllToCloud(); dispatch(); };
+  const saveResearch = () => { localStorage.setItem(researchKey, research); syncAllToCloud(); dispatch(); };
 
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", background: "#fff", marginBottom: 16 }}>
@@ -397,20 +398,19 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
+    e.target.value = "";
+    uploadToCloudinary(file).then(url => {
       localStorage.setItem(storageKey, url);
       setSrc(url);
+      syncAllToCloud();
       window.dispatchEvent(new Event("service-photos-updated"));
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
+    });
   };
 
   const handleRemove = () => {
     localStorage.removeItem(storageKey);
     setSrc("");
+    syncAllToCloud();
     window.dispatchEvent(new Event("service-photos-updated"));
   };
 
@@ -506,7 +506,7 @@ const HomeSectionAdmin: React.FC<{ partners: Partner[]; setPartners: (p: Partner
     const u = partners.map((p, i) => i === editIdx ? { name: editName, url: editUrl, logoUrl: editLogo || p.logoUrl } : p);
     setPartners(u); savePartners(u); setEditIdx(null);
   };
-  const readImg = (file: File, cb: (url: string) => void) => { const r = new FileReader(); r.onload = () => cb(r.result as string); r.readAsDataURL(file); };
+  const readImg = (file: File, cb: (url: string) => void) => { uploadToCloudinary(file).then(cb); };
 
   const HOME_GALLERY = Array.from({ length: 10 }, (_, i) => ({ key: `gallery-${i + 1}`, label: `Slide ${i + 1}` }));
 
@@ -604,7 +604,7 @@ const DEFAULT_SERVICES: SvcCard[] = [
 ];
 
 export const loadServices = (): SvcCard[] => ls.get<SvcCard[]>("upmc-services-v2", DEFAULT_SERVICES);
-const saveServices = (d: SvcCard[]) => { ls.set("upmc-services-v2", d); window.dispatchEvent(new Event("services-updated")); };
+const saveServices = (d: SvcCard[]) => { ls.set("upmc-services-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("services-updated")); };
 
 const ServicesSectionAdmin: React.FC = () => {
   const [sub, setSub] = useState("cards");
@@ -818,9 +818,9 @@ export const loadTeam = (): TeamMember[] => {
 export const loadResearchAreas = (): ResArea[] => ls.get<ResArea[]>("upmc-research-areas-v2", DEFAULT_AREAS);
 export const loadEducation = (): EduItem[] => ls.get<EduItem[]>("upmc-education-v2", DEFAULT_EDU);
 
-const saveTeam = (d: TeamMember[]) => { ls.set("upmc-research-team-v2", d); window.dispatchEvent(new Event("researchers-updated")); };
-const saveAreas = (d: ResArea[]) => { ls.set("upmc-research-areas-v2", d); window.dispatchEvent(new Event("research-areas-updated")); };
-const saveEdu = (d: EduItem[]) => { ls.set("upmc-education-v2", d); window.dispatchEvent(new Event("education-updated")); };
+const saveTeam = (d: TeamMember[]) => { ls.set("upmc-research-team-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("researchers-updated")); };
+const saveAreas = (d: ResArea[]) => { ls.set("upmc-research-areas-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("research-areas-updated")); };
+const saveEdu = (d: EduItem[]) => { ls.set("upmc-education-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("education-updated")); };
 
 const ResearchSectionAdmin: React.FC = () => {
   const [sub, setSub] = useState("team");
@@ -1055,7 +1055,7 @@ const DEFAULT_DOCTORS: DocEntry[] = [
 ];
 
 export const loadDoctors = (): DocEntry[] => ls.get<DocEntry[]>("upmc-doctors-v2", DEFAULT_DOCTORS);
-const saveDoctors = (d: DocEntry[]) => { ls.set("upmc-doctors-v2", d); window.dispatchEvent(new Event("doctors-updated")); };
+const saveDoctors = (d: DocEntry[]) => { ls.set("upmc-doctors-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("doctors-updated")); };
 
 const DoctorsSectionAdmin: React.FC = () => {
   const [doctors, setDoctors] = useState<DocEntry[]>(loadDoctors);
@@ -1134,7 +1134,7 @@ const DEFAULT_CONTACT: ContactInfo = {
   emergency: "Emergency: 24/7 — call +250 795 161 628",
 };
 export const loadContact = (): ContactInfo => ls.get<ContactInfo>("upmc-contacts-v2", DEFAULT_CONTACT);
-const saveContact = (d: ContactInfo) => { ls.set("upmc-contacts-v2", d); window.dispatchEvent(new Event("contacts-updated")); };
+const saveContact = (d: ContactInfo) => { ls.set("upmc-contacts-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("contacts-updated")); };
 
 const ContactsSectionAdmin: React.FC = () => {
   const [data, setData] = useState<ContactInfo>(loadContact);
