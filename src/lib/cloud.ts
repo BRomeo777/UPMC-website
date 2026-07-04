@@ -2,9 +2,9 @@ import { initializeApp, getApps } from "firebase/app";
 import {
   getFirestore, doc, getDoc, setDoc,
 } from "firebase/firestore";
-import {
-  getStorage, ref, uploadBytes, getDownloadURL,
-} from "firebase/storage";
+
+const CLOUD_NAME    = "agp6pdkw";
+const UPLOAD_PRESET = "upmc-uploads";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBAO1aOwvJja2tzwrFy7blWPzuX2xbxgtc",
@@ -16,7 +16,7 @@ const firebaseConfig = {
 };
 
 export const isCloudEnabled = (): boolean =>
-  !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.storageBucket);
+  !!(CLOUD_NAME && UPLOAD_PRESET && firebaseConfig.apiKey && firebaseConfig.projectId);
 
 let _app: ReturnType<typeof initializeApp> | null = null;
 function getFirebaseApp() {
@@ -36,14 +36,18 @@ const toBase64 = (file: File): Promise<string> =>
   });
 
 export async function uploadToCloudinary(file: File): Promise<string> {
-  const app = getFirebaseApp();
-  if (!app) return toBase64(file);
+  if (!isCloudEnabled()) return toBase64(file);
   try {
-    const storage = getStorage(app);
-    const path = `upmc-uploads/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
-    const fileRef = ref(storage, path);
-    await uploadBytes(fileRef, file);
-    return await getDownloadURL(fileRef);
+    const form = new FormData();
+    form.append("file", file);
+    form.append("upload_preset", UPLOAD_PRESET);
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+      { method: "POST", body: form }
+    );
+    if (!res.ok) return toBase64(file);
+    const json = await res.json();
+    return json.secure_url as string;
   } catch {
     return toBase64(file);
   }
