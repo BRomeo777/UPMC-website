@@ -1,4 +1,4 @@
-// import { Star, Quote } from "lucide-react";
+﻿// import { Star, Quote } from "lucide-react";
 
 // const testimonials = [
 //   {
@@ -46,7 +46,7 @@
 //               className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 relative"
 //             >
 //               {/* Quote Icon */}
-//               <div className="absolute top-6 right-6 text-emerald-100">
+//               <div className="absolute top-6 right-6 text-teal-100">
 //                 <Quote className="w-8 h-8" />
 //               </div>
 
@@ -64,7 +64,7 @@
 
 //               {/* Patient Info */}
 //               <div className="flex items-center">
-//                 <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white font-semibold mr-4">
+//                 <div className="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center text-white font-semibold mr-4">
 //                   {testimonial.avatar}
 //                 </div>
 //                 <div>
@@ -79,19 +79,19 @@
 //         {/* Statistics */}
 //         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16 pt-16 border-t border-gray-200">
 //           <div className="text-center">
-//             <div className="text-3xl lg:text-4xl font-bold text-emerald-600 mb-2">98%</div>
+//             <div className="text-3xl lg:text-4xl font-bold text-teal-600 mb-2">98%</div>
 //             <div className="text-gray-600">Patient Satisfaction</div>
 //           </div>
 //           <div className="text-center">
-//             <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">25+</div>
+//             <div className="text-3xl lg:text-4xl font-bold text-teal-600 mb-2">25+</div>
 //             <div className="text-gray-600">Years of Excellence</div>
 //           </div>
 //           <div className="text-center">
-//             <div className="text-3xl lg:text-4xl font-bold text-emerald-600 mb-2">50k+</div>
+//             <div className="text-3xl lg:text-4xl font-bold text-teal-600 mb-2">50k+</div>
 //             <div className="text-gray-600">Lives Saved</div>
 //           </div>
 //           <div className="text-center">
-//             <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">150+</div>
+//             <div className="text-3xl lg:text-4xl font-bold text-teal-600 mb-2">150+</div>
 //             <div className="text-gray-600">Expert Doctors</div>
 //           </div>
 //         </div>

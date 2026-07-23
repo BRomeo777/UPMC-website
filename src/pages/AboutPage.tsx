@@ -1,83 +1,111 @@
+﻿import { useState } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 
-const AboutPage = () => {
+interface AboutPageProps {
+  onNavigate?: (page: string) => void;
+}
+
+const AboutPage = ({ onNavigate }: AboutPageProps) => {
   const { t } = useLanguage();
+  const [expanded, setExpanded] = useState(false);
+
+  const subItems = [
+    { label: "Our Departments", key: "departments" },
+    { label: "Staff", key: "staff" },
+    { label: "Doctors", key: "doctors" },
+    { label: "Our Story", key: "our-story" },
+  ];
+
+  const handleNavigate = (key: string) => {
+    if (onNavigate) onNavigate(key);
+  };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div style={{ background: "#fff", minHeight: "100vh" }}>
+      <style>{`
+        .upmc-chevron {
+          width: 30px;
+          height: 30px;
+          border-right: 6px solid #0d9488;
+          border-bottom: 6px solid #0d9488;
+          transform: rotate(45deg);
+          transition: transform 0.35s ease;
+          display: inline-block;
+        }
+        .upmc-chevron.upmc-open {
+          transform: rotate(225deg);
+        }
+        .upmc-chevron-wrap:hover .upmc-chevron {
+          border-color: #2dd4bf;
+        }
+        @keyframes upmc-fade {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
-      {/* ── Hero Banner ── */}
-      <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-blue-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-block bg-emerald-100 text-emerald-600 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-5">
-            {t.nav.about}
-          </span>
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Umurinzi Petros Medical Center
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            {t.hero.subtitle}
-          </p>
-        </div>
-      </section>
+      {/* ── About Us heading + chevron arrow ── */}
+      <div style={{ textAlign: "center", padding: "60px 24px 40px" }}>
+        <h1 style={{ fontSize: "clamp(28px,5vw,42px)", fontWeight: 900, color: "#0f172a", margin: "0 0 40px" }}>
+          {t.nav.about}
+        </h1>
 
-      {/* ── Executive Summary ── */}
-      <section style={{ background: "#fff", padding: "64px 24px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-            <div style={{ width: 4, height: 40, background: "#059669", borderRadius: 99 }} />
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#059669", textTransform: "uppercase", letterSpacing: "0.18em" }}>{t.about.execSummary}</span>
-          </div>
-          <p style={{ fontSize: 16, color: "#4b5563", lineHeight: 1.85, margin: "0 0 18px", fontWeight: 400 }}>
-            {t.about.execP1}
-          </p>
-          <p style={{ fontSize: 16, color: "#4b5563", lineHeight: 1.85, margin: "0 0 18px", fontWeight: 400 }}>
-            {t.about.execP2}
-          </p>
-          <p style={{ fontSize: 16, color: "#4b5563", lineHeight: 1.85, margin: 0, fontWeight: 400 }}>
-            {t.about.execP3}
-          </p>
-        </div>
-      </section>
+        {/* The arrow — click to reveal subheadings */}
+        <button
+          className="upmc-chevron-wrap"
+          onClick={() => setExpanded(!expanded)}
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            padding: 20,
+            display: "inline-flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span className={`upmc-chevron ${expanded ? "upmc-open" : ""}`} />
+        </button>
+      </div>
 
-      {/* ── Mission & Vision ── */}
-      <section style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: "72px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 900, color: "#111827", margin: 0 }}>{t.about.missionVision}</h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 24 }}>
-            <div style={{ background: "#fff", borderRadius: 18, border: "1px solid #e2e8f0", padding: "32px 28px", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: "0 0 16px" }}>{t.about.mission}</h3>
-              <p style={{ color: "#4b5563", lineHeight: 1.8, fontSize: 14, margin: 0 }}>{t.about.missionText}</p>
-            </div>
-            <div style={{ background: "#fff", borderRadius: 18, border: "1px solid #e2e8f0", padding: "32px 28px", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: "0 0 16px" }}>{t.about.vision}</h3>
-              <p style={{ color: "#4b5563", lineHeight: 1.8, fontSize: 14, margin: 0 }}>{t.about.visionText}</p>
-            </div>
+      {/* ── Subheadings revealed on click ── */}
+      {expanded && (
+        <div style={{
+          maxWidth: 700,
+          margin: "0 auto",
+          padding: "0 24px 80px",
+          animation: "upmc-fade 0.3s ease",
+        }}>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+          }}>
+            {subItems.map((item) => (
+              <div
+                key={item.key}
+                onClick={() => handleNavigate(item.key)}
+                style={{
+                  background: "#f8fafc",
+                  borderRadius: 14,
+                  border: "2px solid #e2e8f0",
+                  padding: "24px 28px",
+                  textAlign: "center",
+                  transition: "all 0.2s",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#0d9488"; e.currentTarget.style.background = "#f0fdfa"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(13,148,136,0.15)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <span style={{ fontSize: 18, fontWeight: 800, color: "#0f172a" }}>
+                  {item.label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
-
-      {/* ── Our Values ── */}
-      <section style={{ padding: "72px 24px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 900, color: "#111827", margin: 0 }}>{t.about.ourValues}</h2>
-          </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 20 }}>
-          {[
-            { title: t.about.honesty, desc: t.about.honestyDesc },
-            { title: t.about.accountability, desc: t.about.accountabilityDesc },
-            { title: t.about.dignity, desc: t.about.dignityDesc },
-            { title: t.about.excellence, desc: t.about.excellenceDesc },
-          ].map((v, i) => (
-            <div key={i} style={{ background: "#fff", borderRadius: 16, border: "1px solid #e2e8f0", padding: "28px 22px", boxShadow: "0 1px 8px rgba(0,0,0,0.04)" }}>
-              <h4 style={{ fontSize: 15, fontWeight: 800, color: "#111827", margin: "0 0 8px" }}>{v.title}</h4>
-              <p style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.7, margin: 0 }}>{v.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      )}
 
     </div>
   );

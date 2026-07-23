@@ -1,9 +1,9 @@
-// import { Button } from "./ui/button";
+﻿// import { Button } from "./ui/button";
 // import { Phone, Calendar } from "lucide-react";
 
 // export function CTASection() {
 //   return (
-//     <section className="py-16 lg:py-24 bg-gradient-to-r from-emerald-600 to-blue-600 relative overflow-hidden">
+//     <section className="py-16 lg:py-24 bg-gradient-to-r from-teal-600 to-teal-600 relative overflow-hidden">
 //       {/* Background Pattern */}
 //       <div className="absolute inset-0 opacity-10">
 //         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-48 -translate-y-48"></div>
@@ -14,7 +14,7 @@
 //         <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
 //           Ready to Experience Verdant Healing?
 //         </h2>
-//         <p className="text-xl text-emerald-50 mb-8 max-w-2xl mx-auto">
+//         <p className="text-xl text-teal-50 mb-8 max-w-2xl mx-auto">
 //           Get thousands of experts to work together on your health and wellness journey. 
 //           Quality care with exceptional service.
 //         </p>
@@ -22,7 +22,7 @@
 //         <div className="flex flex-col sm:flex-row gap-4 justify-center">
 //           <Button 
 //             size="lg" 
-//             className="bg-white text-emerald-600 hover:bg-gray-50 px-8 py-3"
+//             className="bg-white text-teal-600 hover:bg-gray-50 px-8 py-3"
 //           >
 //             <Calendar className="w-5 h-5 mr-2" />
 //             Book Appointment
@@ -30,7 +30,7 @@
 //           <Button 
 //             size="lg" 
 //             variant="outline" 
-//             className="border-white text-white hover:bg-white hover:text-emerald-600 px-8 py-3"
+//             className="border-white text-white hover:bg-white hover:text-teal-600 px-8 py-3"
 //           >
 //             <Phone className="w-5 h-5 mr-2" />
 //             Call Now
@@ -42,15 +42,15 @@
 //           <div className="grid md:grid-cols-3 gap-8 text-white">
 //             <div>
 //               <h3 className="font-semibold mb-2">Emergency Line</h3>
-//               <p className="text-emerald-100">+1 (555) 123-4567</p>
+//               <p className="text-teal-100">+1 (555) 123-4567</p>
 //             </div>
 //             <div>
 //               <h3 className="font-semibold mb-2">Appointments</h3>
-//               <p className="text-emerald-100">+1 (555) 987-6543</p>
+//               <p className="text-teal-100">+1 (555) 987-6543</p>
 //             </div>
 //             <div>
 //               <h3 className="font-semibold mb-2">24/7 Availability</h3>
-//               <p className="text-emerald-100">Always here for you</p>
+//               <p className="text-teal-100">Always here for you</p>
 //             </div>
 //           </div>
 //         </div>

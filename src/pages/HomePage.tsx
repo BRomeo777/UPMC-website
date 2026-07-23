@@ -1,16 +1,14 @@
-import { HeroSection } from "../components/HeroSection";
+﻿import { HeroSection } from "../components/HeroSection";
 import { DeptSliders } from "../components/DeptSliders";
 import { PartnerCarousel } from "../components/PartnerCarousel";
-import { useLanguage } from "../i18n/LanguageContext";
 
 export function HomePage() {
-  const { t } = useLanguage();
   return (
-    <div>
+    <div style={{ background: "#f8fafc" }}>
       <HeroSection />
 
-      {/* ── Satellite Map ── */}
-      <section style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: "48px 24px" }}>
+      {/* Satellite Map */}
+      <section style={{ background: "#fff", padding: "48px 24px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <h2 style={{ fontSize: "clamp(18px,2.5vw,26px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>Find Us on the Map</h2>
@@ -31,38 +29,14 @@ export function HomePage() {
               rel="noopener noreferrer"
               style={{
                 display: "inline-flex", alignItems: "center", gap: 6,
-                background: "#14532d", color: "#fff", fontWeight: 700, fontSize: 13,
+                background: "#0d9488", color: "#fff", fontWeight: 700, fontSize: 13,
                 padding: "10px 22px", borderRadius: 10, textDecoration: "none",
-                boxShadow: "0 3px 12px rgba(20,83,45,0.25)",
+                boxShadow: "0 3px 12px rgba(13,148,136,0.30)",
               }}
             >
               Get Directions
             </a>
           </div>
-        </div>
-      </section>
-
-      {/* Departments mention */}
-      <section className="bg-blue-50 border-t border-b border-blue-100 py-10">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="font-bold uppercase tracking-widest mb-5" style={{ color: "#14532d", fontSize: 22 }}>{t.departments.heading}</p>
-
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 auto", display: "inline-flex", flexDirection: "column", gap: 20, textAlign: "left", maxWidth: 560 }}>
-            <li style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-              <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#14532d", display: "inline-block", flexShrink: 0, marginTop: 6 }} />
-              <div>
-                <p style={{ fontSize: 16, fontWeight: 700, color: "#14532d", margin: "0 0 4px" }}>{t.departments.medicalTitle}</p>
-                <p style={{ fontSize: 14, color: "#6b7280", margin: 0, lineHeight: 1.7 }}>{t.departments.medicalDesc}</p>
-              </div>
-            </li>
-            <li style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-              <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#14532d", display: "inline-block", flexShrink: 0, marginTop: 6 }} />
-              <div>
-                <p style={{ fontSize: 16, fontWeight: 700, color: "#14532d", margin: "0 0 4px" }}>{t.departments.researchTitle}</p>
-                <p style={{ fontSize: 14, color: "#6b7280", margin: 0, lineHeight: 1.7 }}>{t.departments.researchDesc}</p>
-              </div>
-            </li>
-          </ul>
         </div>
       </section>
 

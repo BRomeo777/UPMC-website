@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { loadPartners } from "./AdminPanel";
 
 
@@ -65,17 +65,13 @@ export const PartnerCarousel: React.FC = () => {
         Our Trusted Partners
       </h2>
       <div style={{ width: 56, height: 4, borderRadius: 99,
-        background: "linear-gradient(90deg,#3b82f6,#06b6d4)", margin: "0 auto" }} />
+        background: "linear-gradient(90deg,#0d9488,#0d9488)", margin: "0 auto" }} />
     </div>
   );
 
   return (
-    <section style={{ position: "relative", padding: "80px 0", overflow: "hidden",
-      background: "linear-gradient(180deg,#f9fafb 0%,#fff 100%)" }}>
+    <section style={{ position: "relative", padding: "80px 0", overflow: "hidden", background: "#f9fafb" }}>
 
-      {/* Top accent */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1,
-        background: "linear-gradient(90deg,transparent,#bfdbfe,transparent)" }} />
 
       {header}
 
@@ -102,15 +98,15 @@ export const PartnerCarousel: React.FC = () => {
       <style>{`
         /* Hover effects */
         .partner-item:hover .partner-logo-circle {
-          border-color: #3b82f6 !important;
-          box-shadow: 0 8px 30px rgba(59,130,246,0.25) !important;
+          border-color: #0d9488 !important;
+          box-shadow: 0 8px 30px rgba(20,184,166,0.25) !important;
           transform: translateY(-6px) scale(1.07) !important;
         }
         .partner-item:hover .partner-glow-ring {
           opacity: 1 !important;
         }
         .partner-item:hover .partner-name {
-          color: #2563eb !important;
+          color: #0d9488 !important;
         }
 
         /* Marquee animation */

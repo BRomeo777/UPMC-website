@@ -3,6 +3,9 @@
 // ──────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useRef } from "react";
 import { uploadToCloudinary, syncAllToCloud } from "../lib/cloud";
+import { fetchAppointments, updateAppointmentStatus, deleteAppointment, type Appointment, type AppointmentStatus } from "../lib/appointments";
+import { loadStaff, saveStaff, type StaffEntry } from "../pages/StaffPage";
+import { loadDeptItems, saveDeptItems, type DeptItem } from "../pages/DepartmentsPage";
 
 const STORAGE_KEY = "upmc-partners-v4";
 const ADMIN_PASSWORD = "UPMCADMIN";
@@ -79,7 +82,7 @@ const PasswordGate: React.FC<{ onSuccess: () => void; onClose: () => void }> = (
       {/* Modal */}
       <div className={`relative z-10 w-full max-w-sm mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden ${shake ? "animate-shake" : ""}`}>
         {/* Header bar */}
-        <div className="bg-gradient-to-r from-blue-700 to-blue-500 px-8 py-6 text-white">
+        <div className="bg-gradient-to-r from-teal-700 to-teal-500 px-8 py-6 text-white">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +92,7 @@ const PasswordGate: React.FC<{ onSuccess: () => void; onClose: () => void }> = (
             <span className="text-xs font-semibold uppercase tracking-widest opacity-80">UPMC Admin</span>
           </div>
           <h2 className="text-xl font-bold">Secure Access</h2>
-          <p className="text-blue-100 text-sm mt-0.5">Enter your admin credentials to continue</p>
+          <p className="text-teal-100 text-sm mt-0.5">Enter your admin credentials to continue</p>
         </div>
 
         {/* Form */}
@@ -101,7 +104,7 @@ const PasswordGate: React.FC<{ onSuccess: () => void; onClose: () => void }> = (
             value={pwd}
             onChange={e => { setPwd(e.target.value); setError(""); }}
             placeholder="Enter admin password"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition"
           />
           {error && (
             <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
@@ -111,7 +114,7 @@ const PasswordGate: React.FC<{ onSuccess: () => void; onClose: () => void }> = (
           )}
           <button
             type="submit"
-            className="mt-5 w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+            className="mt-5 w-full py-3 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
           >
             Unlock Admin Panel
           </button>
@@ -146,10 +149,10 @@ interface UploadBoxProps {
 const UploadBox: React.FC<UploadBoxProps> = ({ preview, fileName, onBoxClick, inputRef, onChange }) => (
   <div
     onClick={onBoxClick}
-    className="cursor-pointer w-full border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-xl px-4 py-5 flex flex-col items-center justify-center gap-2 transition bg-white"
+    className="cursor-pointer w-full border-2 border-dashed border-gray-300 hover:border-teal-400 rounded-xl px-4 py-5 flex flex-col items-center justify-center gap-2 transition bg-white"
   >
     {preview ? (
-      <img src={preview} alt="preview" className="h-16 w-16 object-cover rounded-full border-2 border-blue-200 shadow" />
+      <img src={preview} alt="preview" className="h-16 w-16 object-cover rounded-full border-2 border-teal-200 shadow" />
     ) : (
       <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -252,7 +255,7 @@ const PublicationsAdmin: React.FC = () => {
           <div key={p.id} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 12px', marginBottom: 8, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#0f172a', lineHeight: 1.4 }}>{p.title}</p>
-              {p.journal && <p style={{ margin: '2px 0 0', fontSize: 11, color: '#2563eb' }}>{p.journal}</p>}
+              {p.journal && <p style={{ margin: '2px 0 0', fontSize: 11, color: '#0d9488' }}>{p.journal}</p>}
               {p.doi && <p style={{ margin: '2px 0 0', fontSize: 10, color: '#64748b', wordBreak: 'break-all' }}>{p.doi}</p>}
             </div>
             <button onClick={() => remove(p.id)} style={{ flexShrink: 0, fontSize: 10, color: '#ef4444', background: '#fef2f2', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontWeight: 700 }}>Delete</button>
@@ -301,7 +304,7 @@ const ResearcherAdminSlot: React.FC<{ r: typeof RESEARCHERS_ADMIN[0] }> = ({ r }
           <input type="file" accept="image/*" onChange={handleFile}
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", zIndex: 10 }} />
         </div>
-        {photo && <button onClick={() => { localStorage.removeItem(photoKey); setPhoto(""); dispatch(); }} style={{ fontSize: 10, color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginBottom: 8 }}>Remove photo</button>}
+        {photo && <button onClick={() => { localStorage.removeItem(photoKey); setPhoto(""); syncAllToCloud(); dispatch(); }} style={{ fontSize: 10, color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginBottom: 8 }}>Remove photo</button>}
         {/* Name */}
         <label style={{ fontSize: 10, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>Full Name</label>
         <div style={{ display: "flex", gap: 6, marginTop: 3, marginBottom: 8 }}>
@@ -321,19 +324,17 @@ const ResearcherAdminSlot: React.FC<{ r: typeof RESEARCHERS_ADMIN[0] }> = ({ r }
 
 // ─── Doctor Admin Slot ───────────────────────────────────────────────────────
 const DOCTORS_ADMIN = [
-  { id: "sibomana",   name: "Dr. SIBOMANA JEAN PIERRE", hasResearch: true  },
-  { id: "niyonshuti", name: "Dr. NIYONSHUTI THEOPIST",  hasResearch: false },
-  { id: "uwamaliya",  name: "Dr. UWAMALIYA MODETSE",    hasResearch: false },
+  { id: "sibomana",   name: "Dr. SIBOMANA JEAN PIERRE" },
+  { id: "niyonshuti", name: "Dr. NIYONSHUTI THEOPIST"  },
+  { id: "uwamaliya",  name: "Dr. UWAMALIYA MODETSE"    },
 ];
 
 const DoctorAdminSlot: React.FC<{ doc: typeof DOCTORS_ADMIN[0] }> = ({ doc }) => {
-  const photoKey    = `upmc-doctor-photo-${doc.id}`;
-  const bioKey      = `upmc-doctor-bio-${doc.id}`;
-  const researchKey = `upmc-doctor-research-${doc.id}`;
+  const photoKey = `upmc-doctor-photo-${doc.id}`;
+  const bioKey   = `upmc-doctor-bio-${doc.id}`;
 
-  const [photo,    setPhoto]    = React.useState(() => localStorage.getItem(photoKey)    || "");
-  const [bio,      setBio]      = React.useState(() => localStorage.getItem(bioKey)      || "");
-  const [research, setResearch] = React.useState(() => localStorage.getItem(researchKey) || "");
+  const [photo, setPhoto] = React.useState(() => localStorage.getItem(photoKey) || "");
+  const [bio,   setBio  ] = React.useState(() => localStorage.getItem(bioKey)   || "");
 
   const dispatch = () => window.dispatchEvent(new Event("doctors-updated"));
 
@@ -343,14 +344,13 @@ const DoctorAdminSlot: React.FC<{ doc: typeof DOCTORS_ADMIN[0] }> = ({ doc }) =>
     uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncAllToCloud(); dispatch(); });
   };
   const removePhoto = () => { localStorage.removeItem(photoKey); setPhoto(""); syncAllToCloud(); dispatch(); };
-  const saveBio = () => { localStorage.setItem(bioKey, bio); syncAllToCloud(); dispatch(); };
-  const saveResearch = () => { localStorage.setItem(researchKey, research); syncAllToCloud(); dispatch(); };
+  const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncAllToCloud(); dispatch(); };
 
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", background: "#fff", marginBottom: 16 }}>
       {/* Header */}
-      <div style={{ background: "#f0fdf4", padding: "10px 14px", borderBottom: "1px solid #d1fae5" }}>
-        <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#14532d" }}>{doc.name}</p>
+      <div style={{ background: "#f0fdfa", padding: "10px 14px", borderBottom: "1px solid #99f6e4" }}>
+        <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#0d9488" }}>{doc.name}</p>
       </div>
       {/* Photo */}
       <div style={{ padding: "12px 14px 0" }}>
@@ -369,23 +369,13 @@ const DoctorAdminSlot: React.FC<{ doc: typeof DOCTORS_ADMIN[0] }> = ({ doc }) =>
         {photo && <button onClick={removePhoto} style={{ fontSize: 11, color: "#ef4444", background: "#fef2f2", border: "none", borderRadius: 6, padding: "3px 10px", cursor: "pointer", marginBottom: 10 }}>Remove Photo</button>}
       </div>
       {/* Bio */}
-      <div style={{ padding: "0 14px 12px" }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Clinical Specialization Bio</p>
+      <div style={{ padding: "0 14px 14px" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Biography</p>
         <textarea value={bio} onChange={e => setBio(e.target.value)}
-          rows={4} placeholder="Enter clinical specialization description..."
+          rows={6} placeholder="Write the doctor's bio — including clinical specialization and research interests..."
           style={{ width: "100%", fontSize: 12, color: "#374151", border: "1px solid #e5e7eb", borderRadius: 8, padding: "8px 10px", resize: "vertical", fontFamily: "inherit", boxSizing: "border-box" }} />
-        <button onClick={saveBio} style={{ marginTop: 4, fontSize: 12, fontWeight: 700, background: "#14532d", color: "#fff", border: "none", borderRadius: 8, padding: "6px 16px", cursor: "pointer" }}>Save Bio</button>
+        <button onClick={saveBio} style={{ marginTop: 4, fontSize: 12, fontWeight: 700, background: "#0d9488", color: "#fff", border: "none", borderRadius: 8, padding: "6px 16px", cursor: "pointer" }}>Save Bio</button>
       </div>
-      {/* Research (optional) */}
-      {doc.hasResearch && (
-        <div style={{ padding: "0 14px 14px" }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Research Bio</p>
-          <textarea value={research} onChange={e => setResearch(e.target.value)}
-            rows={3} placeholder="Enter research description..."
-            style={{ width: "100%", fontSize: 12, color: "#374151", border: "1px solid #e5e7eb", borderRadius: 8, padding: "8px 10px", resize: "vertical", fontFamily: "inherit", boxSizing: "border-box" }} />
-          <button onClick={saveResearch} style={{ marginTop: 4, fontSize: 12, fontWeight: 700, background: "#0f766e", color: "#fff", border: "none", borderRadius: 8, padding: "6px 16px", cursor: "pointer" }}>Save Research</button>
-        </div>
-      )}
     </div>
   );
 };
@@ -435,7 +425,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", zIndex: 10 }}
         />
         {/* Dept badge */}
-        <div style={{ position: "absolute", top: 6, left: 6, background: "#059669", color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 99, zIndex: 5, pointerEvents: "none" }}>{dept}</div>
+        <div style={{ position: "absolute", top: 6, left: 6, background: "#0d9488", color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 99, zIndex: 5, pointerEvents: "none" }}>{dept}</div>
       </div>
       {/* Label + remove button */}
       <div style={{ padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
@@ -451,7 +441,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const ls = {
   get: <T,>(key: string, fallback: T): T => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },
-  set: (key: string, v: unknown) => localStorage.setItem(key, JSON.stringify(v)),
+  set: (key: string, v: unknown) => { localStorage.setItem(key, JSON.stringify(v)); syncAllToCloud(); },
 };
 const field: React.CSSProperties = { width: "100%", padding: "8px 12px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 13, boxSizing: "border-box", background: "#fff", color: "#0f172a" };
 const btnStyle = (bg: string, fg = "#fff"): React.CSSProperties => ({ padding: "8px 18px", background: bg, color: fg, border: "none", borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" as const });
@@ -464,6 +454,48 @@ interface TeamMember { id: string; name: string; role: string; bio: string; }
 interface ResArea { id: string; category: string; items: string[]; }
 interface EduItem { id: string; title: string; description: string; }
 interface ContactInfo { address: string; phone: string; email: string; hours: string; emergency: string; }
+
+// ─── News Ticker Admin ────────────────────────────────────────────────────────
+const DEFAULT_NEWS = [
+  "Welcome to Umurinzi Petros Medical Center: Compassionate Care, Excellence in Medicine",
+  "Consultations available Monday to Sunday: Emergency services 24/7",
+  "Our Research & Education Department offers CPD Training for healthcare professionals",
+  "Cardiology, Pulmonology, Pediatrics & Internal Medicine services now available",
+  "New research collaborations underway: advancing evidence-based medicine in Rwanda",
+];
+const NewsTickerAdmin: React.FC = () => {
+  const load = (): string[] => { try { return JSON.parse(localStorage.getItem("upmc-news-ticker") || "null") || DEFAULT_NEWS; } catch { return DEFAULT_NEWS; } };
+  const save = (items: string[]) => { localStorage.setItem("upmc-news-ticker", JSON.stringify(items)); syncAllToCloud(); window.dispatchEvent(new Event("news-ticker-updated")); };
+  const [items, setItems] = React.useState<string[]>(load);
+  const [draft, setDraft] = React.useState("");
+  const add = () => { if (!draft.trim()) return; const n = [...items, draft.trim()]; setItems(n); save(n); setDraft(""); };
+  const remove = (i: number) => { const n = items.filter((_, idx) => idx !== i); setItems(n); save(n); };
+  const reset = () => { setItems(DEFAULT_NEWS); save(DEFAULT_NEWS); };
+  const moveUp = (i: number) => { if (i === 0) return; const n = [...items]; [n[i-1], n[i]] = [n[i], n[i-1]]; setItems(n); save(n); };
+  const moveDown = (i: number) => { if (i === items.length - 1) return; const n = [...items]; [n[i], n[i+1]] = [n[i+1], n[i]]; setItems(n); save(n); };
+  return (
+    <div style={{ maxWidth: 600 }}>
+      <p style={{ fontSize: 12, color: "#64748b", marginBottom: 14 }}>Add or remove scrolling news items shown at the very top of the website. When all items are removed, the defaults will show automatically.</p>
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <input value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={e => e.key === "Enter" && add()}
+          placeholder="Type a news item and press Enter or Add..."
+          style={{ flex: 1, border: "1px solid #e2e8f0", borderRadius: 8, padding: "8px 12px", fontSize: 13, outline: "none" }} />
+        <button onClick={add} style={{ background: "#0d9488", color: "#fff", border: "none", borderRadius: 8, padding: "8px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Add</button>
+      </div>
+      {items.map((item, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, background: "#f8fafc", borderRadius: 8, padding: "8px 12px", marginBottom: 8, border: "1px solid #e2e8f0" }}>
+          <span style={{ flex: 1, fontSize: 13, color: "#1e293b" }}>✦ {item}</span>
+          <button onClick={() => moveUp(i)} disabled={i === 0} style={{ background: "#f1f5f9", color: "#64748b", border: "none", borderRadius: 6, padding: "3px 8px", cursor: i === 0 ? "default" : "pointer", fontSize: 11, fontWeight: 700, opacity: i === 0 ? 0.4 : 1 }}>↑</button>
+          <button onClick={() => moveDown(i)} disabled={i === items.length - 1} style={{ background: "#f1f5f9", color: "#64748b", border: "none", borderRadius: 6, padding: "3px 8px", cursor: i === items.length - 1 ? "default" : "pointer", fontSize: 11, fontWeight: 700, opacity: i === items.length - 1 ? 0.4 : 1 }}>↓</button>
+          <button onClick={() => remove(i)} style={{ background: "#fef2f2", color: "#ef4444", border: "none", borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>Remove</button>
+        </div>
+      ))}
+      <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
+        <button onClick={reset} style={{ background: "#f1f5f9", color: "#64748b", border: "1px solid #e2e8f0", borderRadius: 8, padding: "8px 16px", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>Reset to defaults</button>
+      </div>
+    </div>
+  );
+};
 
 // ─── Label field wrapper ───────────────────────────────────────────────────────
 const LF: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
@@ -514,12 +546,16 @@ const HomeSectionAdmin: React.FC<{ partners: Partner[]; setPartners: (p: Partner
     <div>
       {sectionTitle("Home")}
       <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Manage site logo, hero image, gallery photos and home page partners.</p>
-      <SubTabs tabs={[{ id: "site", label: "🖼 Site Images" }, { id: "gallery", label: "📷 Gallery" }, { id: "partners", label: "🤝 Partners" }]} active={sub} onChange={setSub} />
+      <SubTabs tabs={[{ id: "site", label: "🖼 Site Images" }, { id: "news", label: "📢 News Ticker" }, { id: "gallery", label: "📷 Gallery" }, { id: "partners", label: "🤝 Partners" }]} active={sub} onChange={setSub} />
+
+      {sub === "news" && <NewsTickerAdmin />
+      }
 
       {sub === "site" && (
         <div style={{ maxWidth: 600 }}>
           <SiteImageSlot storageKey="upmc-logo" label="Clinic Logo" description="Appears in header & footer. PNG with transparent background recommended." />
-          <SiteImageSlot storageKey="upmc-hero-img" label="Hero Section Image" description="Main photo on the Home page hero section." />
+          <SiteImageSlot storageKey="upmc-home-bg" label="Home Page Background Photo" description="Full-page background image for the entire Home page. Use a high-resolution clinic photo." />
+          <SiteImageSlot storageKey="upmc-hero-img" label="Hero Section Image" description="Main photo displayed inside the hero card on the Home page." />
         </div>
       )}
 
@@ -555,9 +591,9 @@ const HomeSectionAdmin: React.FC<{ partners: Partner[]; setPartners: (p: Partner
                 <img src={p.logoUrl} style={{ width: 52, height: 52, objectFit: "contain", borderRadius: 8, border: "1px solid #e2e8f0", flexShrink: 0 }} />
                 <div style={{ flex: 1 }}>
                   <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{p.name}</p>
-                  {p.url && <p style={{ margin: 0, fontSize: 11, color: "#3b82f6" }}>{p.url}</p>}
+                  {p.url && <p style={{ margin: 0, fontSize: 11, color: "#0d9488" }}>{p.url}</p>}
                 </div>
-                <button style={btnStyle("#eff6ff", "#2563eb")} onClick={() => { setEditIdx(i); setEditName(p.name); setEditUrl(p.url); setEditLogo(p.logoUrl); }}>Edit</button>
+                <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => { setEditIdx(i); setEditName(p.name); setEditUrl(p.url); setEditLogo(p.logoUrl); }}>Edit</button>
                 <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => deletePartner(i)}>Delete</button>
               </div>
               {editIdx === i && (
@@ -675,9 +711,9 @@ const ServicesSectionAdmin: React.FC = () => {
       {/* Toast */}
       {toast && (
         <div style={{ marginBottom: 14, padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600,
-          background: toast.ok ? "#f0fdf4" : "#fef2f2",
+          background: toast.ok ? "#f0fdfa" : "#fef2f2",
           border: `1px solid ${toast.ok ? "#86efac" : "#fca5a5"}`,
-          color: toast.ok ? "#166534" : "#dc2626" }}>
+          color: toast.ok ? "#0d9488" : "#dc2626" }}>
           {toast.msg}
         </div>
       )}
@@ -686,31 +722,31 @@ const ServicesSectionAdmin: React.FC = () => {
 
       {sub === "cards" && (
         <div>
-          <button style={{ ...btnStyle("#166534"), marginBottom: 16 }} onClick={() => { setAddOpen(o => !o); setAddErr(""); setAddForm({}); }}>
+          <button style={{ ...btnStyle("#0d9488"), marginBottom: 16 }} onClick={() => { setAddOpen(o => !o); setAddErr(""); setAddForm({}); }}>
             {addOpen ? "✕ Cancel" : "+ Add New Service"}
           </button>
 
           {addOpen && (
-            <div style={{ ...cardBox, background: "#f0fdf4", marginBottom: 16 }}>
-              <p style={{ fontWeight: 800, fontSize: 13, margin: "0 0 12px", color: "#166534" }}>New Service Card</p>
+            <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
+              <p style={{ fontWeight: 800, fontSize: 13, margin: "0 0 12px", color: "#0d9488" }}>New Service Card</p>
               <LF label="Title *"><input style={field} placeholder="Service title" value={addForm.title || ""} onChange={e => { setAddForm(f => ({ ...f, title: e.target.value })); setAddErr(""); }} /></LF>
               <LF label="Department *"><input style={field} placeholder="e.g. Internal Medicine" value={addForm.dept || ""} onChange={e => { setAddForm(f => ({ ...f, dept: e.target.value })); setAddErr(""); }} /></LF>
               <LF label="Sub-department"><input style={field} placeholder="e.g. Cardiology (optional)" value={addForm.subDept || ""} onChange={e => setAddForm(f => ({ ...f, subDept: e.target.value }))} /></LF>
               <LF label="Description"><textarea style={{ ...field, resize: "vertical" }} rows={3} placeholder="Short description of this service" value={addForm.description || ""} onChange={e => setAddForm(f => ({ ...f, description: e.target.value }))} /></LF>
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #d1fae5" }}>
-                <p style={{ fontSize: 11, fontWeight: 800, color: "#059669", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>🌍 Translations (optional)</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "0 0 6px" }}>🇷🇼 Kinyarwanda</p>
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #99f6e4" }}>
+                <p style={{ fontSize: 11, fontWeight: 800, color: "#0d9488", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>🌍 Translations (optional)</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#0d9488", margin: "0 0 6px" }}>🇷🇼 Kinyarwanda</p>
                 <LF label="Title (Kinyarwanda)"><input style={field} placeholder="Intitulé mu Kinyarwanda" value={addForm.title_rw || ""} onChange={e => setAddForm(f => ({ ...f, title_rw: e.target.value }))} /></LF>
                 <LF label="Description (Kinyarwanda)"><textarea style={{ ...field, resize: "vertical" }} rows={2} placeholder="Ibisobanuro mu Kinyarwanda" value={addForm.desc_rw || ""} onChange={e => setAddForm(f => ({ ...f, desc_rw: e.target.value }))} /></LF>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇫🇷 Français</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#0d9488", margin: "10px 0 6px" }}>🇫🇷 Français</p>
                 <LF label="Titre (Français)"><input style={field} placeholder="Titre en français" value={addForm.title_fr || ""} onChange={e => setAddForm(f => ({ ...f, title_fr: e.target.value }))} /></LF>
                 <LF label="Description (Français)"><textarea style={{ ...field, resize: "vertical" }} rows={2} placeholder="Description en français" value={addForm.desc_fr || ""} onChange={e => setAddForm(f => ({ ...f, desc_fr: e.target.value }))} /></LF>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇰🇪 Kiswahili</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#0d9488", margin: "10px 0 6px" }}>🇰🇪 Kiswahili</p>
                 <LF label="Kichwa (Kiswahili)"><input style={field} placeholder="Kichwa kwa Kiswahili" value={addForm.title_sw || ""} onChange={e => setAddForm(f => ({ ...f, title_sw: e.target.value }))} /></LF>
                 <LF label="Maelezo (Kiswahili)"><textarea style={{ ...field, resize: "vertical" }} rows={2} placeholder="Maelezo kwa Kiswahili" value={addForm.desc_sw || ""} onChange={e => setAddForm(f => ({ ...f, desc_sw: e.target.value }))} /></LF>
               </div>
               {addErr && <p style={{ fontSize: 12, color: "#dc2626", marginBottom: 8 }}>⚠ {addErr}</p>}
-              <button style={{ ...btnStyle("#166534"), width: "100%", padding: "10px" }} onClick={addService}>
+              <button style={{ ...btnStyle("#0d9488"), width: "100%", padding: "10px" }} onClick={addService}>
                 ✓ Save Service
               </button>
             </div>
@@ -722,9 +758,9 @@ const ServicesSectionAdmin: React.FC = () => {
 
           {depts.map(dept => (
             <div key={dept} style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: "#059669", marginBottom: 10 }}>{dept}</p>
+              <p style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0d9488", marginBottom: 10 }}>{dept}</p>
               {services.filter(s => s.dept === dept).map(s => (
-                <div key={s.id} style={{ ...cardBox, borderLeft: editId === s.id ? "3px solid #166534" : "3px solid transparent" }}>
+                <div key={s.id} style={{ ...cardBox, borderLeft: editId === s.id ? "3px solid #0d9488" : "3px solid transparent" }}>
                   {editId === s.id ? (
                     <div>
                       <LF label="Title"><input style={field} value={s.title} onChange={e => upd(s.id, "title", e.target.value)} /></LF>
@@ -732,19 +768,19 @@ const ServicesSectionAdmin: React.FC = () => {
                       <LF label="Sub-department"><input style={field} value={s.subDept} onChange={e => upd(s.id, "subDept", e.target.value)} /></LF>
                       <LF label="Description"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={s.description} onChange={e => upd(s.id, "description", e.target.value)} /></LF>
                       <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
-                        <p style={{ fontSize: 11, fontWeight: 800, color: "#059669", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>🌍 Translations</p>
-                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "0 0 6px" }}>🇷🇼 Kinyarwanda</p>
+                        <p style={{ fontSize: 11, fontWeight: 800, color: "#0d9488", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>🌍 Translations</p>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0d9488", margin: "0 0 6px" }}>🇷🇼 Kinyarwanda</p>
                         <LF label="Title (Kinyarwanda)"><input style={field} value={s.translations?.rw?.title || ""} onChange={e => updTrans(s.id, "rw", "title", e.target.value)} /></LF>
                         <LF label="Description (Kinyarwanda)"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={s.translations?.rw?.description || ""} onChange={e => updTrans(s.id, "rw", "description", e.target.value)} /></LF>
-                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇫🇷 Français</p>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0d9488", margin: "10px 0 6px" }}>🇫🇷 Français</p>
                         <LF label="Titre (Français)"><input style={field} value={s.translations?.fr?.title || ""} onChange={e => updTrans(s.id, "fr", "title", e.target.value)} /></LF>
                         <LF label="Description (Français)"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={s.translations?.fr?.description || ""} onChange={e => updTrans(s.id, "fr", "description", e.target.value)} /></LF>
-                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0284c7", margin: "10px 0 6px" }}>🇰🇪 Kiswahili</p>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: "#0d9488", margin: "10px 0 6px" }}>🇰🇪 Kiswahili</p>
                         <LF label="Kichwa (Kiswahili)"><input style={field} value={s.translations?.sw?.title || ""} onChange={e => updTrans(s.id, "sw", "title", e.target.value)} /></LF>
                         <LF label="Maelezo (Kiswahili)"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={s.translations?.sw?.description || ""} onChange={e => updTrans(s.id, "sw", "description", e.target.value)} /></LF>
                       </div>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <button style={{ ...btnStyle("#166534"), flex: 1 }} onClick={save}>✓ Save Changes</button>
+                        <button style={{ ...btnStyle("#0d9488"), flex: 1 }} onClick={save}>✓ Save Changes</button>
                         <button style={{ ...btnStyle("#f1f5f9", "#374151"), flex: 1 }} onClick={cancelEdit}>Cancel</button>
                       </div>
                     </div>
@@ -752,11 +788,11 @@ const ServicesSectionAdmin: React.FC = () => {
                     <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                       <div style={{ flex: 1 }}>
                         <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#0f172a" }}>{s.title}</p>
-                        {s.subDept && <p style={{ margin: "2px 0 0", fontSize: 11, color: "#0284c7" }}>{s.subDept}</p>}
+                        {s.subDept && <p style={{ margin: "2px 0 0", fontSize: 11, color: "#0d9488" }}>{s.subDept}</p>}
                         <p style={{ margin: "4px 0 0", fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>{s.description}</p>
                       </div>
                       <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                        <button style={btnStyle("#eff6ff", "#2563eb")} onClick={() => openEdit(s)}>Edit</button>
+                        <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => openEdit(s)}>Edit</button>
                         <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => del(s.id)}>Delete</button>
                       </div>
                     </div>
@@ -773,7 +809,7 @@ const ServicesSectionAdmin: React.FC = () => {
           <p style={{ fontSize: 12, color: "#94a3b8", marginBottom: 14 }}>Click a slot to upload a photo for that service. Photos are saved instantly.</p>
           {depts.map(dept => (
             <div key={dept} style={{ marginBottom: 22 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#059669", marginBottom: 8 }}>{dept}</p>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0d9488", marginBottom: 8 }}>{dept}</p>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 10 }}>
                 {services.filter(s => s.dept === dept).map(s => <ServicePhotoSlot key={s.id} svcKey={s.imageKey} label={s.title} dept={s.subDept || s.dept} />)}
               </div>
@@ -891,13 +927,13 @@ const ResearchSectionAdmin: React.FC = () => {
       {/* TEAM */}
       {sub === "team" && (
         <div>
-          <button style={{ ...btnStyle("#166534"), marginBottom: 16 }} onClick={() => setAddTeamOpen(o => !o)}>{addTeamOpen ? "✕ Cancel" : "+ Add Team Member"}</button>
+          <button style={{ ...btnStyle("#0d9488"), marginBottom: 16 }} onClick={() => setAddTeamOpen(o => !o)}>{addTeamOpen ? "✕ Cancel" : "+ Add Team Member"}</button>
           {addTeamOpen && (
-            <div style={{ ...cardBox, background: "#f0fdf4", marginBottom: 16 }}>
+            <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
               <LF label="Full Name *"><input style={field} placeholder="Dr. John Doe" value={newTeam.name || ""} onChange={e => setNewTeam(f => ({ ...f, name: e.target.value }))} /></LF>
               <LF label="Role / Title *"><input style={field} placeholder="e.g. Senior Research Associate" value={newTeam.role || ""} onChange={e => setNewTeam(f => ({ ...f, role: e.target.value }))} /></LF>
               <LF label="Bio"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={newTeam.bio || ""} onChange={e => setNewTeam(f => ({ ...f, bio: e.target.value }))} /></LF>
-              <button style={btnStyle("#166534")} onClick={addTeamMember}>Save Member</button>
+              <button style={btnStyle("#0d9488")} onClick={addTeamMember}>Save Member</button>
             </div>
           )}
           {team.map(m => (
@@ -920,9 +956,9 @@ const ResearchSectionAdmin: React.FC = () => {
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ flex: 1 }}>
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{m.name || <span style={{ color: "#94a3b8" }}>No name set</span>}</p>
-                    <p style={{ margin: "2px 0 0", fontSize: 12, color: "#0284c7" }}>{m.role}</p>
+                    <p style={{ margin: "2px 0 0", fontSize: 12, color: "#0d9488" }}>{m.role}</p>
                   </div>
-                  <button style={btnStyle("#eff6ff", "#2563eb")} onClick={() => setEditTeamId(m.id)}>Edit</button>
+                  <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => setEditTeamId(m.id)}>Edit</button>
                   <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => delTeam(m.id)}>Delete</button>
                 </div>
               )}
@@ -934,12 +970,12 @@ const ResearchSectionAdmin: React.FC = () => {
       {/* RESEARCH AREAS */}
       {sub === "areas" && (
         <div>
-          <button style={{ ...btnStyle("#166534"), marginBottom: 16 }} onClick={() => setAddAreaOpen(o => !o)}>{addAreaOpen ? "✕ Cancel" : "+ Add Research Area"}</button>
+          <button style={{ ...btnStyle("#0d9488"), marginBottom: 16 }} onClick={() => setAddAreaOpen(o => !o)}>{addAreaOpen ? "✕ Cancel" : "+ Add Research Area"}</button>
           {addAreaOpen && (
-            <div style={{ ...cardBox, background: "#f0fdf4", marginBottom: 16 }}>
+            <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
               <LF label="Category Name *"><input style={field} value={newArea.category} onChange={e => setNewArea(f => ({ ...f, category: e.target.value }))} placeholder="e.g. Infectious Diseases" /></LF>
               <LF label="Research Topics (one per line)"><textarea style={{ ...field, resize: "vertical" }} rows={4} value={newArea.items} onChange={e => setNewArea(f => ({ ...f, items: e.target.value }))} placeholder="Topic 1&#10;Topic 2&#10;Topic 3" /></LF>
-              <button style={btnStyle("#166534")} onClick={addArea}>Save Area</button>
+              <button style={btnStyle("#0d9488")} onClick={addArea}>Save Area</button>
             </div>
           )}
           {areas.map(a => (
@@ -967,7 +1003,7 @@ const ResearchSectionAdmin: React.FC = () => {
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#0f172a" }}>{a.category}</p>
                     <p style={{ margin: "4px 0 0", fontSize: 11, color: "#64748b" }}>{a.items.length} topics</p>
                   </div>
-                  <button style={btnStyle("#eff6ff", "#2563eb")} onClick={() => setEditAreaId(a.id)}>Edit</button>
+                  <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => setEditAreaId(a.id)}>Edit</button>
                   <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => delArea(a.id)}>Delete</button>
                 </div>
               )}
@@ -979,12 +1015,12 @@ const ResearchSectionAdmin: React.FC = () => {
       {/* EDUCATION */}
       {sub === "edu" && (
         <div>
-          <button style={{ ...btnStyle("#166534"), marginBottom: 16 }} onClick={() => setAddEduOpen(o => !o)}>{addEduOpen ? "✕ Cancel" : "+ Add Education Item"}</button>
+          <button style={{ ...btnStyle("#0d9488"), marginBottom: 16 }} onClick={() => setAddEduOpen(o => !o)}>{addEduOpen ? "✕ Cancel" : "+ Add Education Item"}</button>
           {addEduOpen && (
-            <div style={{ ...cardBox, background: "#f0fdf4", marginBottom: 16 }}>
+            <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
               <LF label="Title *"><input style={field} value={newEdu.title || ""} onChange={e => setNewEdu(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Fellowship Programme" /></LF>
               <LF label="Description"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={newEdu.description || ""} onChange={e => setNewEdu(f => ({ ...f, description: e.target.value }))} /></LF>
-              <button style={btnStyle("#166534")} onClick={addEduItem}>Save</button>
+              <button style={btnStyle("#0d9488")} onClick={addEduItem}>Save</button>
             </div>
           )}
           {edu.map(e => (
@@ -1004,7 +1040,7 @@ const ResearchSectionAdmin: React.FC = () => {
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{e.title}</p>
                     <p style={{ margin: "4px 0 0", fontSize: 12, color: "#64748b" }}>{e.description}</p>
                   </div>
-                  <button style={btnStyle("#eff6ff", "#2563eb")} onClick={() => setEditEduId(e.id)}>Edit</button>
+                  <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => setEditEduId(e.id)}>Edit</button>
                   <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => delEdu(e.id)}>Delete</button>
                 </div>
               )}
@@ -1040,7 +1076,233 @@ const AddItemInline: React.FC<{ onAdd: (s: string) => void }> = ({ onAdd }) => {
   return (
     <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
       <input style={{ ...field, marginBottom: 0 }} value={val} onChange={e => setVal(e.target.value)} placeholder="New topic..." onKeyDown={e => { if (e.key === "Enter") { onAdd(val); setVal(""); } }} />
-      <button style={btnStyle("#166534")} onClick={() => { onAdd(val); setVal(""); }}>Add</button>
+      <button style={btnStyle("#0d9488")} onClick={() => { onAdd(val); setVal(""); }}>Add</button>
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  DEPARTMENT SERVICES ADMIN
+// ─────────────────────────────────────────────────────────────────────────────
+const DEPT_CONFIGS = [
+  { id: "medical",  label: "Medical Department" },
+  { id: "research", label: "Research & Education Department" },
+];
+
+const DeptServicesAdmin: React.FC = () => {
+  const [deptId, setDeptId] = useState("medical");
+  const [items, setItems] = useState<DeptItem[]>(() => loadDeptItems(deptId));
+  const [newText, setNewText] = useState("");
+  const [newIndent, setNewIndent] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+  const [editIndent, setEditIndent] = useState(false);
+
+  useEffect(() => {
+    setItems(loadDeptItems(deptId));
+    setEditId(null);
+  }, [deptId]);
+
+  const save = (updated: DeptItem[]) => { setItems(updated); saveDeptItems(deptId, updated); };
+
+  const addItem = () => {
+    if (!newText.trim()) return;
+    save([...items, { id: `${deptId}-${Date.now()}`, text: newText.trim(), indent: newIndent }]);
+    setNewText(""); setNewIndent(false);
+  };
+
+  const del = (id: string) => { if (!window.confirm("Remove this service?")) return; save(items.filter(i => i.id !== id)); };
+
+  const startEdit = (item: DeptItem) => { setEditId(item.id); setEditText(item.text); setEditIndent(!!item.indent); };
+
+  const saveEdit = () => {
+    save(items.map(i => i.id === editId ? { ...i, text: editText, indent: editIndent } : i));
+    setEditId(null);
+  };
+
+  return (
+    <div>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Add, edit or remove services shown on each department card. Ticked items appear as main services; indented items appear as sub-services.</p>
+
+      {/* Department selector */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+        {DEPT_CONFIGS.map(d => (
+          <button key={d.id} onClick={() => setDeptId(d.id)} style={{
+            padding: "8px 16px", borderRadius: 8, border: "2px solid",
+            borderColor: deptId === d.id ? "#0d9488" : "#e2e8f0",
+            background: deptId === d.id ? "#f0fdfa" : "#fff",
+            color: deptId === d.id ? "#0d9488" : "#64748b",
+            fontWeight: 700, fontSize: 12, cursor: "pointer",
+          }}>{d.label}</button>
+        ))}
+      </div>
+
+      {/* Add new item */}
+      <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
+        <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 10px", color: "#0f172a" }}>Add New Service</p>
+        <LF label="Service Name">
+          <input style={field} placeholder="e.g. Echography" value={newText} onChange={e => setNewText(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") addItem(); }} />
+        </LF>
+        <LF label="">
+          <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+            <input type="checkbox" checked={newIndent} onChange={e => setNewIndent(e.target.checked)}
+              style={{ width: 16, height: 16, accentColor: "#0d9488", cursor: "pointer" }} />
+            <span style={{ fontSize: 13, color: "#374151" }}>Sub-service (indented under a main service)</span>
+          </label>
+        </LF>
+        <button style={btnStyle("#0d9488")} onClick={addItem}>+ Add Service</button>
+      </div>
+
+      {/* Current items */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {items.map(item => (
+          <div key={item.id} style={{ ...cardBox, padding: "12px 14px" }}>
+            {editId === item.id ? (
+              <div>
+                <LF label="Service Name">
+                  <input style={field} value={editText} onChange={e => setEditText(e.target.value)} />
+                </LF>
+                <LF label="">
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                    <input type="checkbox" checked={editIndent} onChange={e => setEditIndent(e.target.checked)}
+                      style={{ width: 16, height: 16, accentColor: "#0d9488", cursor: "pointer" }} />
+                    <span style={{ fontSize: 13, color: "#374151" }}>Sub-service</span>
+                  </label>
+                </LF>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button style={{ ...btnStyle("#0f172a"), flex: 1 }} onClick={saveEdit}>Save</button>
+                  <button style={{ ...btnStyle("#f1f5f9", "#374151"), flex: 1 }} onClick={() => setEditId(null)}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                {/* Checkmark or dot indicator */}
+                {item.indent ? (
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#94a3b8", flexShrink: 0, marginLeft: 12 }} />
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
+                    <circle cx="10" cy="10" r="10" fill="#d1fae5" />
+                    <path d="M6 10l3 3 5-5" stroke="#0d9488" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+                <span style={{ flex: 1, fontSize: 13, color: "#1e293b", fontWeight: item.indent ? 400 : 600 }}>{item.text}</span>
+                {item.indent && <span style={{ fontSize: 10, color: "#94a3b8", fontWeight: 600, marginRight: 4 }}>sub</span>}
+                <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => startEdit(item)}>Edit</button>
+                <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => del(item.id)}>Delete</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {items.length === 0 && <p style={{ fontSize: 13, color: "#94a3b8", textAlign: "center", padding: "20px 0" }}>No services yet. Add one above.</p>}
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  STAFF SECTION
+// ─────────────────────────────────────────────────────────────────────────────
+const StaffSectionAdmin: React.FC = () => {
+  const [sub, setSub] = useState("members");
+  const [staff, setStaff] = useState<StaffEntry[]>(loadStaff);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newStaff, setNewStaff] = useState<Partial<StaffEntry>>({});
+
+  const upd = (id: string, k: keyof StaffEntry, v: string) => setStaff(prev => prev.map(s => s.id === id ? { ...s, [k]: v } : s));
+  const saveItem = () => { saveStaff(staff); setEditId(null); };
+  const del = (id: string) => { if (!window.confirm("Remove this staff member?")) return; const u = staff.filter(s => s.id !== id); setStaff(u); saveStaff(u); };
+  const addStaff = () => {
+    if (!newStaff.name?.trim()) return;
+    if (staff.length >= 30) { alert("Maximum of 30 staff members reached."); return; }
+    const s: StaffEntry = { id: `staff-${Date.now()}`, name: newStaff.name || "", position: newStaff.position || "", bio: newStaff.bio || "" };
+    const u = [...staff, s]; setStaff(u); saveStaff(u); setAddOpen(false); setNewStaff({});
+  };
+
+  return (
+    <div>
+      {sectionTitle("Staff & Departments")}
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Manage staff members and department photos shown on the About Us pages.</p>
+      <SubTabs tabs={[{ id: "members", label: "👥 Staff Members" }, { id: "dept-photos", label: "🖼 Dept Photos" }, { id: "dept-services", label: "✅ Dept Services" }]} active={sub} onChange={setSub} />
+
+      {sub === "dept-photos" && <DeptPhotosAdmin />}
+      {sub === "dept-services" && <DeptServicesAdmin />}
+
+      {sub === "members" && (
+        <>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+        <button style={{ ...btnStyle("#0d9488") }} onClick={() => setAddOpen(o => !o)}>{addOpen ? "✕ Cancel" : "+ Add New Staff"}</button>
+        <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600 }}>{staff.length} / 30 members</span>
+      </div>
+
+      {addOpen && (
+        <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
+          <LF label="Full Name *"><input style={field} placeholder="Staff member name" value={newStaff.name || ""} onChange={e => setNewStaff(f => ({ ...f, name: e.target.value }))} /></LF>
+          <LF label="Position"><input style={field} placeholder="e.g. Nurse, Receptionist, Lab Technician" value={newStaff.position || ""} onChange={e => setNewStaff(f => ({ ...f, position: e.target.value }))} /></LF>
+          <LF label="Short Bio"><textarea style={{ ...field, resize: "vertical" }} rows={3} placeholder="Brief description of role and background" value={newStaff.bio || ""} onChange={e => setNewStaff(f => ({ ...f, bio: e.target.value }))} /></LF>
+          <button style={btnStyle("#0d9488")} onClick={addStaff}>Save Staff Member</button>
+        </div>
+      )}
+
+      {staff.map(member => (
+        <div key={member.id} style={cardBox}>
+          {editId === member.id ? (
+            <div>
+              <LF label="Photo">
+                <div style={{ maxWidth: 220 }}><ServicePhotoSlot svcKey={`staff-${member.id}`} label="Staff Photo" dept="Staff" /></div>
+              </LF>
+              <LF label="Full Name"><input style={field} value={member.name} onChange={e => upd(member.id, "name", e.target.value)} /></LF>
+              <LF label="Position"><input style={field} value={member.position} onChange={e => upd(member.id, "position", e.target.value)} /></LF>
+              <LF label="Short Bio"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={member.bio} onChange={e => upd(member.id, "bio", e.target.value)} /></LF>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button style={{ ...btnStyle("#0f172a"), flex: 1 }} onClick={saveItem}>Save Changes</button>
+                <button style={{ ...btnStyle("#f1f5f9", "#374151"), flex: 1 }} onClick={() => setEditId(null)}>Cancel</button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", border: "1px solid #e2e8f0", flexShrink: 0, background: "#f1f5f9" }}>
+                {(() => { const photo = localStorage.getItem(`upmc-service-img-staff-${member.id}`); return photo ? <img src={photo} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>👤</div>; })()}
+              </div>
+              <div style={{ flex: 1 }}>
+                <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{member.name}</p>
+                {member.position && <p style={{ margin: "2px 0 0", fontSize: 12, color: "#0d9488" }}>{member.position}</p>}
+              </div>
+              <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => setEditId(member.id)}>Edit</button>
+              <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => del(member.id)}>Delete</button>
+            </div>
+          )}
+        </div>
+      ))}
+        </>
+      )}
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  DEPARTMENT PHOTOS ADMIN
+// ─────────────────────────────────────────────────────────────────────────────
+const DEPT_PHOTO_SLOTS = [
+  { deptId: "medical", label: "Medical Department" },
+  { deptId: "research", label: "Research & Education Department" },
+];
+
+const DeptPhotosAdmin: React.FC = () => {
+  return (
+    <div>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Upload up to 3 photos for each department. They will appear as a sliding carousel on the Our Departments page.</p>
+      {DEPT_PHOTO_SLOTS.map(dept => (
+        <div key={dept.deptId} style={{ ...cardBox, marginBottom: 20 }}>
+          <p style={{ fontWeight: 800, fontSize: 14, margin: "0 0 14px", color: "#0f172a" }}>{dept.label}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 10 }}>
+            {[1, 2, 3].map(i => (
+              <ServicePhotoSlot key={i} svcKey={`dept-${dept.deptId}-photo-${i}`} label={`Photo ${i}`} dept="Departments" />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
@@ -1076,15 +1338,14 @@ const DoctorsSectionAdmin: React.FC = () => {
     <div>
       {sectionTitle("Doctors")}
       <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Add, edit or remove doctors. Upload their photos and update their bio.</p>
-      <button style={{ ...btnStyle("#0284c7"), marginBottom: 16 }} onClick={() => setAddOpen(o => !o)}>{addOpen ? "✕ Cancel" : "+ Add New Doctor"}</button>
+      <button style={{ ...btnStyle("#0d9488"), marginBottom: 16 }} onClick={() => setAddOpen(o => !o)}>{addOpen ? "✕ Cancel" : "+ Add New Doctor"}</button>
 
       {addOpen && (
-        <div style={{ ...cardBox, background: "#eff6ff", marginBottom: 16 }}>
+        <div style={{ ...cardBox, background: "#f0fdfa", marginBottom: 16 }}>
           <LF label="Full Name *"><input style={field} placeholder="Dr. Full Name" value={newDoc.name || ""} onChange={e => setNewDoc(f => ({ ...f, name: e.target.value }))} /></LF>
           <LF label="Specialty"><input style={field} placeholder="e.g. Cardiologist" value={newDoc.specialty || ""} onChange={e => setNewDoc(f => ({ ...f, specialty: e.target.value }))} /></LF>
-          <LF label="Clinical Bio"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={newDoc.clinicalSpec || ""} onChange={e => setNewDoc(f => ({ ...f, clinicalSpec: e.target.value }))} /></LF>
-          <LF label="Research Bio"><textarea style={{ ...field, resize: "vertical" }} rows={2} value={newDoc.research || ""} onChange={e => setNewDoc(f => ({ ...f, research: e.target.value }))} /></LF>
-          <button style={btnStyle("#0284c7")} onClick={addDoctor}>Save Doctor</button>
+          <LF label="Biography"><textarea style={{ ...field, resize: "vertical" }} rows={5} placeholder="Write the doctor's bio — including clinical specialization and research interests..." value={newDoc.clinicalSpec || ""} onChange={e => setNewDoc(f => ({ ...f, clinicalSpec: e.target.value }))} /></LF>
+          <button style={btnStyle("#0d9488")} onClick={addDoctor}>Save Doctor</button>
         </div>
       )}
 
@@ -1097,8 +1358,7 @@ const DoctorsSectionAdmin: React.FC = () => {
               </LF>
               <LF label="Full Name"><input style={field} value={doc.name} onChange={e => upd(doc.id, "name", e.target.value)} /></LF>
               <LF label="Specialty"><input style={field} value={doc.specialty} onChange={e => upd(doc.id, "specialty", e.target.value)} /></LF>
-              <LF label="Clinical Bio"><textarea style={{ ...field, resize: "vertical" }} rows={4} value={doc.clinicalSpec} onChange={e => upd(doc.id, "clinicalSpec", e.target.value)} /></LF>
-              <LF label="Research Bio"><textarea style={{ ...field, resize: "vertical" }} rows={3} value={doc.research} onChange={e => upd(doc.id, "research", e.target.value)} /></LF>
+              <LF label="Biography"><textarea style={{ ...field, resize: "vertical" }} rows={6} value={doc.clinicalSpec} onChange={e => upd(doc.id, "clinicalSpec", e.target.value)} /></LF>
               <div style={{ display: "flex", gap: 8 }}>
                 <button style={{ ...btnStyle("#0f172a"), flex: 1 }} onClick={saveDoc}>Save Changes</button>
                 <button style={{ ...btnStyle("#f1f5f9", "#374151"), flex: 1 }} onClick={() => setEditId(null)}>Cancel</button>
@@ -1111,9 +1371,9 @@ const DoctorsSectionAdmin: React.FC = () => {
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{doc.name}</p>
-                {doc.specialty && <p style={{ margin: "2px 0 0", fontSize: 12, color: "#0284c7" }}>{doc.specialty}</p>}
+                {doc.specialty && <p style={{ margin: "2px 0 0", fontSize: 12, color: "#0d9488" }}>{doc.specialty}</p>}
               </div>
-              <button style={btnStyle("#eff6ff", "#2563eb")} onClick={() => setEditId(doc.id)}>Edit</button>
+              <button style={btnStyle("#f0fdfa", "#0d9488")} onClick={() => setEditId(doc.id)}>Edit</button>
               <button style={btnStyle("#fef2f2", "#ef4444")} onClick={() => del(doc.id)}>Delete</button>
             </div>
           )}
@@ -1128,10 +1388,10 @@ const DoctorsSectionAdmin: React.FC = () => {
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_CONTACT: ContactInfo = {
   address: "Rwanda, Northern Province, Muhanga District, Nyamabuye Sector",
-  phone: "+250 795 161 628",
+  phone: "+250 795 161 628 | +250 783 644 479",
   email: "umurinzipetros@gmail.com",
   hours: "General Services: Monday to Sunday",
-  emergency: "Emergency: 24/7 — call +250 795 161 628",
+  emergency: "Emergency: 24/7 — call +250 795 161 628 or +250 783 644 479",
 };
 export const loadContact = (): ContactInfo => ls.get<ContactInfo>("upmc-contacts-v2", DEFAULT_CONTACT);
 const saveContact = (d: ContactInfo) => { ls.set("upmc-contacts-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("contacts-updated")); };
@@ -1153,9 +1413,224 @@ const ContactsSectionAdmin: React.FC = () => {
         <LF label="Emergency Line"><input style={field} value={data.emergency} onChange={e => upd("emergency", e.target.value)} /></LF>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 4 }}>
           <button style={btnStyle("#0f172a")} onClick={save}>Save Contact Info</button>
-          {saved && <span style={{ fontSize: 13, color: "#166534", fontWeight: 700 }}>✓ Saved!</span>}
+          {saved && <span style={{ fontSize: 13, color: "#0d9488", fontWeight: 700 }}>✓ Saved!</span>}
         </div>
       </div>
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  APPOINTMENTS SECTION
+// ─────────────────────────────────────────────────────────────────────────────
+const STATUS_COLORS: Record<AppointmentStatus, string> = {
+  pending:    "#f59e0b",
+  confirmed:  "#0d9488",
+  rescheduled:"#6366f1",
+  cancelled:  "#ef4444",
+  completed:  "#22c55e",
+};
+
+const STATUS_BG: Record<AppointmentStatus, string> = {
+  pending:    "rgba(245,158,11,0.12)",
+  confirmed:  "rgba(13,148,136,0.12)",
+  rescheduled:"rgba(99,102,241,0.12)",
+  cancelled:  "rgba(239,68,68,0.12)",
+  completed:  "rgba(34,197,94,0.12)",
+};
+
+const AppointmentsSectionAdmin: React.FC = () => {
+  const [apts, setApts] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterDept, setFilterDept] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("date");
+  const [showTodayOnly, setShowTodayOnly] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchAppointments();
+      setApts(data);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleStatusChange = async (id: string, status: AppointmentStatus) => {
+    await updateAppointmentStatus(id, status);
+    setApts(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this appointment? This cannot be undone.")) return;
+    await deleteAppointment(id);
+    setApts(prev => prev.filter(a => a.id !== id));
+  };
+
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  let filtered = apts;
+  if (filterStatus !== "all") filtered = filtered.filter(a => a.status === filterStatus);
+  if (filterDept !== "all") filtered = filtered.filter(a => a.department === filterDept);
+  if (showTodayOnly) filtered = filtered.filter(a => a.preferred_date === todayStr);
+
+  if (sortBy === "date") filtered = [...filtered].sort((a, b) => (a.preferred_date || "").localeCompare(b.preferred_date || ""));
+  else if (sortBy === "created") filtered = [...filtered].sort((a, b) => {
+    const aTime = typeof a.created_at === "string" ? a.created_at : (a.created_at as any)?.seconds ? String((a.created_at as any).seconds * 1000) : "";
+    const bTime = typeof b.created_at === "string" ? b.created_at : (b.created_at as any)?.seconds ? String((b.created_at as any).seconds * 1000) : "";
+    return bTime.localeCompare(aTime);
+  });
+  else if (sortBy === "name") filtered = [...filtered].sort((a, b) => (a.full_name || "").localeCompare(b.full_name || ""));
+
+  const depts = Array.from(new Set(apts.map(a => a.department).filter(Boolean)));
+
+  const cardStyle: React.CSSProperties = {
+    background: "#fff", border: "1px solid #e2e8f0", borderRadius: 14,
+    padding: "20px 24px", marginBottom: 12,
+  };
+
+  const selectStyle: React.CSSProperties = {
+    padding: "8px 12px", borderRadius: 8, border: "1px solid #e2e8f0",
+    fontSize: 13, fontWeight: 600, color: "#374151", background: "#fff", cursor: "pointer",
+  };
+
+  return (
+    <div>
+      {sectionTitle("Appointments")}
+      <p style={{ fontSize: 13, color: "#94a3b8", margin: "0 0 24px" }}>
+        View, filter, and manage patient appointment requests.
+      </p>
+
+      {/* Filters */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 24, alignItems: "center" }}>
+        <select style={selectStyle} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="rescheduled">Rescheduled</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="completed">Completed</option>
+        </select>
+        <select style={selectStyle} value={filterDept} onChange={e => setFilterDept(e.target.value)}>
+          <option value="all">All Departments</option>
+          {depts.map(d => <option key={d} value={d}>{d}</option>)}
+        </select>
+        <select style={selectStyle} value={sortBy} onChange={e => setSortBy(e.target.value)}>
+          <option value="date">Sort: Date</option>
+          <option value="created">Sort: Newest</option>
+          <option value="name">Sort: Name</option>
+        </select>
+        <button
+          onClick={() => setShowTodayOnly(!showTodayOnly)}
+          style={{
+            ...selectStyle,
+            background: showTodayOnly ? "rgba(13,148,136,0.12)" : "#fff",
+            color: showTodayOnly ? "#0d9488" : "#374151",
+            border: showTodayOnly ? "1px solid #0d9488" : "1px solid #e2e8f0",
+          }}
+        >
+          Today Only
+        </button>
+        <button onClick={load} style={{ ...selectStyle, background: "#f8fafc" }}>Refresh</button>
+        <span style={{ fontSize: 13, color: "#94a3b8", fontWeight: 600, marginLeft: "auto" }}>
+          {filtered.length} appointment{filtered.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      {/* List */}
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "60px 0", color: "#94a3b8", fontSize: 14 }}>Loading appointments...</div>
+      ) : filtered.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "60px 0", color: "#94a3b8", fontSize: 14 }}>
+          No appointments found. New bookings will appear here automatically.
+        </div>
+      ) : (
+        filtered.map(apt => {
+          const isExpanded = expandedId === apt.id;
+          const status = apt.status || "pending";
+          const createdStr = typeof apt.created_at === "string"
+            ? new Date(apt.created_at).toLocaleString("en-GB", { timeZone: "Africa/Kigali" })
+            : (apt.created_at as any)?.seconds
+              ? new Date((apt.created_at as any).seconds * 1000).toLocaleString("en-GB", { timeZone: "Africa/Kigali" })
+              : "-";
+          return (
+            <div key={apt.id} style={cardStyle}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                <div style={{ flex: "1 1 200px" }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#0f172a" }}>{apt.full_name}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+                    {apt.preferred_date} at {apt.preferred_time} - {apt.department}
+                  </div>
+                </div>
+
+                <div style={{
+                  padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 800,
+                  textTransform: "uppercase", letterSpacing: "0.05em",
+                  color: STATUS_COLORS[status as AppointmentStatus] || "#64748b",
+                  background: STATUS_BG[status as AppointmentStatus] || "rgba(100,116,139,0.12)",
+                }}>
+                  {status}
+                </div>
+
+                <select
+                  value={status}
+                  onChange={e => handleStatusChange(apt.id!, e.target.value as AppointmentStatus)}
+                  style={{ ...selectStyle, fontSize: 12, padding: "6px 10px" }}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirm</option>
+                  <option value="rescheduled">Reschedule</option>
+                  <option value="cancelled">Cancel</option>
+                  <option value="completed">Complete</option>
+                </select>
+
+                <button
+                  onClick={() => setExpandedId(isExpanded ? null : apt.id!)}
+                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#94a3b8", padding: "4px 8px" }}
+                >
+                  {isExpanded ? "▲" : "▼"}
+                </button>
+              </div>
+
+              {isExpanded && (
+                <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em" }}>Phone</div>
+                      <a href={`tel:${apt.phone}`} style={{ fontSize: 14, color: "#0d9488", fontWeight: 700, textDecoration: "none" }}>{apt.phone}</a>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em" }}>Email</div>
+                      <div style={{ fontSize: 14, color: "#374151" }}>{apt.email || "Not provided"}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em" }}>Doctor</div>
+                      <div style={{ fontSize: 14, color: "#374151" }}>{apt.preferred_doctor || "Any available doctor"}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em" }}>Submitted</div>
+                      <div style={{ fontSize: 14, color: "#374151" }}>{createdStr}</div>
+                    </div>
+                  </div>
+                  {apt.reason && (
+                    <div style={{ marginTop: 12 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em" }}>Reason for Visit</div>
+                      <div style={{ fontSize: 14, color: "#374151", marginTop: 4, padding: "12px 16px", background: "#f8fafc", borderRadius: 8, lineHeight: 1.6 }}>{apt.reason}</div>
+                    </div>
+                  )}
+                  <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                    <a href={`tel:${apt.phone}`} style={{ padding: "8px 16px", borderRadius: 8, background: "#0d9488", color: "#fff", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Call Patient</a>
+                    <button onClick={() => handleDelete(apt.id!)} style={{ padding: "8px 16px", borderRadius: 8, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Delete</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })
+      )}
     </div>
   );
 };
@@ -1168,7 +1643,9 @@ const NAV_ITEMS = [
   { id: "services", icon: "🏥", label: "Services",            sub: "Cards, text & photos"               },
   { id: "research", icon: "🔬", label: "Research & Education",sub: "Team, areas, publications"          },
   { id: "doctors",  icon: "👨‍⚕️", label: "Doctors",            sub: "Add, edit & remove doctors"         },
+  { id: "staff",    icon: "👥", label: "Staff & Depts",       sub: "Staff members & department photos"  },
   { id: "contacts", icon: "📞", label: "Contacts",            sub: "Address, phone & email"             },
+  { id: "appointments", icon: "📅", label: "Appointments",     sub: "View & manage bookings"             },
 ];
 
 const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -1191,7 +1668,7 @@ const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         {/* Branding */}
         <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#10b981,#047857)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🏥</div>
+            <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#0d9488,#0f766e)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🏥</div>
             <div>
               <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#f1f5f9" }}>UPMC Admin</p>
               <p style={{ margin: 0, fontSize: 10, color: "#64748b", fontWeight: 600 }}>Content Manager</p>
@@ -1210,8 +1687,8 @@ const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             return (
               <button key={item.id} onClick={() => setActiveNav(item.id)}
                 style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 12, border: "none", cursor: "pointer", textAlign: "left", marginBottom: 4,
-                  background: active ? "rgba(16,185,129,0.12)" : "transparent",
-                  borderLeft: active ? "3px solid #10b981" : "3px solid transparent",
+                  background: active ? "rgba(20,184,166,0.12)" : "transparent",
+                  borderLeft: active ? "3px solid #0d9488" : "3px solid transparent",
                   transition: "all 0.15s" }}>
                 <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
                 <div>
@@ -1248,7 +1725,9 @@ const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           {activeNav === "services" && <ServicesSectionAdmin />}
           {activeNav === "research" && <ResearchSectionAdmin />}
           {activeNav === "doctors"  && <DoctorsSectionAdmin />}
+          {activeNav === "staff"    && <StaffSectionAdmin />}
           {activeNav === "contacts" && <ContactsSectionAdmin />}
+          {activeNav === "appointments" && <AppointmentsSectionAdmin />}
         </div>
       </div>
     </div>

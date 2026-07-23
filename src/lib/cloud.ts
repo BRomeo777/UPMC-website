@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import {
-  getFirestore, doc, getDoc, setDoc,
+  getFirestore, doc, getDoc, setDoc, merge,
 } from "firebase/firestore";
 
 const CLOUD_NAME    = "agp6pdkw";
@@ -66,7 +66,8 @@ export async function fetchAndSyncFromCloud(): Promise<void> {
     Object.entries(record).forEach(([k, v]) => {
       if (v != null) localStorage.setItem(k, v);
     });
-  } catch { /* silent — use localStorage as fallback */ }
+    console.log("[cloud] Synced", Object.keys(record).length, "keys from Firestore");
+  } catch (err) { console.error("[cloud] fetchAndSyncFromCloud failed:", err); }
 }
 
 let _syncTimer: ReturnType<typeof setTimeout> | null = null;
@@ -84,7 +85,8 @@ export function syncAllToCloud(): void {
         if (val && !val.startsWith("data:")) data[key] = val;
       }
       const db = getFirestore(app);
-      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), data);
-    } catch { /* silent */ }
+      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), data, { merge: true });
+      console.log("[cloud] Synced", Object.keys(data).length, "keys to Firestore");
+    } catch (err) { console.error("[cloud] syncAllToCloud failed:", err); }
   }, 600);
 }

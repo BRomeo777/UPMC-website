@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "../components/ui/card";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+﻿import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 
 interface DocEntry { id: string; name: string; specialty: string; clinicalSpec: string; research: string; }
@@ -46,56 +44,80 @@ export function DoctorsPage() {
   const { t } = useLanguage();
   const doctors = useDoctors();
   return (
-    <div className="pt-16">
+    <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
       {/* Hero Section */}
-      <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-blue-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              {t.doctors.heading}
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t.doctors.subtitle}
-            </p>
-          </div>
+      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+          <h1 style={{ fontSize: "clamp(24px,4vw,32px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>
+            {t.doctors.heading}
+          </h1>
         </div>
       </section>
 
-      {/* Doctors Grid */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {doctors.map((doctor, index) => {
-              const photo = getDoctorPhoto(doctor.id);
-              return (
-                <Card key={doctor.id || index} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                  <div className="relative">
-                    <ImageWithFallback src={photo} alt={doctor.name} className="w-full h-64 object-cover" />
+      {/* Doctors List — vertical, one per row */}
+      <section style={{ padding: "40px 24px 80px" }}>
+        <div style={{ maxWidth: 1020, marginLeft: 40, display: "flex", flexDirection: "column", gap: 32 }}>
+          {doctors.map((doctor, index) => {
+            const photo = getDoctorPhoto(doctor.id);
+            return (
+              <div
+                key={doctor.id || index}
+                style={{
+                  background: "#fff",
+                  borderRadius: 16,
+                  border: "1px solid #e2e8f0",
+                  overflow: "hidden",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.12)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.05)"; }}
+              >
+                <div style={{ padding: "32px 36px" }}>
+                  {/* Photo — floats left, text wraps around it */}
+                  <div style={{
+                    float: "left",
+                    width: 180,
+                    minWidth: 180,
+                    marginRight: 32,
+                    marginBottom: 16,
+                    aspectRatio: "3 / 4",
+                    overflow: "hidden",
+                    background: "#f8fafc",
+                    borderRadius: 12,
+                  }}>
+                    <img
+                      src={photo}
+                      alt={doctor.name}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", borderRadius: 12 }}
+                    />
                   </div>
-                  <CardContent className="p-6">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">{doctor.name}</h3>
-                      {doctor.specialty && <p className="text-sm text-emerald-600 font-medium">{doctor.specialty}</p>}
+
+                  {/* Name + specialty — beside photo */}
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: "0 0 6px", letterSpacing: "-0.01em" }}>
+                    {doctor.name}
+                  </h3>
+                  {doctor.specialty && (
+                    <p style={{ fontSize: 13, color: "#0d9488", fontWeight: 700, margin: "0 0 18px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                      {doctor.specialty}
+                    </p>
+                  )}
+
+                  {/* Biography — combines clinical spec + research, wraps around photo */}
+                  {(doctor.clinicalSpec || doctor.research) && (
+                    <div style={{ overflow: "hidden" }}>
+                      <p style={{ fontSize: 14.5, color: "#4b5563", lineHeight: 1.85, margin: 0, textAlign: "justify", whiteSpace: "pre-wrap" }}>
+                        {[doctor.clinicalSpec, doctor.research].filter(Boolean).join(" ")}
+                      </p>
                     </div>
-                    {doctor.clinicalSpec && (
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-semibold text-gray-800 mb-1 text-sm uppercase tracking-wide">{t.doctors.clinicalSpec}</h4>
-                          <p className="text-sm text-gray-600 leading-relaxed">{doctor.clinicalSpec}</p>
-                        </div>
-                        {doctor.research && (
-                          <div>
-                            <h4 className="font-semibold text-gray-800 mb-1 text-sm uppercase tracking-wide">{t.doctors.research}</h4>
-                            <p className="text-sm text-gray-600 leading-relaxed">{doctor.research}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                  )}
+
+                  {/* Clear float */}
+                  <div style={{ clear: "both" }} />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>

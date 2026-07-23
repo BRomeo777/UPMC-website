@@ -1,12 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
-import {
-  Microscope, Wind, Heart, Users, Activity,
-  Stethoscope, Droplets, Shield, Moon, Leaf,
-  AlertTriangle, Zap, FlaskConical, BookOpen,
-  GraduationCap, Globe, Award, ChevronRight, UserCircle2,
-  ChevronLeft, ImageIcon
-} from "lucide-react";
 
 // ── Publications ─────────────────────────────────────────────────────────────
 interface PubData { id: string; title: string; journal: string; doi: string; }
@@ -16,40 +9,27 @@ function normalizeDoi(raw: string): string {
 }
 
 function PublicationCard({ pub }: { pub: PubData }) {
-  const [citations, setCitations] = useState<number | null>(null);
-  const [year, setYear]           = useState<number | null>(null);
-  const [loading, setLoading]     = useState(false);
-
-  useEffect(() => {
-    const doi = normalizeDoi(pub.doi);
-    if (!doi.startsWith('10.')) return;
-    setLoading(true);
-    fetch(`https://api.openalex.org/works/doi:${doi}?select=cited_by_count,publication_year`)
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d) { setCitations(d.cited_by_count ?? null); setYear(d.publication_year ?? null); } })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [pub.doi]);
+  const [hovered, setHovered] = useState(false);
 
   const href = pub.doi.startsWith('http') ? pub.doi : `https://doi.org/${pub.doi}`;
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col gap-3 hover:shadow-md transition-shadow">
-      <h3 className="font-bold text-gray-900 text-sm leading-snug">{pub.title}</h3>
-      <p className="text-xs font-semibold text-blue-600">{pub.journal}</p>
-      <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-        {year && <span>📅 {year}</span>}
-        {loading
-          ? <span className="italic text-gray-400">Fetching metrics…</span>
-          : citations !== null && (
-            <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 font-bold px-2.5 py-0.5 rounded-full">
-              📊 {citations} citation{citations !== 1 ? 's' : ''}
-            </span>
-          )
-        }
-      </div>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: "#fff", borderRadius: 16, border: "1px solid #e2e8f0",
+        padding: "22px 24px", display: "flex", flexDirection: "column", gap: 10,
+        boxShadow: hovered ? "0 12px 32px rgba(0,0,0,0.1)" : "0 2px 10px rgba(0,0,0,0.04)",
+        transform: hovered ? "translateY(-3px)" : "translateY(0)",
+        transition: "all 0.25s ease",
+        borderLeft: "4px solid #0d9488",
+      }}
+    >
+      <h3 style={{ fontWeight: 500, color: "#0f172a", fontSize: 14, lineHeight: 1.5, margin: 0 }}>{pub.title}</h3>
+      <p style={{ fontSize: 12, fontWeight: 700, color: "#0d9488", margin: 0 }}>{pub.journal}</p>
       {pub.doi && (
         <a href={href} target="_blank" rel="noopener noreferrer"
-          className="text-xs text-emerald-700 font-semibold hover:underline self-start">
+          style={{ fontSize: 12, color: "#0d9488", fontWeight: 700, textDecoration: "none" }}>
           View Publication →
         </a>
       )}
@@ -71,13 +51,13 @@ function usePublications(): PubData[] {
 function PublicationsSection() {
   const pubs = usePublications();
   return pubs.length === 0 ? (
-    <div className="flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50">
-      <BookOpen className="w-12 h-12 text-gray-300 mb-4" />
-      <p className="text-gray-400 font-semibold text-base">No publications yet</p>
-      <p className="text-gray-400 text-sm mt-1">Add publications via the Admin Panel</p>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "56px 24px", borderRadius: 16, border: "2px dashed #e2e8f0", background: "#f8fafc" }}>
+      <span style={{ fontSize: 40, marginBottom: 12 }}>📄</span>
+      <p style={{ fontSize: 15, fontWeight: 700, color: "#94a3b8", margin: "0 0 4px" }}>No publications yet</p>
+      <p style={{ fontSize: 13, color: "#cbd5e1", margin: 0 }}>Add publications via the Admin Panel</p>
     </div>
   ) : (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
       {pubs.map(pub => <PublicationCard key={pub.id} pub={pub} />)}
     </div>
   );
@@ -171,6 +151,10 @@ function useEducation(): DynEduItem[] {
   return edu;
 }
 
+function getInitialsR(name: string): string {
+  return name.split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+}
+
 function TeamMemberCard({ member }: { member: DynTeamMember }) {
   const getPhoto = () =>
     localStorage.getItem(`upmc-service-img-researcher-${member.id}`) ||
@@ -185,27 +169,69 @@ function TeamMemberCard({ member }: { member: DynTeamMember }) {
       window.removeEventListener("service-photos-updated", refresh);
     };
   }, [member.id]);
+  const initials = getInitialsR(member.name || member.role);
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
-      {/* Photo — fills the slot perfectly */}
-      <div style={{ height: 280, overflow: "hidden", background: "#f1f5f9", flexShrink: 0, position: "relative" }}>
-        {photo
-          ? <img
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        border: "1px solid #e2e8f0",
+        overflow: "hidden",
+        transition: "all 0.3s ease",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+      }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.12)"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.05)"; }}
+    >
+      <div style={{ padding: "32px 36px" }}>
+        {/* Photo — floats left, text wraps around it */}
+        <div style={{
+          float: "left",
+          width: 180,
+          minWidth: 180,
+          marginRight: 32,
+          marginBottom: 16,
+          aspectRatio: "3 / 4",
+          overflow: "hidden",
+          background: "#f8fafc",
+          borderRadius: 12,
+        }}>
+          {photo ? (
+            <img
               src={photo}
               alt={member.name || member.role}
-              style={{ width: "100%", height: "280px", objectFit: "cover", objectPosition: "center 15%", display: "block" }}
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", borderRadius: 12 }}
             />
-          : <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, color: "#d1d5db" }}>
-              <UserCircle2 style={{ width: 80, height: 80 }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af" }}>Photo uploaded via Admin</span>
+          ) : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#0d9488,#0f766e)", borderRadius: 12 }}>
+              <span style={{ fontSize: 44, fontWeight: 900, color: "#5eead4", opacity: 0.9, letterSpacing: "-0.02em" }}>{initials || "?"}</span>
             </div>
-        }
-      </div>
-      {/* Card body */}
-      <div className="p-5 flex-1 flex flex-col gap-1">
-        <span className="text-xs font-extrabold uppercase tracking-widest" style={{ color: "#166534" }}>{member.role}</span>
-        {member.name && <p className="font-bold text-gray-900 text-base leading-tight">{member.name}</p>}
-        {member.bio && <p className="text-sm text-gray-600 leading-relaxed mt-1">{member.bio}</p>}
+          )}
+        </div>
+
+        {/* Name + role — beside photo */}
+        {member.name && (
+          <h3 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: "0 0 6px", letterSpacing: "-0.01em" }}>
+            {member.name}
+          </h3>
+        )}
+        {member.role && (
+          <p style={{ fontSize: 13, color: "#0d9488", fontWeight: 700, margin: "0 0 18px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            {member.role}
+          </p>
+        )}
+
+        {/* Bio — wraps around photo, continues full-width below */}
+        {member.bio && (
+          <div style={{ overflow: "hidden" }}>
+            <p style={{ fontSize: 14.5, color: "#4b5563", lineHeight: 1.85, margin: 0, textAlign: "justify", whiteSpace: "pre-wrap" }}>
+              {member.bio}
+            </p>
+          </div>
+        )}
+
+        {/* Clear float */}
+        <div style={{ clear: "both" }} />
       </div>
     </div>
   );
@@ -230,9 +256,9 @@ function ResearchPartnersSlider() {
 
   if (!logos.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50">
-        <ImageIcon className="w-10 h-10 text-gray-300 mb-3" />
-        <p className="text-gray-400 font-semibold text-sm">Upload partner logos via Admin Panel</p>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "56px 24px", borderRadius: 16, border: "2px dashed #e2e8f0", background: "#f8fafc" }}>
+        <span style={{ fontSize: 36, marginBottom: 10 }}>🤝</span>
+        <p style={{ fontSize: 14, fontWeight: 600, color: "#94a3b8", margin: 0 }}>Upload partner logos via Admin Panel</p>
       </div>
     );
   }
@@ -243,7 +269,6 @@ function ResearchPartnersSlider() {
 
   return (
     <div style={{ position: "relative", overflow: "hidden" }}>
-      {/* Scrolling track */}
       <div className="rp-marquee-track" style={{ display: "inline-flex", alignItems: "center", width: "max-content" }}>
         {track.map((src, i) => (
           <div key={i} style={{ padding: "0 40px", flexShrink: 0 }}>
@@ -254,9 +279,8 @@ function ResearchPartnersSlider() {
           </div>
         ))}
       </div>
-      {/* Edge fades */}
-      <div style={{ position: "absolute", inset: "0 auto 0 0", width: 120, background: "linear-gradient(90deg,#f9fafb,transparent)", pointerEvents: "none", zIndex: 10 }} />
-      <div style={{ position: "absolute", inset: "0 0 0 auto", width: 120, background: "linear-gradient(270deg,#f9fafb,transparent)", pointerEvents: "none", zIndex: 10 }} />
+      <div style={{ position: "absolute", inset: "0 auto 0 0", width: 120, background: "linear-gradient(90deg,#f8fafc,transparent)", pointerEvents: "none", zIndex: 10 }} />
+      <div style={{ position: "absolute", inset: "0 0 0 auto", width: 120, background: "linear-gradient(270deg,#f8fafc,transparent)", pointerEvents: "none", zIndex: 10 }} />
       <style>{`
         .rp-marquee-track { animation: rpScroll 60s linear infinite; }
         .rp-marquee-track:hover { animation-play-state: paused; }
@@ -266,157 +290,11 @@ function ResearchPartnersSlider() {
   );
 }
 
-// kept for reference but rendering now uses useResearchAreas() hook
-const _RESEARCH_AREAS_STATIC = [
-  {
-    category: "Respiratory Medicine",
-    color: "#0284c7",
-    bg: "#f0f9ff",
-    border: "#bae6fd",
-    items: [
-      {
-        icon: Activity,
-        title: "Pulmonary Hypertension",
-        description:
-          "Investigation of elevated pulmonary arterial pressure and its impact on right ventricular function. Our research focuses on early diagnostic markers, epidemiology in sub-Saharan Africa, and the optimisation of therapeutic protocols adapted to resource-limited settings.",
-      },
-      {
-        icon: Wind,
-        title: "Obstructive Lung Diseases: COPD & Asthma",
-        description:
-          "Comprehensive research into chronic obstructive pulmonary disease and asthma, encompassing spirometric screening programmes, disease phenotyping, trigger identification, and the development of locally adapted management guidelines to improve patient outcomes.",
-      },
-      {
-        icon: Stethoscope,
-        title: "Interstitial Lung Diseases (ILD)",
-        description:
-          "Study of progressive fibrotic and inflammatory disorders of the lung parenchyma. Research priorities include early detection using high-resolution imaging, biomarker discovery, and evaluation of antifibrotic therapies in African patient populations.",
-      },
-      {
-        icon: Droplets,
-        title: "Pleural Diseases",
-        description:
-          "Clinical and translational research into pleural effusions, spontaneous pneumothorax, pleuritis, and pleural malignancy. We investigate aetiology, minimally invasive diagnostic techniques, and evidence-based drainage and management strategies.",
-      },
-      {
-        icon: Moon,
-        title: "Sleep Disorders (PSG)",
-        description:
-          "Polysomnography-guided investigation of sleep-disordered breathing, including obstructive sleep apnoea syndrome. Our programme aims to establish locally adapted diagnostic pathways, expand PSG capacity, and evaluate CPAP adherence and outcomes.",
-      },
-    ],
-  },
-  {
-    category: "Critical Care",
-    color: "#dc2626",
-    bg: "#fff1f2",
-    border: "#fecdd3",
-    items: [
-      {
-        icon: Activity,
-        title: "Acute Respiratory Distress Syndrome (ARDS)",
-        description:
-          "Investigation of lung-protective ventilation strategies, prone positioning protocols, and adjunct therapies for ARDS. Research evaluates short- and long-term outcomes in critically ill patients, including post-intensive care syndrome.",
-      },
-    ],
-  },
-  {
-    category: "Cardiovascular Research",
-    color: "#be185d",
-    bg: "#fdf2f8",
-    border: "#f9a8d4",
-    items: [
-      {
-        icon: Heart,
-        title: "Rheumatic Heart Disease",
-        description:
-          "Epidemiological and clinical research into rheumatic fever and its cardiac sequelae, a leading cause of acquired valvular disease in sub-Saharan Africa. Studies focus on echocardiographic screening programmes, secondary prophylaxis adherence, and surgical access advocacy.",
-      },
-    ],
-  },
-  {
-    category: "Infectious & Tropical Diseases",
-    color: "#059669",
-    bg: "#f0fdf4",
-    border: "#bbf7d0",
-    items: [
-      {
-        icon: FlaskConical,
-        title: "Schistosomiasis",
-        description:
-          "Investigation of Schistosoma infection prevalence, morbidity, and long-term organ damage, particularly hepatosplenic and pulmonary complications. Research supports mass drug administration programmes and the development of robust surveillance systems.",
-      },
-      {
-        icon: Microscope,
-        title: "Rare Diseases",
-        description:
-          "Dedicated research programme to improve awareness, diagnostic capacity, and equitable access to care for rare and orphan diseases in Rwanda. We work to establish national registries and strengthen referral pathways for complex, multi-system conditions.",
-      },
-    ],
-  },
-  {
-    category: "Occupational & Environmental Health",
-    color: "#d97706",
-    bg: "#fffbeb",
-    border: "#fde68a",
-    items: [
-      {
-        icon: Wind,
-        title: "Occupational Lung Diseases",
-        description:
-          "Surveillance and research into respiratory conditions caused by occupational exposure to dust, gases, fumes, and chemical agents, including pneumoconiosis, occupational asthma, and hypersensitivity pneumonitis. Studies inform workplace health policy and preventive interventions.",
-      },
-    ],
-  },
-  {
-    category: "Community & Public Health",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    border: "#ddd6fe",
-    items: [
-      {
-        icon: Users,
-        title: "Community NCD Prevention Activities",
-        description:
-          "Design, implementation, and evaluation of community-based programmes that promote healthy lifestyles, early disease screening, and public health literacy to reduce the growing burden of Non-Communicable Diseases. We partner with local authorities, schools, faith-based organisations, and civil society groups.",
-      },
-    ],
-  },
-];
-
-// kept for reference but rendering now uses useEducation() hook
-const _CPD_PROGRAMMES_STATIC = [
-  {
-    icon: GraduationCap,
-    title: "Continuing Professional Development (CPD)",
-    description:
-      "Structured CPD training sessions accredited by the Rwanda Medical and Dental Council, covering advances in internal medicine, pulmonology, cardiology, and critical care. Open to physicians, nurses, and allied health professionals.",
-  },
-  {
-    icon: BookOpen,
-    title: "Clinical Research Training",
-    description:
-      "Workshops in research methodology, biostatistics, ethical review, and scientific writing, equipping clinicians with the skills to generate and publish high-quality evidence from clinical practice.",
-  },
-  {
-    icon: Globe,
-    title: "International Collaborations",
-    description:
-      "Active partnerships with academic medical centres, research consortia, and global health organisations to co-investigate cross-border disease patterns and implement evidence-based interventions.",
-  },
-  {
-    icon: Award,
-    title: "Fellowship & Mentorship",
-    description:
-      "Mentorship programmes for junior clinicians and medical students, fostering the next generation of clinical researchers and academic physicians committed to advancing healthcare in Rwanda.",
-  },
-];
-
 // ── Dyn section components ───────────────────────────────────────────────────
 function DynTeamSection() {
   const team = useTeam();
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div style={{ maxWidth: 1020, marginLeft: 40, display: "flex", flexDirection: "column", gap: 32 }}>
       {team.map(m => <TeamMemberCard key={m.id} member={m} />)}
     </div>
   );
@@ -425,18 +303,24 @@ function DynTeamSection() {
 function DynAreasSection() {
   const areas = useResearchAreas();
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
       {areas.map(group => (
-        <div key={group.id} className="rounded-2xl border p-6" style={{ background: "#f0f9ff", borderColor: "#bae6fd" }}>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-3 h-8 rounded-full flex-shrink-0" style={{ background: "#0284c7" }} />
-            <h3 className="text-base font-extrabold" style={{ color: "#0284c7" }}>{group.category}</h3>
+        <div key={group.id} style={{
+          borderRadius: 16, border: "1px solid #ccfbf1", padding: "24px 22px",
+          background: "linear-gradient(135deg,#f0fdfa 0%,#fff 100%)",
+          transition: "box-shadow 0.25s,transform 0.25s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 12px 32px rgba(13,148,136,0.12)"; e.currentTarget.style.transform = "translateY(-3px)"; }}
+        onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translateY(0)"; }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#0d9488", margin: 0, letterSpacing: "-0.01em" }}>{group.category}</h3>
           </div>
-          <ul className="space-y-2.5">
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
             {group.items.map(item => (
-              <li key={item} className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#0284c7" }} />
-                <span className="text-sm font-medium text-gray-800">{item}</span>
+              <li key={item} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0d9488", flexShrink: 0 }} />
+                <span style={{ fontSize: 13, fontWeight: 500, color: "#334155" }}>{item}</span>
               </li>
             ))}
           </ul>
@@ -446,137 +330,94 @@ function DynAreasSection() {
   );
 }
 
+function EduCard({ item }: { item: DynEduItem }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "flex", gap: 18, padding: "22px 24px", borderRadius: 16,
+        border: "1px solid #e2e8f0", background: "#fff",
+        boxShadow: hovered ? "0 12px 32px rgba(0,0,0,0.08)" : "0 2px 10px rgba(0,0,0,0.03)",
+        transform: hovered ? "translateY(-3px)" : "translateY(0)",
+        transition: "all 0.25s ease",
+      }}
+    >
+      <div style={{
+        width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+        background: "linear-gradient(135deg,#0d9488,#0f766e)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 22,
+      }}>🎓</div>
+      <div>
+        <h4 style={{ fontWeight: 800, color: "#0f172a", margin: "0 0 8px", fontSize: 14, letterSpacing: "-0.01em" }}>{item.title}</h4>
+        <p style={{ fontSize: 12.5, color: "#64748b", lineHeight: 1.7, margin: 0 }}>{item.description}</p>
+      </div>
+    </div>
+  );
+}
+
 function DynEduSection() {
   const edu = useEducation();
   return (
-    <div className="grid md:grid-cols-2 gap-6">
-      {edu.map(item => (
-        <div key={item.id} className="flex gap-5 p-6 rounded-2xl border border-gray-100 bg-white hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center flex-shrink-0">
-            <GraduationCap className="w-6 h-6 text-emerald-700" />
-          </div>
-          <div>
-            <h4 className="font-bold text-gray-900 mb-1.5 text-sm">{item.title}</h4>
-            <p className="text-xs text-gray-600 leading-relaxed">{item.description}</p>
-          </div>
-        </div>
-      ))}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
+      {edu.map(item => <EduCard key={item.id} item={item} />)}
     </div>
   );
 }
 
-// ── Section number badge ─────────────────────────────────────────────────────
-function SectionBadge({ n, label }: { n: string; label: string }) {
+// ── Section heading ──────────────────────────────────────────────────────────
+function SectionHeading({ label, accent }: { label: string; accent?: string }) {
   return (
-    <div className="flex items-center gap-3 mb-8">
-      <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center flex-shrink-0">
-        <span className="text-white font-black text-lg">{n}</span>
-      </div>
-      <h2 className="text-2xl font-extrabold text-gray-900">{label}</h2>
+    <div style={{ marginBottom: 32 }}>
+      <h2 style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 900, color: "#0f172a", margin: 0, letterSpacing: "-0.02em" }}>{label}</h2>
     </div>
   );
-}
-
-function ResearchHeroBadge() {
-  const { t } = useLanguage();
-  return <span className="text-emerald-300 text-sm font-semibold tracking-wide uppercase">{t.research.badge}</span>;
-}
-function ResearchHeroHeading() {
-  const { t } = useLanguage();
-  return (
-    <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
-      {t.research.heading}
-    </h1>
-  );
-}
-function ResearchHeroSubtitle() {
-  const { t } = useLanguage();
-  return <p className="text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed mb-10">{t.research.subtitle}</p>;
 }
 
 export function ResearchPage() {
   const { t } = useLanguage();
   return (
-    <div className="pt-16">
+    <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
 
       {/* ── Hero ── */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-400 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-400 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 mb-6">
-            <Microscope className="w-4 h-4 text-emerald-400" />
-            <ResearchHeroBadge />
-          </div>
-          <ResearchHeroHeading />
-          <ResearchHeroSubtitle />
-        </div>
+      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
       </section>
 
-      {/* explicit spacer */}
-      <div style={{ height: 80, background: "#fff" }} />
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          SECTION 2 — Research Team
-      ══════════════════════════════════════════════════════════════════════ */}
-      <section className="pt-16 pb-16 bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold mb-10 text-center" style={{ color: "#166534" }}>{t.research.team}</h2>
-          <DynTeamSection />
+      {/* ── Research Team ── */}
+      <div style={{ padding: "48px 24px" }}>
+        <div style={{ textAlign: "left", marginLeft: "33%", marginBottom: 32 }}>
+          <h2 style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 900, color: "#0f172a", margin: 0, letterSpacing: "-0.02em" }}>{t.research.team}</h2>
         </div>
-      </section>
+        <DynTeamSection />
+      </div>
 
-      {/* explicit spacer */}
-      <div style={{ height: 80, background: "#fff" }} />
+      {/* ── Research Areas ── */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px 48px" }}>
+        <SectionHeading label={t.research.areas} />
+        <DynAreasSection />
+      </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          SECTION 3 — Research Areas
-      ══════════════════════════════════════════════════════════════════════ */}
-      <section className="pt-16 pb-20 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold mb-10 text-center" style={{ color: "#166534" }}>{t.research.areas}</h2>
-          <DynAreasSection />
-        </div>
-      </section>
+      {/* ── Publications ── */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px 48px" }}>
+        <SectionHeading label={t.research.publications} />
+        <PublicationsSection />
+      </div>
 
-      {/* explicit spacer */}
-      <div style={{ height: 80, background: "#fff" }} />
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          Our Publications
-      ══════════════════════════════════════════════════════════════════════ */}
-      <section className="pt-16 pb-20 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold mb-10 text-center" style={{ color: "#166534" }}>{t.research.publications}</h2>
-          <PublicationsSection />
-        </div>
-      </section>
-
-      {/* explicit spacer */}
-      <div style={{ height: 80, background: "#f9fafb" }} />
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          Education
-      ══════════════════════════════════════════════════════════════════════ */}
-      <section className="pt-16 pb-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold mb-10 text-center" style={{ color: "#166534" }}>{t.research.education}</h2>
+      {/* ── Education ── */}
+      <div style={{ background: "#fff", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px" }}>
+          <SectionHeading label={t.research.education} />
           <DynEduSection />
         </div>
-      </section>
-
-      {/* explicit spacer */}
-      <div style={{ height: 80, background: "#f9fafb" }} />
+      </div>
 
       {/* ── Research Partners ── */}
-      <section className="pt-16 pb-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold mb-10 text-center" style={{ color: "#166534" }}>{t.research.partners}</h2>
-          <ResearchPartnersSlider />
-        </div>
-      </section>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px 64px" }}>
+        <SectionHeading label={t.research.partners} />
+        <ResearchPartnersSlider />
+      </div>
 
     </div>
   );

@@ -2,7 +2,7 @@ export type Lang = "en" | "rw" | "fr" | "sw";
 
 export interface Translations {
   nav: {
-    home: string; services: string; research: string; doctors: string; about: string; contact: string;
+    home: string; services: string; research: string; doctors: string; about: string; contact: string; appointment: string;
   };
   hero: {
     welcome: string; tagline: string; subtitle: string;
@@ -59,12 +59,27 @@ export interface Translations {
     services: string; researchEd: string; ourServices: string; contactUs: string;
     emergencyHours: string; generalHours: string; rights: string;
   };
+  appointment: {
+    badge: string; heading: string; subtitle: string;
+    fullName: string; fullNamePlaceholder: string;
+    phone: string; phonePlaceholder: string;
+    email: string; emailPlaceholder: string;
+    department: string; selectDepartment: string;
+    doctor: string; selectDoctor: string; anyDoctor: string;
+    date: string; selectDate: string;
+    time: string; selectTime: string;
+    reason: string; reasonPlaceholder: string;
+    submit: string; submitting: string;
+    success: string; successDesc: string;
+    error: string; bookAnother: string;
+    required: string;
+  };
 }
 
 const en: Translations = {
   nav: {
     home: "Home", services: "Services", research: "Research & Education",
-    doctors: "Doctors", about: "About Us", contact: "Contact",
+    doctors: "Doctors", about: "About Us", contact: "Contact", appointment: "Appointment",
   },
   hero: {
     welcome: "WELCOME TO UMURINZI PETROS MEDICAL CENTER",
@@ -100,7 +115,7 @@ const en: Translations = {
     close: "Close",
   },
   services: {
-    badge: "Our Services", heading: "Specialised Care",
+    badge: "Our Services", heading: "Our Services",
     subtitle: "Expert medical services across Internal Medicine and Pediatrics.",
   },
   doctors: {
@@ -132,7 +147,7 @@ const en: Translations = {
     address: "Address", phone: "Phone", email: "Email", hours: "Hours",
     emergency: "Emergency",
     emergencyTitle: "Emergency Services Available 24/7",
-    emergencySubtitle: "For life-threatening emergencies, call +250 795 161 628 or come directly to our Emergency Department.",
+    emergencySubtitle: "For life-threatening emergencies, call +250 795 161 628 or +250 783 644 479, or come directly to our Emergency Department.",
     findUs: "Find Us", findUsSubtitle: "Rwanda, Northern Province · Muhanga District · Nyamabuye Sector",
     getDirections: "Get Directions",
     satelliteDesc: "High-resolution satellite view. Click to open Google Maps and get directions.",
@@ -145,12 +160,29 @@ const en: Translations = {
     emergencyHours: "Emergency: 24/7", generalHours: "General: Monday to Sunday",
     rights: "©Umurinzi Petros Medical Center. All rights reserved.",
   },
+  appointment: {
+    badge: "Book a Visit", heading: "Book Appointment",
+    subtitle: "Book your appointment with our health care providers. Fill in the form below and we'll confirm your visit.",
+    fullName: "Full Name", fullNamePlaceholder: "Enter your full name",
+    phone: "Phone Number", phonePlaceholder: "+250 ...",
+    email: "Email (optional)", emailPlaceholder: "you@example.com",
+    department: "Department", selectDepartment: "Select a department",
+    doctor: "Preferred Doctor", selectDoctor: "Select a doctor", anyDoctor: "Any available doctor",
+    date: "Preferred Date", selectDate: "Pick a date",
+    time: "Preferred Time", selectTime: "Pick a time",
+    reason: "Reason for Visit", reasonPlaceholder: "Briefly describe your symptoms or reason for the appointment",
+    submit: "Request Appointment", submitting: "Submitting...",
+    success: "Appointment Requested!", successDesc: "Thank you. We will contact you shortly to confirm your appointment.",
+    error: "Please fill in all required fields.",
+    bookAnother: "Book Another Appointment",
+    required: "Required",
+  },
 };
 
 const rw: Translations = {
   nav: {
     home: "Ahabanza", services: "Serivisi", research: "Ubushakashatsi n'Uburezi",
-    doctors: "Abaganga", about: "Ibitwerekeye", contact: "Twandikire",
+    doctors: "Abaganga", about: "Ibitwerekeye", contact: "Twandikire", appointment: "Gahunda",
   },
   hero: {
     welcome: "MURAKAZA NEZA KU BITARO BY'UMURINZI PETROS",
@@ -186,7 +218,7 @@ const rw: Translations = {
     close: "Funga",
   },
   services: {
-    badge: "Serivisi Zacu", heading: "Ubuvuzi Dufite",
+    badge: "Serivisi Zacu", heading: "Serivisi Zacu",
     subtitle: "Serivisi z'ubuvuzi bw'inzobere mu ndwara z'imbere mumubiri no mu buvuzi bw'abana.",
   },
   doctors: {
@@ -246,7 +278,7 @@ const rw: Translations = {
     address: "Aderesi", phone: "Telefoni", email: "Imeli", hours: "Amasaha y'Akazi",
     emergency: "Ubutabazi bwihutirwa",
     emergencyTitle: "Serivisi z'Ubutabazi bwihutirwa ziboneka 24/7",
-    emergencySubtitle: "Mu bihe byihutirwa bishobora gushyira ubuzima mu kaga, hamagara +250 795 161 628 cyangwa ugane ako kanya ishami ryacu ry'ubutabazi bwihutirwa.",
+    emergencySubtitle: "Mu bihe byihutirwa bishobora gushyira ubuzima mu kaga, hamagara +250 795 161 628 cyangwa +250 783 644 479, cyangwa ugane ako kanya ishami ryacu ry'ubutabazi bwihutirwa.",
     findUs: "Aho Duherereye", findUsSubtitle: "Rwanda, Intara y'Amajyaruguru · Akarere ka Muhanga · Umurenge wa Nyamabuye",
     getDirections: "Reba Inzira",
     satelliteDesc: "Reba aho duherereye ku ikarita y'ijana. Kanda kuri yo kugira ngo ugureho Google Maps ubone inzira.",
@@ -259,12 +291,29 @@ const rw: Translations = {
     emergencyHours: "Ubutabazi bwihutirwa: 24/7", generalHours: "Rusange: Kuwa Mbere kugeza Ku Cyumweru",
     rights: "©Ibitaro by'Umurinzi Petros. Uburenganzira bwose burabitswe.",
   },
+  appointment: {
+    badge: "Igenzura", heading: "Andikisha Gahunda",
+    subtitle: "Andikisha gahunda yawe n'abaganga bacu. Uzuza ifishi hepasi hanyuma tugasobanurire kwemeza kwawe.",
+    fullName: "Amazina Yuzuye", fullNamePlaceholder: "Andika amazina yawe yuzuye",
+    phone: "Telefoni", phonePlaceholder: "+250 ...",
+    email: "Imeli (bitari ngombwa)", emailPlaceholder: "you@example.com",
+    department: "Ishami", selectDepartment: "Hitamo ishami",
+    doctor: "Umuganga W'icyifuzo", selectDoctor: "Hitamo umuganga", anyDoctor: "Buri muganga uboneka",
+    date: "Itariki W'icyifuzo", selectDate: "Hitamo itariki",
+    time: "Igihe W'icyifuzo", selectTime: "Hitamo igihe",
+    reason: "Impamvu yo Kujayo", reasonPlaceholder: "Sobanura ibimenyetso cyangwa impamvu yo gufata gahunda",
+    submit: "Saba Gahunda", submitting: "Biratuma...",
+    success: "Gahunda Yasabwe!", successDesc: "Murakoze. Tuzakwandikira vuba kugira ngo twemeze gahunda yawe.",
+    error: "Nyamuneka uzuza imyanya yose irikenewe.",
+    bookAnother: "Saba Gahunda Yindi",
+    required: "Ikenewe",
+  },
 };
 
 const fr: Translations = {
   nav: {
     home: "Accueil", services: "Services", research: "Recherche & Éducation",
-    doctors: "Médecins", about: "À Propos", contact: "Contact",
+    doctors: "Médecins", about: "À Propos", contact: "Contact", appointment: "Rendez-vous",
   },
   hero: {
     welcome: "BIENVENUE AU CENTRE MÉDICAL UMURINZI PETROS",
@@ -300,7 +349,7 @@ const fr: Translations = {
     close: "Fermer",
   },
   services: {
-    badge: "Nos Services", heading: "Soins Spécialisés",
+    badge: "Nos Services", heading: "Nos Services",
     subtitle: "Services médicaux experts en Médecine Interne et Pédiatrie.",
   },
   doctors: {
@@ -332,7 +381,7 @@ const fr: Translations = {
     address: "Adresse", phone: "Téléphone", email: "E-mail", hours: "Horaires",
     emergency: "Urgence",
     emergencyTitle: "Services d'Urgence Disponibles 24h/24 et 7j/7",
-    emergencySubtitle: "Pour les urgences vitales, appelez le +250 795 161 628 ou rendez-vous directement aux urgences.",
+    emergencySubtitle: "Pour les urgences vitales, appelez le +250 795 161 628 ou le +250 783 644 479, ou rendez-vous directement aux urgences.",
     findUs: "Nous Trouver", findUsSubtitle: "Rwanda, Province du Nord · District de Muhanga · Secteur de Nyamabuye",
     getDirections: "Obtenir l'Itinéraire",
     satelliteDesc: "Vue satellite en haute résolution. Cliquez pour ouvrir Google Maps et obtenir l'itinéraire.",
@@ -345,12 +394,29 @@ const fr: Translations = {
     emergencyHours: "Urgences : 24h/24", generalHours: "Général : Lundi au Dimanche",
     rights: "©Centre Médical Umurinzi Petros. Tous droits réservés.",
   },
+  appointment: {
+    badge: "Prendre Rendez-vous", heading: "Prendre Rendez-vous",
+    subtitle: "Prenez rendez-vous avec nos professionnels de santé. Remplissez le formulaire ci-dessous et nous confirmerons votre visite.",
+    fullName: "Nom Complet", fullNamePlaceholder: "Entrez votre nom complet",
+    phone: "Téléphone", phonePlaceholder: "+250 ...",
+    email: "E-mail (optionnel)", emailPlaceholder: "vous@exemple.com",
+    department: "Département", selectDepartment: "Sélectionnez un département",
+    doctor: "Médecin Préféré", selectDoctor: "Sélectionnez un médecin", anyDoctor: "Tous médecins disponibles",
+    date: "Date Préférée", selectDate: "Choisissez une date",
+    time: "Heure Préférée", selectTime: "Choisissez une heure",
+    reason: "Motif de Consultation", reasonPlaceholder: "Décrivez brièvement vos symptômes ou le motif du rendez-vous",
+    submit: "Demander un Rendez-vous", submitting: "Envoi...",
+    success: "Rendez-vous Demandé !", successDesc: "Merci. Nous vous contacterons prochainement pour confirmer votre rendez-vous.",
+    error: "Veuillez remplir tous les champs obligatoires.",
+    bookAnother: "Prendre un Autre Rendez-vous",
+    required: "Obligatoire",
+  },
 };
 
 const sw: Translations = {
   nav: {
     home: "Nyumbani", services: "Huduma", research: "Utafiti & Elimu",
-    doctors: "Madaktari", about: "Kuhusu Sisi", contact: "Wasiliana",
+    doctors: "Madaktari", about: "Kuhusu Sisi", contact: "Wasiliana", appointment: "Miadi",
   },
   hero: {
     welcome: "KARIBU KATIKA KITUO CHA MATIBABU CHA UMURINZI PETROS",
@@ -386,7 +452,7 @@ const sw: Translations = {
     close: "Funga",
   },
   services: {
-    badge: "Huduma Zetu", heading: "Huduma Maalum",
+    badge: "Huduma Zetu", heading: "Huduma Zetu",
     subtitle: "Huduma za kimatibabu katika Dawa ya Ndani na ya Watoto.",
   },
   doctors: {
@@ -418,7 +484,7 @@ const sw: Translations = {
     address: "Anwani", phone: "Simu", email: "Barua Pepe", hours: "Masaa ya Kazi",
     emergency: "Dharura",
     emergencyTitle: "Huduma za Dharura Zinapatikana 24/7",
-    emergencySubtitle: "Kwa dharura zinazotishia maisha, piga simu +250 795 161 628 au nenda moja kwa moja katika idara yetu ya dharura.",
+    emergencySubtitle: "Kwa dharura zinazotishia maisha, piga simu +250 795 161 628 au +250 783 644 479, au nenda moja kwa moja katika idara yetu ya dharura.",
     findUs: "Tupate", findUsSubtitle: "Rwanda, Mkoa wa Kaskazini · Wilaya ya Muhanga · Sekta ya Nyamabuye",
     getDirections: "Pata Mwelekeo",
     satelliteDesc: "Muonekano wa setilaiti wa resolution ya juu. Bofya kufungua Google Maps na kupata mwelekeo.",
@@ -430,6 +496,23 @@ const sw: Translations = {
     ourServices: "Huduma Zetu", contactUs: "Wasiliana Nasi",
     emergencyHours: "Dharura: 24/7", generalHours: "Kawaida: Jumatatu hadi Jumapili",
     rights: "©Kituo cha Matibabu cha Umurinzi Petros. Haki zote zimehifadhiwa.",
+  },
+  appointment: {
+    badge: "Panga Miadi", heading: "Panga Miadi",
+    subtitle: "Panga miadi yako na watoa huduma wetu wa afya. Jaza fomu hapa chini na tutathibitisha ziara yako.",
+    fullName: "Jina Kamili", fullNamePlaceholder: "Andika jina lako kamili",
+    phone: "Nambari ya Simu", phonePlaceholder: "+250 ...",
+    email: "Barua Pepe (si lazima)", emailPlaceholder: "wewe@mfano.com",
+    department: "Idara", selectDepartment: "Chagua idara",
+    doctor: "Daktari Anayependwa", selectDoctor: "Chagua daktari", anyDoctor: "Daktari yoyote anayepatikana",
+    date: "Tarehe Inayopendwa", selectDate: "Chagua tarehe",
+    time: "Wakati Unaopendwa", selectTime: "Chagua wakati",
+    reason: "Sababu ya Ziara", reasonPlaceholder: "Eleza kwa ufupi dalili zako au sababu ya miadi",
+    submit: "Omba Miadi", submitting: "Inatuma...",
+    success: "Miadi Imeombwa!", successDesc: "Asante. Tutawasiliana nawe hivi karibuni kuthibitisha miadi yako.",
+    error: "Tafadhali jaza sehemu zote zinazohitajika.",
+    bookAnother: "Panga Miadi Nyingine",
+    required: "Inahitajika",
   },
 };
 

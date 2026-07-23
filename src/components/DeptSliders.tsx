@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 
 const GALLERY_KEYS = [
@@ -59,7 +59,7 @@ export function DeptSliders() {
   }, [lightbox]);
 
   return (
-    <section className="py-16 lg:py-20 bg-white border-t border-gray-100">
+    <section className="py-16 lg:py-20" style={{ background: "#fff" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {photos.length > 0 ? (
           <>
@@ -108,11 +108,11 @@ export function DeptSliders() {
                 <>
                   <button onClick={prev}
                     style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-                    <ChevronLeft style={{ width: 22, height: 22, color: "#14532d" }} />
+                    <ChevronLeft style={{ width: 22, height: 22, color: "#0d9488" }} />
                   </button>
                   <button onClick={next}
                     style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.85)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-                    <ChevronRight style={{ width: 22, height: 22, color: "#14532d" }} />
+                    <ChevronRight style={{ width: 22, height: 22, color: "#0d9488" }} />
                   </button>
                 </>
               )}
@@ -128,7 +128,7 @@ export function DeptSliders() {
                     style={{
                       width: 10, height: 10, borderRadius: "50%",
                       border: "none", cursor: "pointer", padding: 0,
-                      background: i === current ? "#14532d" : "#cbd5e1",
+                      background: i === current ? "#0d9488" : "#cbd5e1",
                       transition: "background 0.2s",
                     }}
                   />

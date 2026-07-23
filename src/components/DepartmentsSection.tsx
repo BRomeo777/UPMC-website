@@ -1,4 +1,4 @@
-import { Button } from "./ui/button";
+﻿import { Button } from "./ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ArrowRight } from "lucide-react";
 
@@ -73,7 +73,7 @@ export function DepartmentsSection() {
                   <div className="space-y-2 mb-6">
                     {department.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center text-sm text-gray-500">
-                        <div className="w-1.5 h-1.5 bg-emerald-600 rounded-full mr-2"></div>
+                        <div className="w-1.5 h-1.5 bg-teal-600 rounded-full mr-2"></div>
                         {feature}
                       </div>
                     ))}
@@ -82,7 +82,7 @@ export function DepartmentsSection() {
                 
                 <Button
                   variant="ghost"
-                  className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 p-0 h-auto group"
+                  className="text-teal-600 hover:text-teal-700 hover:bg-teal-50 p-0 h-auto group"
                 >
                   Learn More
                   <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -94,7 +94,7 @@ export function DepartmentsSection() {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8">
+          <Button className="bg-teal-600 hover:bg-teal-700 text-white px-8">
             View All Departments
           </Button>
         </div>

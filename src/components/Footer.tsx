@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail, Clock } from "lucide-react";
+﻿import { useState, useEffect } from "react";
+import { Facebook, Instagram, Linkedin, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 
 interface FooterProps {
@@ -32,7 +32,7 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
             <div className="flex items-center gap-3 mb-6">
               {logo
                 ? <img src={logo} alt="UPMC Logo" style={{ height: 68, width: "auto", objectFit: "contain", flexShrink: 0 }} />
-                : <div style={{ width: 52, height: 52, background: "#059669", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><div style={{ width: 26, height: 26, background: "#fff", borderRadius: 6 }}></div></div>
+                : <div style={{ width: 52, height: 52, background: "#0d9488", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><div style={{ width: 26, height: 26, background: "#fff", borderRadius: 6 }}></div></div>
               }
               <span className="text-lg font-bold text-white leading-tight">
                 Umurinzi Petros<br />Medical Center
@@ -42,16 +42,16 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
               {t.footer.tagline}
             </p>
             <div className="flex space-x-4">
-              <a href="https://web.facebook.com/profile.php?id=61576362847751" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
+              <a href="https://web.facebook.com/profile.php?id=61576362847751" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal-400 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="https://twitter.com/UmurinziPetros" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="https://x.com/umurinzi_Petros" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal-400 transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
-              <a href="https://www.instagram.com/umurinzipetrosmedicalcenter" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
+              <a href="https://www.instagram.com/umurinzi_petros_medical_center/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal-400 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://www.linkedin.com/company/umurinzi-petros-medical-center" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-400 transition-colors">
+              <a href="https://www.linkedin.com/company/umurinzi-petros-medical-center/about/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal-400 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -61,10 +61,11 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
           <div>
             <h3 className="font-semibold mb-6">{t.footer.quickLinks}</h3>
             <ul className="space-y-3">
-              <li><button onClick={() => handleNavClick("about")} className="text-gray-300 hover:text-emerald-400 transition-colors">{t.footer.aboutUs}</button></li>
-              <li><button onClick={() => handleNavClick("doctors")} className="text-gray-300 hover:text-emerald-400 transition-colors">{t.footer.ourDoctors}</button></li>
-              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">{t.footer.services}</button></li>
-              <li><button onClick={() => handleNavClick("research")} className="text-gray-300 hover:text-emerald-400 transition-colors">{t.footer.researchEd}</button></li>
+              <li><button onClick={() => handleNavClick("our-story")} className="text-gray-300 hover:text-teal-400 transition-colors">{t.footer.aboutUs}</button></li>
+              <li><button onClick={() => handleNavClick("doctors")} className="text-gray-300 hover:text-teal-400 transition-colors">{t.footer.ourDoctors}</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">{t.footer.services}</button></li>
+              <li><button onClick={() => handleNavClick("research")} className="text-gray-300 hover:text-teal-400 transition-colors">{t.footer.researchEd}</button></li>
+              <li><button onClick={() => handleNavClick("appointment")} className="text-gray-300 hover:text-teal-400 transition-colors">{t.nav.appointment}</button></li>
             </ul>
           </div>
 
@@ -72,9 +73,9 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
           <div>
             <h3 className="font-semibold mb-6">{t.footer.ourServices}</h3>
             <ul className="space-y-3">
-              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">Internal Medicine</button></li>
-              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">Pulmonology</button></li>
-              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-emerald-400 transition-colors">Pediatrics</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Internal Medicine</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Pulmonology</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Pediatrics</button></li>
             </ul>
           </div>
 
@@ -83,22 +84,25 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
             <h3 className="font-semibold mb-6">{t.footer.contactUs}</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
                 <div className="text-gray-300">
                 
                 
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                <div className="text-gray-300">+250 795 161 628</div>
+                <Phone className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <div className="flex flex-col">
+                  <a href="https://wa.me/250795161628" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-teal-400 transition-colors">+250 795 161 628</a>
+                  <span className="text-gray-300">+250 783 644 479</span>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                <div className="text-gray-300">umurinzipetros@gmail.com</div>
+                <Mail className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <a href="mailto:umurinzipetros@gmail.com" className="text-gray-300 hover:text-teal-400 transition-colors">umurinzipetros@gmail.com</a>
               </div>
               <div className="flex items-start space-x-3">
-                <Clock className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <Clock className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
                 <div className="text-gray-300">
                   {t.footer.emergencyHours}<br />
                   {t.footer.generalHours}

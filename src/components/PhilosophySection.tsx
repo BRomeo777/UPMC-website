@@ -9,23 +9,18 @@ export function PhilosophySection() {
 
   return (
     <>
-      {/* Main Section */}
       <section className="py-16 lg:py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* Left Column - Image */}
             <div className="relative">
               <ImageWithFallback
                 src="https://images.unsplash.com/photo-1758691461888-b74515208d7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZXF1aXBtZW50JTIwbW9kZXJuJTIwaG9zcGl0YWx8ZW58MXx8fHwxNzU5MTY3OTAxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Modern medical equipment and technology"
                 className="w-full h-auto rounded-2xl shadow-lg"
               />
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-emerald-600 rounded-full opacity-10 blur-xl"></div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-600 rounded-full opacity-10 blur-xl"></div>
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-teal-600 rounded-full opacity-10 blur-xl"></div>
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-teal-600 rounded-full opacity-10 blur-xl"></div>
             </div>
-
-            {/* Right Column */}
             <div className="space-y-8">
               <div>
                 <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
@@ -36,10 +31,7 @@ export function PhilosophySection() {
                 </p>
               </div>
               <div className="pt-4">
-                <Button
-                  onClick={() => setOpen(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
+                <Button onClick={() => setOpen(true)} className="bg-teal-600 hover:bg-teal-700 text-white">
                   {t.philosophy.learnMore}
                 </Button>
               </div>
@@ -48,7 +40,6 @@ export function PhilosophySection() {
         </div>
       </section>
 
-      {/* Modal */}
       {open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center px-4 z-50">
           <div className="bg-white max-w-3xl w-full p-6 rounded-xl shadow-xl overflow-y-auto max-h-[90vh]">

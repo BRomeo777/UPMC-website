@@ -3,13 +3,17 @@ import { fetchAndSyncFromCloud } from "./lib/cloud";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { AdminPanel } from "./components/AdminPanel";
 import { Header } from "./components/Header";
+import { AnnouncementBar } from "./components/AnnouncementBar";
 import { Footer } from "./components/Footer";
 import { HomePage } from "./pages/HomePage";
 import ServicesPage from "./pages/ServicesPage";
 import { DoctorsPage } from "./pages/DoctorsPage";
-import AboutPage from "./pages/AboutPage";
+import { StaffPage } from "./pages/StaffPage";
+import { DepartmentsPage } from "./pages/DepartmentsPage";
 import { ContactPage } from "./pages/ContactPage";
 import { ResearchPage } from "./pages/ResearchPage";
+import AppointmentPage from "./pages/AppointmentPage";
+import { OurStoryPage } from "./pages/OurStoryPage";
 
 export default function App() {
   return <LanguageProvider><AppInner /></LanguageProvider>;
@@ -26,10 +30,20 @@ function AppInner() {
   const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
+    const handleNav = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail) handleNavigation(detail);
+    };
+    window.addEventListener("navigate", handleNav);
+    return () => window.removeEventListener("navigate", handleNav);
+  }, []);
+
+  useEffect(() => {
     fetchAndSyncFromCloud().then(() => {
       ["service-photos-updated","site-images-updated","doctors-updated",
        "researchers-updated","services-updated","contacts-updated",
-       "publications-updated","partners-updated"].forEach(
+       "publications-updated","partners-updated","staff-updated",
+       "news-ticker-updated","dept-items-updated"].forEach(
         ev => window.dispatchEvent(new Event(ev))
       );
     });
@@ -56,13 +70,21 @@ function AppInner() {
       case "services":
         return <ServicesPage />;
       case "about":
-        return <AboutPage />;
+        return <OurStoryPage />;
       case "doctors":
         return <DoctorsPage />;
+      case "staff":
+        return <StaffPage onNavigate={handleNavigation} />;
+      case "departments":
+        return <DepartmentsPage onNavigate={handleNavigation} />;
       case "contact":
         return <ContactPage />;
       case "research":
         return <ResearchPage />;
+      case "our-story":
+        return <OurStoryPage />;
+      case "appointment":
+        return <AppointmentPage />;
       default:
         return <HomePage />;
     }
@@ -70,7 +92,13 @@ function AppInner() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header currentPage={currentPage} onNavigate={handleNavigation} />
+      {/* Single fixed top block — no gap possible between ticker, info bar and header */}
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200 }}>
+        <AnnouncementBar />
+        <Header currentPage={currentPage} onNavigate={handleNavigation} />
+      </div>
+      {/* Spacer: 64px announcement + 88px header */}
+      <div style={{ height: 152 }} />
       <main>{renderPage()}</main>
       <Footer onNavigate={handleNavigation} onAdminOpen={() => setShowAdmin(true)} />
       {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
