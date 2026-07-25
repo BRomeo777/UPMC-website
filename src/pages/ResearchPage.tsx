@@ -271,7 +271,7 @@ function ResearchPartnersSlider() {
     <div style={{ position: "relative", overflow: "hidden" }}>
       <div className="rp-marquee-track" style={{ display: "inline-flex", alignItems: "center", width: "max-content" }}>
         {track.map((src, i) => (
-          <div key={i} style={{ padding: "0 40px", flexShrink: 0 }}>
+          <div key={i} className="upmc-partner-item" style={{ padding: "0 40px", flexShrink: 0 }}>
             <div style={{ width: 130, height: 130, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <img src={src} alt={`Research Partner ${(i % logos.length) + 1}`}
                 style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" }} />

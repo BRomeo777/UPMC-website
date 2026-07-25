@@ -79,7 +79,7 @@ export const PartnerCarousel: React.FC = () => {
       <div style={{ position: "relative", overflow: "hidden" }}>
         <div className="marquee-track" style={{ display: "inline-flex", alignItems: "center", width: "max-content" }}>
           {fullTrack.map((p, i) => (
-            <div key={i} style={{ padding: "0 40px", flexShrink: 0 }}>
+            <div key={i} className="upmc-partner-item" style={{ padding: "0 40px", flexShrink: 0 }}>
               <PartnerLogo p={p} size={130} />
             </div>
           ))}

@@ -2884,6 +2884,11 @@ html {
 
   /* Spacer: slightly shorter on mobile */
   .upmc-spacer { height: 140px !important; }
+
+  /* Partner logos: smaller on tablet */
+  .upmc-partner-item { padding: 0 24px !important; }
+  .upmc-partner-item > div { width: 90px !important; height: 90px !important; }
+  .upmc-partner-item img { width: 90px !important; height: 90px !important; }
 }
 
 /* Phone only */
@@ -2927,4 +2932,9 @@ html {
 
   /* Spacer: even shorter on phone */
   .upmc-spacer { height: 132px !important; }
+
+  /* Partner logos: even smaller on phone */
+  .upmc-partner-item { padding: 0 16px !important; }
+  .upmc-partner-item > div { width: 70px !important; height: 70px !important; }
+  .upmc-partner-item img { width: 70px !important; height: 70px !important; }
 }
