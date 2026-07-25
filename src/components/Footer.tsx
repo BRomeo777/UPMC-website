@@ -118,15 +118,17 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
             <div className="text-gray-400 text-sm">
               {t.footer.rights}
             </div>
-            <div className="flex items-center space-x-6 text-sm">
-              {/* Hidden admin trigger — tiny invisible dot */}
+            <div className="text-gray-500 text-sm text-center md:text-right relative">
               <button
                 onClick={onAdminOpen}
-                style={{ width: 8, height: 8, borderRadius: "50%", background: "transparent",
+                style={{ position: "absolute", top: 0, right: 0, width: 8, height: 8, borderRadius: "50%", background: "transparent",
                   border: "none", cursor: "default", padding: 0, flexShrink: 0 }}
                 title=""
                 aria-hidden="true"
               />
+              Developed by <span className="text-gray-300 font-semibold">B.Romeo</span> &nbsp;|&nbsp;
+              <a href="tel:+250783679400" className="text-gray-400 hover:text-teal-400 transition-colors">+250 783 679 400</a> &nbsp;|&nbsp;
+              <a href="mailto:bananeza777@gmail.com" className="text-gray-400 hover:text-teal-400 transition-colors">bananeza777@gmail.com</a>
             </div>
           </div>
         </div>
