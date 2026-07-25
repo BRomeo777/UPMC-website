@@ -2833,6 +2833,16 @@ html {
 
 /* ── Mobile Responsive Overrides ─────────────────────────────────────────── */
 
+/* Service card image: override global img reset to force fill container */
+.upmc-service-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
+
 /* Tablet and below */
 @media (max-width: 768px) {
   /* AnnouncementBar: hide email, reduce gap */
