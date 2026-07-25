@@ -251,19 +251,19 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
             </button>
 
             {/* About Us — accordion in mobile */}
-            <div style={{ padding: "4px 0" }}>
+            <div>
               <button
                 onClick={() => setMobileAboutOpen(o => !o)}
                 aria-haspopup="true"
                 aria-expanded={mobileAboutOpen}
                 aria-controls="mobile-about-submenu"
-                className={`flex w-full items-center gap-1.5 px-2 py-2.5 text-sm rounded-lg transition-colors ${currentPage === "departments" || currentPage === "staff" || currentPage === "doctors" || currentPage === "our-story" ? "text-teal-600 font-semibold bg-teal-50" : "text-gray-700 hover:text-teal-600 hover:bg-gray-50"}`}
+                className={`block w-full text-left px-2 py-2.5 text-sm rounded-lg transition-colors ${currentPage === "departments" || currentPage === "staff" || currentPage === "doctors" || currentPage === "our-story" ? "text-teal-600 font-semibold bg-teal-50" : "text-gray-700 hover:text-teal-600 hover:bg-gray-50"}`}
                 style={{ background: "none", border: "none", cursor: "pointer" }}
               >
-                {t.nav.about}
+                <span>{t.nav.about}</span>
                 <svg
-                  width="16"
-                  height="16"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -271,6 +271,9 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginLeft: 4,
                     transform: mobileAboutOpen ? "rotate(180deg)" : "rotate(0deg)",
                     transition: "transform 0.2s ease",
                   }}
