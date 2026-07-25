@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchAndSyncFromCloud } from "./lib/cloud";
+import { fetchAndSyncFromCloud, runDiagnostics } from "./lib/cloud";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { AdminPanel } from "./components/AdminPanel";
 import { Header } from "./components/Header";
@@ -51,6 +51,7 @@ function AppInner() {
     };
 
     doSync(true);
+    runDiagnostics();
 
     const interval = setInterval(() => doSync(false), 30000);
 

@@ -2,9 +2,6 @@ import { initializeApp, getApps } from "firebase/app";
 import {
   getFirestore, doc, getDoc, setDoc,
 } from "firebase/firestore";
-import {
-  getStorage, ref, uploadBytes, getDownloadURL,
-} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBAO1aOwvJja2tzwrFy7blWPzuX2xbxgtc",
@@ -16,7 +13,7 @@ const firebaseConfig = {
 };
 
 export const isCloudEnabled = (): boolean =>
-  !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.storageBucket);
+  !!(firebaseConfig.apiKey && firebaseConfig.projectId);
 
 let _app: ReturnType<typeof initializeApp> | null = null;
 function getFirebaseApp() {
@@ -27,29 +24,82 @@ function getFirebaseApp() {
   return _app;
 }
 
-const toBase64 = (file: File): Promise<string> =>
+let _diagnosticsRun = false;
+export async function runDiagnostics(): Promise<void> {
+  if (_diagnosticsRun) return;
+  _diagnosticsRun = true;
+  const app = getFirebaseApp();
+  if (!app) { console.warn("[cloud] Firebase not configured"); return; }
+
+  console.log("%c[cloud] Running Firebase diagnostics...", "color:#0d9488;font-weight:bold");
+
+  // Test Firestore read
+  try {
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc));
+    if (snap.exists()) {
+      console.log(`%c[cloud] Firestore READ: OK (${Object.keys(snap.data() || {}).length} keys found)`, "color:#16a34a;font-weight:bold");
+    } else {
+      console.log("%c[cloud] Firestore READ: OK (empty - no data yet)", "color:#eab308;font-weight:bold");
+    }
+  } catch (err) {
+    console.error("%c[cloud] Firestore READ FAILED - Check Firestore rules in Firebase Console!", "color:#ef4444;font-weight:bold", err);
+  }
+
+  // Test Firestore write
+  try {
+    const db = getFirestore(app);
+    await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { _diag: Date.now().toString() }, { merge: true });
+    console.log("%c[cloud] Firestore WRITE: OK", "color:#16a34a;font-weight:bold");
+  } catch (err) {
+    console.error("%c[cloud] Firestore WRITE FAILED - Check Firestore rules in Firebase Console!", "color:#ef4444;font-weight:bold", err);
+  }
+
+}
+
+const compressImage = (file: File, maxW = 800, maxH = 800, quality = 0.7): Promise<string> =>
   new Promise((resolve, reject) => {
     const r = new FileReader();
-    r.onload  = () => resolve(r.result as string);
+    r.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height) {
+          if (width > maxW) { height = Math.round(height * maxW / width); width = maxW; }
+        } else {
+          if (height > maxH) { width = Math.round(width * maxH / height); height = maxH; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { reject(new Error("Canvas not supported")); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        let q = quality;
+        let dataUrl = canvas.toDataURL("image/jpeg", q);
+        while (dataUrl.length > 900000 && q > 0.1) {
+          q -= 0.1;
+          dataUrl = canvas.toDataURL("image/jpeg", q);
+        }
+        if (dataUrl.length > 900000) {
+          const scale = 0.7;
+          canvas.width = Math.round(width * scale);
+          canvas.height = Math.round(height * scale);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          dataUrl = canvas.toDataURL("image/jpeg", 0.3);
+        }
+        console.log(`[cloud] Image compressed: ${file.size} bytes -> ${dataUrl.length} chars`);
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = r.result as string;
+    };
     r.onerror = reject;
     r.readAsDataURL(file);
   });
 
 export async function uploadToCloudinary(file: File): Promise<string> {
-  const app = getFirebaseApp();
-  if (!app) return toBase64(file);
-  try {
-    const storage = getStorage(app);
-    const fileName = `upmc-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}-${file.name}`;
-    const storageRef = ref(storage, fileName);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    console.log("[cloud] Uploaded to Firebase Storage:", url);
-    return url;
-  } catch (err) {
-    console.error("[cloud] Firebase Storage upload failed, falling back to base64:", err);
-    return toBase64(file);
-  }
+  return compressImage(file);
 }
 
 const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
@@ -110,7 +160,7 @@ export function syncAllToCloud(): void {
         const key = localStorage.key(i);
         if (!key?.startsWith("upmc-")) continue;
         const val = localStorage.getItem(key);
-        if (val && !val.startsWith("data:")) data[key] = val;
+        if (val) data[key] = val;
       }
       const db = getFirestore(app);
       await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), data, { merge: true });
