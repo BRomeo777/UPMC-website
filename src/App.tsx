@@ -44,18 +44,18 @@ function AppInner() {
        "publications-updated","partners-updated","staff-updated",
        "news-ticker-updated","dept-items-updated"];
 
-    const doSync = () => {
-      fetchAndSyncFromCloud().then(() => {
+    const doSync = (initial = false) => {
+      fetchAndSyncFromCloud(initial).then(() => {
         SYNC_EVENTS.forEach(ev => window.dispatchEvent(new Event(ev)));
       });
     };
 
-    doSync();
+    doSync(true);
 
-    const interval = setInterval(doSync, 30000);
+    const interval = setInterval(() => doSync(false), 30000);
 
-    const onFocus = () => doSync();
-    const onOnline = () => doSync();
+    const onFocus = () => doSync(false);
+    const onOnline = () => doSync(false);
     window.addEventListener("focus", onFocus);
     window.addEventListener("online", onOnline);
 

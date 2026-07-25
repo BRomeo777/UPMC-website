@@ -55,7 +55,7 @@ export async function uploadToCloudinary(file: File): Promise<string> {
 const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
 
 const _recentLocalUpdates: Record<string, number> = {};
-const RECENT_THRESHOLD_MS = 5000;
+const RECENT_THRESHOLD_MS = 60000;
 
 export function markLocalUpdate(key: string): void {
   _recentLocalUpdates[key] = Date.now();
@@ -72,7 +72,7 @@ export async function syncSingleKey(key: string, value: string): Promise<void> {
   } catch (err) { console.error("[cloud] syncSingleKey failed:", err); }
 }
 
-export async function fetchAndSyncFromCloud(): Promise<void> {
+export async function fetchAndSyncFromCloud(initial = false): Promise<void> {
   const app = getFirebaseApp();
   if (!app) return;
   try {
@@ -81,13 +81,20 @@ export async function fetchAndSyncFromCloud(): Promise<void> {
     if (!snap.exists()) return;
     const record = snap.data() as Record<string, string>;
     const now = Date.now();
+    let count = 0;
     Object.entries(record).forEach(([k, v]) => {
       if (v == null) return;
       const lastLocal = _recentLocalUpdates[k] || 0;
       if (now - lastLocal < RECENT_THRESHOLD_MS) return;
+      if (!initial) {
+        const localVal = localStorage.getItem(k);
+        if (localVal && localVal === v) return;
+        if (localVal && localVal.length > 0) return;
+      }
       localStorage.setItem(k, v);
+      count++;
     });
-    console.log("[cloud] Synced", Object.keys(record).length, "keys from Firestore");
+    console.log(`[cloud] Synced ${count} keys from Firestore (${initial ? "initial" : "periodic"})`);
   } catch (err) { console.error("[cloud] fetchAndSyncFromCloud failed:", err); }
 }
 
