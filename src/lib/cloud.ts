@@ -2,9 +2,9 @@ import { initializeApp, getApps } from "firebase/app";
 import {
   getFirestore, doc, getDoc, setDoc,
 } from "firebase/firestore";
-
-const CLOUD_NAME    = "agp6pdkw";
-const UPLOAD_PRESET = "upmc-uploads";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBAO1aOwvJja2tzwrFy7blWPzuX2xbxgtc",
@@ -16,7 +16,7 @@ const firebaseConfig = {
 };
 
 export const isCloudEnabled = (): boolean =>
-  !!(CLOUD_NAME && UPLOAD_PRESET && firebaseConfig.apiKey && firebaseConfig.projectId);
+  !!(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.storageBucket);
 
 let _app: ReturnType<typeof initializeApp> | null = null;
 function getFirebaseApp() {
@@ -36,32 +36,20 @@ const toBase64 = (file: File): Promise<string> =>
   });
 
 export async function uploadToCloudinary(file: File): Promise<string> {
-  if (!isCloudEnabled()) return toBase64(file);
-  const MAX_RETRIES = 3;
-  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("upload_preset", UPLOAD_PRESET);
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
-        { method: "POST", body: form }
-      );
-      if (res.ok) {
-        const json = await res.json();
-        if (json.secure_url) return json.secure_url as string;
-      }
-      if (attempt < MAX_RETRIES - 1) {
-        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
-      }
-    } catch {
-      if (attempt < MAX_RETRIES - 1) {
-        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
-      }
-    }
+  const app = getFirebaseApp();
+  if (!app) return toBase64(file);
+  try {
+    const storage = getStorage(app);
+    const fileName = `upmc-images/${Date.now()}-${Math.random().toString(36).slice(2, 10)}-${file.name}`;
+    const storageRef = ref(storage, fileName);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    console.log("[cloud] Uploaded to Firebase Storage:", url);
+    return url;
+  } catch (err) {
+    console.error("[cloud] Firebase Storage upload failed, falling back to base64:", err);
+    return toBase64(file);
   }
-  console.error("[cloud] Cloudinary upload failed after retries, falling back to base64");
-  return toBase64(file);
 }
 
 const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
