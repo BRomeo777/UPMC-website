@@ -257,7 +257,7 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
                 aria-haspopup="true"
                 aria-expanded={mobileAboutOpen}
                 aria-controls="mobile-about-submenu"
-                className={`flex w-full items-center justify-between px-2 py-2.5 text-sm rounded-lg transition-colors ${currentPage === "departments" || currentPage === "staff" || currentPage === "doctors" || currentPage === "our-story" ? "text-teal-600 font-semibold bg-teal-50" : "text-gray-700 hover:text-teal-600 hover:bg-gray-50"}`}
+                className={`flex w-full items-center gap-1.5 px-2 py-2.5 text-sm rounded-lg transition-colors ${currentPage === "departments" || currentPage === "staff" || currentPage === "doctors" || currentPage === "our-story" ? "text-teal-600 font-semibold bg-teal-50" : "text-gray-700 hover:text-teal-600 hover:bg-gray-50"}`}
                 style={{ background: "none", border: "none", cursor: "pointer" }}
               >
                 {t.nav.about}
