@@ -95,7 +95,7 @@ function ServiceCard({ svc, deptLabel }: { svc: SvcCard; deptLabel: string }) {
       }}
     >
       {/* Image / Placeholder */}
-      <div style={{ position: "relative", width: "100%", height: 200, overflow: "hidden", flexShrink: 0, background: "#f8fafc" }}>
+      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", overflow: "hidden", flexShrink: 0, background: "#f8fafc" }}>
         {src ? (
           <img
             src={src}
