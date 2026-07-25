@@ -138,8 +138,7 @@ export async function fetchAndSyncFromCloud(initial = false): Promise<void> {
       if (now - lastLocal < RECENT_THRESHOLD_MS) return;
       if (!initial) {
         const localVal = localStorage.getItem(k);
-        if (localVal && localVal === v) return;
-        if (localVal && localVal.length > 0) return;
+        if (localVal === v) return;
       }
       localStorage.setItem(k, v);
       count++;
