@@ -42,7 +42,8 @@ function AppInner() {
     const SYNC_EVENTS = ["service-photos-updated","site-images-updated","doctors-updated",
        "researchers-updated","services-updated","contacts-updated",
        "publications-updated","partners-updated","staff-updated",
-       "news-ticker-updated","dept-items-updated"];
+       "news-ticker-updated","dept-items-updated",
+       "research-areas-updated","education-updated"];
 
     const doSync = (initial = false) => {
       fetchAndSyncFromCloud(initial).then(() => {
@@ -57,13 +58,16 @@ function AppInner() {
 
     const onFocus = () => doSync(false);
     const onOnline = () => doSync(false);
+    const onVisible = () => { if (document.visibilityState === "visible") doSync(false); };
     window.addEventListener("focus", onFocus);
     window.addEventListener("online", onOnline);
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("online", onOnline);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 

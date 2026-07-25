@@ -24,6 +24,8 @@ function getFirebaseApp() {
   return _app;
 }
 
+const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
+
 let _diagnosticsRun = false;
 export async function runDiagnostics(): Promise<void> {
   if (_diagnosticsRun) return;
@@ -101,8 +103,6 @@ const compressImage = (file: File, maxW = 800, maxH = 800, quality = 0.7): Promi
 export async function uploadToCloudinary(file: File): Promise<string> {
   return compressImage(file);
 }
-
-const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
 
 const _recentLocalUpdates: Record<string, number> = {};
 const RECENT_THRESHOLD_MS = 60000;
