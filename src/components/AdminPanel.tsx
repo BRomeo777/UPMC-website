@@ -2,7 +2,7 @@
 //  UPMC Full-Page Admin Panel
 // ──────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useRef } from "react";
-import { uploadToCloudinary, syncAllToCloud } from "../lib/cloud";
+import { uploadToCloudinary, syncAllToCloud, syncSingleKey } from "../lib/cloud";
 import { fetchAppointments, updateAppointmentStatus, deleteAppointment, type Appointment, type AppointmentStatus } from "../lib/appointments";
 import { loadStaff, saveStaff, type StaffEntry } from "../pages/StaffPage";
 import { loadDeptItems, saveDeptItems, type DeptItem } from "../pages/DepartmentsPage";
@@ -172,9 +172,9 @@ const SiteImageSlot: React.FC<{ storageKey: string; label: string; description: 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     e.target.value = "";
-    uploadToCloudinary(file).then(url => { localStorage.setItem(storageKey, url); setSrc(url); syncAllToCloud(); dispatch(); });
+    uploadToCloudinary(file).then(url => { localStorage.setItem(storageKey, url); setSrc(url); syncSingleKey(storageKey, url); syncAllToCloud(); dispatch(); });
   };
-  const remove = () => { localStorage.removeItem(storageKey); setSrc(""); syncAllToCloud(); dispatch(); };
+  const remove = () => { localStorage.removeItem(storageKey); setSrc(""); syncSingleKey(storageKey, ""); syncAllToCloud(); dispatch(); };
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", background: "#fff", marginBottom: 12 }}>
       <div style={{ background: "#f8fafc", padding: "10px 14px", borderBottom: "1px solid #e5e7eb" }}>
@@ -283,10 +283,10 @@ const ResearcherAdminSlot: React.FC<{ r: typeof RESEARCHERS_ADMIN[0] }> = ({ r }
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     e.target.value = "";
-    uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncAllToCloud(); dispatch(); });
+    uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncSingleKey(photoKey, url); syncAllToCloud(); dispatch(); });
   };
-  const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncAllToCloud(); dispatch(); };
-  const saveName = () => { localStorage.setItem(nameKey, name); syncAllToCloud(); dispatch(); };
+  const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncSingleKey(bioKey, bio); syncAllToCloud(); dispatch(); };
+  const saveName = () => { localStorage.setItem(nameKey, name); syncSingleKey(nameKey, name); syncAllToCloud(); dispatch(); };
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", marginBottom: 14, background: "#fff" }}>
       <div style={{ background: "#f1f5f9", padding: "8px 14px", borderBottom: "1px solid #e5e7eb" }}>
@@ -304,7 +304,7 @@ const ResearcherAdminSlot: React.FC<{ r: typeof RESEARCHERS_ADMIN[0] }> = ({ r }
           <input type="file" accept="image/*" onChange={handleFile}
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", zIndex: 10 }} />
         </div>
-        {photo && <button onClick={() => { localStorage.removeItem(photoKey); setPhoto(""); syncAllToCloud(); dispatch(); }} style={{ fontSize: 10, color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginBottom: 8 }}>Remove photo</button>}
+        {photo && <button onClick={() => { localStorage.removeItem(photoKey); setPhoto(""); syncSingleKey(photoKey, ""); syncAllToCloud(); dispatch(); }} style={{ fontSize: 10, color: "#ef4444", background: "none", border: "none", cursor: "pointer", marginBottom: 8 }}>Remove photo</button>}
         {/* Name */}
         <label style={{ fontSize: 10, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>Full Name</label>
         <div style={{ display: "flex", gap: 6, marginTop: 3, marginBottom: 8 }}>
@@ -341,10 +341,10 @@ const DoctorAdminSlot: React.FC<{ doc: typeof DOCTORS_ADMIN[0] }> = ({ doc }) =>
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     e.target.value = "";
-    uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncAllToCloud(); dispatch(); });
+    uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncSingleKey(photoKey, url); syncAllToCloud(); dispatch(); });
   };
-  const removePhoto = () => { localStorage.removeItem(photoKey); setPhoto(""); syncAllToCloud(); dispatch(); };
-  const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncAllToCloud(); dispatch(); };
+  const removePhoto = () => { localStorage.removeItem(photoKey); setPhoto(""); syncSingleKey(photoKey, ""); syncAllToCloud(); dispatch(); };
+  const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncSingleKey(bioKey, bio); syncAllToCloud(); dispatch(); };
 
   return (
     <div style={{ border: "1px solid #e5e7eb", borderRadius: 14, overflow: "hidden", background: "#fff", marginBottom: 16 }}>
@@ -392,6 +392,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
     uploadToCloudinary(file).then(url => {
       localStorage.setItem(storageKey, url);
       setSrc(url);
+      syncSingleKey(storageKey, url);
       syncAllToCloud();
       window.dispatchEvent(new Event("service-photos-updated"));
     });
@@ -400,6 +401,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
   const handleRemove = () => {
     localStorage.removeItem(storageKey);
     setSrc("");
+    syncSingleKey(storageKey, "");
     syncAllToCloud();
     window.dispatchEvent(new Event("service-photos-updated"));
   };

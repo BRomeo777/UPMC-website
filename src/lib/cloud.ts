@@ -66,6 +66,24 @@ export async function uploadToCloudinary(file: File): Promise<string> {
 
 const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
 
+const _recentLocalUpdates: Record<string, number> = {};
+const RECENT_THRESHOLD_MS = 5000;
+
+export function markLocalUpdate(key: string): void {
+  _recentLocalUpdates[key] = Date.now();
+}
+
+export async function syncSingleKey(key: string, value: string): Promise<void> {
+  const app = getFirebaseApp();
+  if (!app) return;
+  try {
+    const db = getFirestore(app);
+    await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: value }, { merge: true });
+    markLocalUpdate(key);
+    console.log("[cloud] Synced single key:", key);
+  } catch (err) { console.error("[cloud] syncSingleKey failed:", err); }
+}
+
 export async function fetchAndSyncFromCloud(): Promise<void> {
   const app = getFirebaseApp();
   if (!app) return;
@@ -74,8 +92,12 @@ export async function fetchAndSyncFromCloud(): Promise<void> {
     const snap = await getDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc));
     if (!snap.exists()) return;
     const record = snap.data() as Record<string, string>;
+    const now = Date.now();
     Object.entries(record).forEach(([k, v]) => {
-      if (v != null) localStorage.setItem(k, v);
+      if (v == null) return;
+      const lastLocal = _recentLocalUpdates[k] || 0;
+      if (now - lastLocal < RECENT_THRESHOLD_MS) return;
+      localStorage.setItem(k, v);
     });
     console.log("[cloud] Synced", Object.keys(record).length, "keys from Firestore");
   } catch (err) { console.error("[cloud] fetchAndSyncFromCloud failed:", err); }
@@ -97,6 +119,7 @@ export function syncAllToCloud(): void {
       }
       const db = getFirestore(app);
       await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), data, { merge: true });
+      Object.keys(data).forEach(k => markLocalUpdate(k));
       console.log("[cloud] Synced", Object.keys(data).length, "keys to Firestore");
     } catch (err) { console.error("[cloud] syncAllToCloud failed:", err); }
   }, 600);
