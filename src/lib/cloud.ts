@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import {
-  getFirestore, doc, getDoc, setDoc, merge,
+  getFirestore, doc, getDoc, setDoc,
 } from "firebase/firestore";
 
 const CLOUD_NAME    = "agp6pdkw";
@@ -37,20 +37,31 @@ const toBase64 = (file: File): Promise<string> =>
 
 export async function uploadToCloudinary(file: File): Promise<string> {
   if (!isCloudEnabled()) return toBase64(file);
-  try {
-    const form = new FormData();
-    form.append("file", file);
-    form.append("upload_preset", UPLOAD_PRESET);
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
-      { method: "POST", body: form }
-    );
-    if (!res.ok) return toBase64(file);
-    const json = await res.json();
-    return json.secure_url as string;
-  } catch {
-    return toBase64(file);
+  const MAX_RETRIES = 3;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("upload_preset", UPLOAD_PRESET);
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+        { method: "POST", body: form }
+      );
+      if (res.ok) {
+        const json = await res.json();
+        if (json.secure_url) return json.secure_url as string;
+      }
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+      }
+    } catch {
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+      }
+    }
   }
+  console.error("[cloud] Cloudinary upload failed after retries, falling back to base64");
+  return toBase64(file);
 }
 
 const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };

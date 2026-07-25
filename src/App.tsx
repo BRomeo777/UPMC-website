@@ -39,14 +39,31 @@ function AppInner() {
   }, []);
 
   useEffect(() => {
-    fetchAndSyncFromCloud().then(() => {
-      ["service-photos-updated","site-images-updated","doctors-updated",
+    const SYNC_EVENTS = ["service-photos-updated","site-images-updated","doctors-updated",
        "researchers-updated","services-updated","contacts-updated",
        "publications-updated","partners-updated","staff-updated",
-       "news-ticker-updated","dept-items-updated"].forEach(
-        ev => window.dispatchEvent(new Event(ev))
-      );
-    });
+       "news-ticker-updated","dept-items-updated"];
+
+    const doSync = () => {
+      fetchAndSyncFromCloud().then(() => {
+        SYNC_EVENTS.forEach(ev => window.dispatchEvent(new Event(ev)));
+      });
+    };
+
+    doSync();
+
+    const interval = setInterval(doSync, 30000);
+
+    const onFocus = () => doSync();
+    const onOnline = () => doSync();
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("online", onOnline);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("online", onOnline);
+    };
   }, []);
 
   useEffect(() => {
