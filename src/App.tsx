@@ -98,7 +98,7 @@ function AppInner() {
         <Header currentPage={currentPage} onNavigate={handleNavigation} />
       </div>
       {/* Spacer: 64px announcement + 88px header */}
-      <div style={{ height: 152 }} />
+      <div className="upmc-spacer" style={{ height: 152 }} />
       <main>{renderPage()}</main>
       <Footer onNavigate={handleNavigation} onAdminOpen={() => setShowAdmin(true)} />
       {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}

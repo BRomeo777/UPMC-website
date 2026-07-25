@@ -170,7 +170,7 @@ export function ServicesSection() {
     <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
 
       {/* ── Hero ── */}
-      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+      <section className="upmc-hero-section" style={{ background: "#fff", padding: "20px 24px 8px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{ fontSize: "clamp(24px,4vw,32px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>
             {t.services.heading}
@@ -208,7 +208,7 @@ export function ServicesSection() {
       </div>
 
       {/* ── Dept Sections ── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px 72px" }}>
+      <div className="upmc-services-container" style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px 72px" }}>
         {visibleDepts.map((dept, di) => {
           const deptServices = services.filter(s => s.dept === dept);
           const subDepts = Array.from(new Set(deptServices.map(s => s.subDept).filter(Boolean)));
@@ -226,7 +226,7 @@ export function ServicesSection() {
               <DeptHeader dept={tDept(dept)} />
 
               {noSub.length > 0 && (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
+                <div className="upmc-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
                   {noSub.map(s => {
                     const { title, description } = tCard(s);
                     return <ServiceCard key={s.id} svc={{ ...s, title, description }} deptLabel={tDept(dept)} />;
@@ -237,7 +237,7 @@ export function ServicesSection() {
               {subDepts.map(sub => (
                 <div key={sub}>
                   <SubDeptLabel label={tSub(sub)} />
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
+                  <div className="upmc-services-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
                     {deptServices.filter(s => s.subDept === sub).map(s => {
                       const { title, description } = tCard(s);
                       return <ServiceCard key={s.id} svc={{ ...s, title, description }} deptLabel={tSub(sub)} />;

@@ -90,7 +90,7 @@ export function ContactPage() {
     <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
 
       {/* ── Hero ── */}
-      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+      <section className="upmc-hero-section" style={{ background: "#fff", padding: "20px 24px 8px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{ fontSize: "clamp(24px,4vw,32px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>
             Contact Us
@@ -100,7 +100,7 @@ export function ContactPage() {
 
       {/* ── Info Cards Row ── */}
       <section style={{ padding: "40px 24px 0" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16 }}>
+        <div className="upmc-contact-info-cards" style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16 }}>
           <InfoCard
             icon={<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#0d9488" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>}
             label="Our Location"
@@ -127,8 +127,8 @@ export function ContactPage() {
       </section>
 
       {/* ── Main Two-Column ── */}
-      <section style={{ padding: "32px 24px 64px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 340px", gap: 24, alignItems: "start" }}>
+      <section className="upmc-contact-main" style={{ padding: "32px 24px 64px" }}>
+        <div className="upmc-contact-grid" style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 340px", gap: 24, alignItems: "start" }}>
 
           {/* Left: Map */}
           <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
@@ -159,7 +159,7 @@ export function ContactPage() {
           </div>
 
           {/* Right: Hours + WhatsApp + Services */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="upmc-contact-info" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
             {/* WhatsApp CTA */}
             <a

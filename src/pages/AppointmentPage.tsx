@@ -163,7 +163,7 @@ export default function AppointmentPage() {
   return (
     <div className="pt-16">
       {/* Hero */}
-      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+      <section className="upmc-hero-section" style={{ background: "#fff", padding: "20px 24px 8px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{ fontSize: "clamp(24px,4vw,32px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>
             {t.appointment.heading}

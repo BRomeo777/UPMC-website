@@ -57,7 +57,7 @@ function PublicationsSection() {
       <p style={{ fontSize: 13, color: "#cbd5e1", margin: 0 }}>Add publications via the Admin Panel</p>
     </div>
   ) : (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
+    <div className="upmc-pubs-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
       {pubs.map(pub => <PublicationCard key={pub.id} pub={pub} />)}
     </div>
   );
@@ -183,9 +183,9 @@ function TeamMemberCard({ member }: { member: DynTeamMember }) {
       onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.12)"; }}
       onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.05)"; }}
     >
-      <div style={{ padding: "32px 36px" }}>
+      <div className="upmc-card-body" style={{ padding: "32px 36px" }}>
         {/* Photo — floats left, text wraps around it */}
-        <div style={{
+        <div className="upmc-card-photo" style={{
           float: "left",
           width: 180,
           minWidth: 180,
@@ -211,7 +211,7 @@ function TeamMemberCard({ member }: { member: DynTeamMember }) {
 
         {/* Name + role — beside photo */}
         {member.name && (
-          <h3 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: "0 0 6px", letterSpacing: "-0.01em" }}>
+          <h3 className="upmc-card-name" style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", margin: "0 0 6px", letterSpacing: "-0.01em" }}>
             {member.name}
           </h3>
         )}
@@ -224,7 +224,7 @@ function TeamMemberCard({ member }: { member: DynTeamMember }) {
         {/* Bio — wraps around photo, continues full-width below */}
         {member.bio && (
           <div style={{ overflow: "hidden" }}>
-            <p style={{ fontSize: 14.5, color: "#4b5563", lineHeight: 1.85, margin: 0, textAlign: "justify", whiteSpace: "pre-wrap" }}>
+            <p className="upmc-card-bio" style={{ fontSize: 14.5, color: "#4b5563", lineHeight: 1.85, margin: 0, textAlign: "justify", whiteSpace: "pre-wrap" }}>
               {member.bio}
             </p>
           </div>
@@ -294,7 +294,7 @@ function ResearchPartnersSlider() {
 function DynTeamSection() {
   const team = useTeam();
   return (
-    <div style={{ maxWidth: 1020, marginLeft: 40, display: "flex", flexDirection: "column", gap: 32 }}>
+    <div className="upmc-card-list" style={{ maxWidth: 1020, marginLeft: 40, display: "flex", flexDirection: "column", gap: 32 }}>
       {team.map(m => <TeamMemberCard key={m.id} member={m} />)}
     </div>
   );
@@ -303,7 +303,7 @@ function DynTeamSection() {
 function DynAreasSection() {
   const areas = useResearchAreas();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
+    <div className="upmc-areas-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 20 }}>
       {areas.map(group => (
         <div key={group.id} style={{
           borderRadius: 16, border: "1px solid #ccfbf1", padding: "24px 22px",
@@ -361,7 +361,7 @@ function EduCard({ item }: { item: DynEduItem }) {
 function DynEduSection() {
   const edu = useEducation();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
+    <div className="upmc-edu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 20 }}>
       {edu.map(item => <EduCard key={item.id} item={item} />)}
     </div>
   );
@@ -382,39 +382,39 @@ export function ResearchPage() {
     <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
 
       {/* ── Hero ── */}
-      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+      <section className="upmc-hero-section" style={{ background: "#fff", padding: "20px 24px 8px" }}>
       </section>
 
       {/* ── Research Team ── */}
-      <div style={{ padding: "48px 24px" }}>
-        <div style={{ textAlign: "left", marginLeft: "33%", marginBottom: 32 }}>
+      <div className="upmc-research-section" style={{ padding: "48px 24px" }}>
+        <div className="upmc-team-heading" style={{ textAlign: "left", marginLeft: "33%", marginBottom: 32 }}>
           <h2 style={{ fontSize: "clamp(22px,3vw,30px)", fontWeight: 900, color: "#0f172a", margin: 0, letterSpacing: "-0.02em" }}>{t.research.team}</h2>
         </div>
         <DynTeamSection />
       </div>
 
       {/* ── Research Areas ── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px 48px" }}>
+      <div className="upmc-research-section" style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px 48px" }}>
         <SectionHeading label={t.research.areas} />
         <DynAreasSection />
       </div>
 
       {/* ── Publications ── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px 48px" }}>
+      <div className="upmc-research-section" style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px 48px" }}>
         <SectionHeading label={t.research.publications} />
         <PublicationsSection />
       </div>
 
       {/* ── Education ── */}
       <div style={{ background: "#fff", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px" }}>
+        <div className="upmc-research-section" style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px" }}>
           <SectionHeading label={t.research.education} />
           <DynEduSection />
         </div>
       </div>
 
       {/* ── Research Partners ── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px 64px" }}>
+      <div className="upmc-research-section" style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px 64px" }}>
         <SectionHeading label={t.research.partners} />
         <ResearchPartnersSlider />
       </div>

@@ -2830,3 +2830,101 @@ html {
     transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
   }
 }
+
+/* ── Mobile Responsive Overrides ─────────────────────────────────────────── */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  /* AnnouncementBar: hide email, reduce gap */
+  .upmc-ann-bar { padding: 5px 12px !important; gap: 12px !important; }
+  .upmc-ann-email { display: none !important; }
+  .upmc-ann-phone { font-size: 11px !important; }
+
+  /* Staff/Doctors/Research cards: smaller photo, less padding */
+  .upmc-card-photo { width: 120px !important; min-width: 120px !important; margin-right: 16px !important; }
+  .upmc-card-body { padding: 20px 18px !important; }
+  .upmc-card-name { font-size: 17px !important; }
+  .upmc-card-bio { font-size: 13.5px !important; line-height: 1.75 !important; }
+
+  /* Remove left margin on card containers */
+  .upmc-card-list { margin-left: 0 !important; padding: 24px 12px 60px !important; }
+  .upmc-card-list-section { padding: 24px 12px 60px !important; }
+
+  /* Research team heading: remove 33% left margin */
+  .upmc-team-heading { margin-left: 0 !important; text-align: center !important; }
+
+  /* Contact page: stack columns */
+  .upmc-contact-grid { grid-template-columns: 1fr !important; }
+  .upmc-contact-info { flex-direction: column !important; }
+
+  /* Our Story values: single column */
+  .upmc-values-grid { grid-template-columns: 1fr !important; }
+
+  /* Page hero sections: less padding */
+  .upmc-hero-section { padding: 12px 12px 4px !important; }
+
+  /* Research areas/publications/education grids: single column */
+  .upmc-areas-grid { grid-template-columns: 1fr !important; }
+  .upmc-pubs-grid { grid-template-columns: 1fr !important; }
+  .upmc-edu-grid { grid-template-columns: 1fr !important; }
+
+  /* Research page section containers */
+  .upmc-research-section { padding: 24px 12px !important; }
+
+  /* Departments grid: single column */
+  .upmc-dept-grid { grid-template-columns: 1fr !important; }
+
+  /* Services grid: single column on small screens */
+  .upmc-services-grid { grid-template-columns: 1fr !important; }
+  .upmc-services-container { padding: 24px 12px 48px !important; }
+
+  /* Our Story narrative: less padding */
+  .upmc-story-narrative { padding: 32px 12px 48px !important; }
+  .upmc-story-values { padding: 40px 12px !important; }
+
+  /* Spacer: slightly shorter on mobile */
+  .upmc-spacer { height: 140px !important; }
+}
+
+/* Phone only */
+@media (max-width: 480px) {
+  /* AnnouncementBar: show only phone, hide email entirely */
+  .upmc-ann-bar { padding: 4px 8px !important; gap: 8px !important; justify-content: center !important; }
+  .upmc-ann-phone { font-size: 10px !important; }
+
+  /* Staff/Doctors/Research cards: even smaller photo */
+  .upmc-card-photo { width: 100px !important; min-width: 100px !important; margin-right: 12px !important; margin-bottom: 12px !important; }
+  .upmc-card-body { padding: 16px 14px !important; }
+  .upmc-card-name { font-size: 15px !important; }
+  .upmc-card-bio { font-size: 13px !important; line-height: 1.7 !important; }
+
+  /* Card list: minimal padding */
+  .upmc-card-list { padding: 16px 8px 48px !important; gap: 20px !important; }
+  .upmc-card-list-section { padding: 16px 8px 48px !important; }
+
+  /* Hero sections: minimal padding */
+  .upmc-hero-section { padding: 8px 8px 2px !important; }
+  .upmc-hero-title { font-size: 22px !important; }
+
+  /* Research section heading */
+  .upmc-team-heading { margin-left: 0 !important; text-align: center !important; }
+  .upmc-research-section { padding: 20px 8px !important; }
+
+  /* Departments grid */
+  .upmc-dept-grid { grid-template-columns: 1fr !important; }
+
+  /* Services */
+  .upmc-services-container { padding: 20px 8px 40px !important; }
+  .upmc-services-grid { grid-template-columns: 1fr !important; }
+
+  /* Story */
+  .upmc-story-narrative { padding: 24px 10px 36px !important; }
+  .upmc-story-values { padding: 32px 10px !important; }
+
+  /* Contact page info cards */
+  .upmc-contact-info-cards { grid-template-columns: 1fr !important; padding: 24px 8px 0 !important; }
+  .upmc-contact-main { padding: 20px 8px 48px !important; }
+
+  /* Spacer: even shorter on phone */
+  .upmc-spacer { height: 132px !important; }
+}

@@ -237,7 +237,7 @@ export function DepartmentsPage({ onNavigate }: DepartmentsPageProps) {
     <div style={{ background: "#f8fafc", minHeight: "100vh", paddingTop: 0 }}>
 
       {/* Hero header */}
-      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+      <section className="upmc-hero-section" style={{ background: "#fff", padding: "20px 24px 8px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{
             fontSize: "clamp(24px,4vw,32px)", fontWeight: 900,
@@ -251,7 +251,7 @@ export function DepartmentsPage({ onNavigate }: DepartmentsPageProps) {
       {/* Departments Grid */}
       <section style={{ padding: "32px 24px 56px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
-          <div style={{
+          <div className="upmc-dept-grid" style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
             gap: 22,

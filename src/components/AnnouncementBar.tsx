@@ -82,7 +82,7 @@ export function AnnouncementBar() {
       </div>
 
       {/* ── Row 2: Contact info bar ── */}
-      <div style={{
+      <div className="upmc-ann-bar" style={{
         background: "#0d9488",
         padding: "5px 24px",
         display: "flex",
@@ -95,6 +95,7 @@ export function AnnouncementBar() {
           href="https://wa.me/250795161628"
           target="_blank"
           rel="noopener noreferrer"
+          className="upmc-ann-phone"
           style={{ display: "flex", alignItems: "center", gap: 6, color: "#fff", textDecoration: "none", fontSize: 12, fontWeight: 700, letterSpacing: "0.01em", transition: "opacity 0.15s" }}
           onMouseEnter={e => (e.currentTarget.style.opacity = "0.8")}
           onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
@@ -106,6 +107,7 @@ export function AnnouncementBar() {
           href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contact.email}&su=Inquiry%20to%20Umurinzi%20Petros%20Medical%20Center`}
           target="_blank"
           rel="noopener noreferrer"
+          className="upmc-ann-email"
           style={{ display: "flex", alignItems: "center", gap: 6, color: "#fff", textDecoration: "none", fontSize: 12, fontWeight: 700, letterSpacing: "0.01em", transition: "opacity 0.15s" }}
           onMouseEnter={e => (e.currentTarget.style.opacity = "0.8")}
           onMouseLeave={e => (e.currentTarget.style.opacity = "1")}

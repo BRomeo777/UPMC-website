@@ -39,7 +39,7 @@ export function OurStoryPage({ onNavigate }: OurStoryPageProps) {
       `}</style>
 
       {/* ── Hero ── */}
-      <section style={{ background: "#fff", padding: "20px 24px 8px" }}>
+      <section className="upmc-hero-section" style={{ background: "#fff", padding: "20px 24px 8px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{ fontSize: "clamp(24px,4vw,32px)", fontWeight: 900, color: "#0f172a", margin: 0 }}>
             Our Story
@@ -48,7 +48,7 @@ export function OurStoryPage({ onNavigate }: OurStoryPageProps) {
       </section>
 
       {/* ── Narrative ── */}
-      <section style={{ padding: "48px 24px 64px" }}>
+      <section className="upmc-story-narrative" style={{ padding: "48px 24px 64px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <p style={{
             fontSize: 15,
@@ -62,7 +62,7 @@ export function OurStoryPage({ onNavigate }: OurStoryPageProps) {
       </section>
 
       {/* ── Core Values ── */}
-      <section style={{ padding: "64px 24px", background: "#f8fafc" }}>
+      <section className="upmc-story-values" style={{ padding: "64px 24px", background: "#f8fafc" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <h2 style={{
@@ -71,7 +71,7 @@ export function OurStoryPage({ onNavigate }: OurStoryPageProps) {
               margin: "0", letterSpacing: "-0.02em",
             }}>Our Core Values</h2>
           </div>
-          <div style={{
+          <div className="upmc-values-grid" style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
             gap: 20,
