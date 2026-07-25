@@ -100,7 +100,7 @@ function ServiceCard({ svc, deptLabel }: { svc: SvcCard; deptLabel: string }) {
           <img
             src={src}
             alt={svc.title}
-            className="upmc-service-img"
+            style={{ width: "100%", height: "100%", maxWidth: "none", objectFit: "cover", objectPosition: "center", display: "block" }}
           />
         ) : (
           <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, ${bg} 0%, #0d9488 100%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
