@@ -95,21 +95,17 @@ function ServiceCard({ svc, deptLabel }: { svc: SvcCard; deptLabel: string }) {
       }}
     >
       {/* Image / Placeholder */}
-      <div style={{ position: "relative", width: "100%", height: 190, overflow: "hidden", flexShrink: 0 }}>
+      <div style={{ position: "relative", width: "100%", height: 200, overflow: "hidden", flexShrink: 0, background: "#f8fafc" }}>
         {src ? (
           <img
             src={src}
             alt={svc.title}
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", transition: "transform 0.6s ease", transform: hovered ? "scale(1.06)" : "scale(1)" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
           />
         ) : (
           <div style={{ width: "100%", height: "100%", background: `linear-gradient(135deg, ${bg} 0%, #0d9488 100%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: accent, opacity: 0.6, letterSpacing: "0.08em", textTransform: "uppercase" }}>Photo coming soon</span>
           </div>
-        )}
-        {/* Bottom gradient */}
-        {src && (
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15,23,42,0.55) 0%, transparent 50%)", pointerEvents: "none" }} />
         )}
         {/* Teal accent bar */}
         <div style={{ position: "absolute", bottom: 0, left: 0, width: 56, height: 3, background: "#0d9488" }} />
