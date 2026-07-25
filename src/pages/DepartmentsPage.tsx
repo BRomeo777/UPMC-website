@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
-import { syncAllToCloud } from "../lib/cloud";
+import { syncAllToCloud, syncSingleKey } from "../lib/cloud";
 
 export interface DeptItem {
   id: string;
@@ -33,7 +33,10 @@ export const loadDeptItems = (deptId: string): DeptItem[] => {
 };
 
 export const saveDeptItems = (deptId: string, items: DeptItem[]) => {
-  localStorage.setItem(`upmc-dept-${deptId}-items`, JSON.stringify(items));
+  const key = `upmc-dept-${deptId}-items`;
+  const s = JSON.stringify(items);
+  localStorage.setItem(key, s);
+  syncSingleKey(key, s);
   syncAllToCloud();
   window.dispatchEvent(new Event("dept-items-updated"));
 };

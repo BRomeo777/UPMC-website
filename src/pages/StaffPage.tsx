@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { syncAllToCloud } from "../lib/cloud";
+import { syncAllToCloud, syncSingleKey } from "../lib/cloud";
 
 interface StaffEntry {
   id: string;
@@ -22,7 +22,9 @@ function loadStaff(): StaffEntry[] {
 }
 
 function saveStaff(staff: StaffEntry[]) {
-  localStorage.setItem("upmc-staff-v1", JSON.stringify(staff));
+  const s = JSON.stringify(staff);
+  localStorage.setItem("upmc-staff-v1", s);
+  syncSingleKey("upmc-staff-v1", s);
   syncAllToCloud();
   window.dispatchEvent(new Event("staff-updated"));
 }

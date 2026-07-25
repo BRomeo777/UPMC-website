@@ -48,8 +48,10 @@ export const loadPartners = (): Partner[] => {
 };
 
 export const savePartners = (partners: Partner[]) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(partners));
+  const s = JSON.stringify(partners);
+  localStorage.setItem(STORAGE_KEY, s);
   window.dispatchEvent(new Event("partners-updated"));
+  syncSingleKey(STORAGE_KEY, s);
   syncAllToCloud();
 };
 
@@ -215,18 +217,13 @@ const PublicationsAdmin: React.FC = () => {
     if (!title.trim()) return;
     const updated = [{ id: Date.now().toString(), title: title.trim(), journal: journal.trim(), doi: doi.trim() }, ...pubs];
     setPubs(updated);
-    localStorage.setItem('upmc-publications', JSON.stringify(updated));
-    syncAllToCloud();
-    dispatch();
-    setTitle(''); setJournal(''); setDoi('');
+    const s = JSON.stringify(updated); localStorage.setItem('upmc-publications', s); syncSingleKey('upmc-publications', s); syncAllToCloud(); dispatch(); setTitle(''); setJournal(''); setDoi('');
   };
 
   const remove = (id: string) => {
     const updated = pubs.filter(p => p.id !== id);
     setPubs(updated);
-    localStorage.setItem('upmc-publications', JSON.stringify(updated));
-    syncAllToCloud();
-    dispatch();
+    const s = JSON.stringify(updated); localStorage.setItem('upmc-publications', s); syncSingleKey('upmc-publications', s); syncAllToCloud(); dispatch();
   };
 
   const inputStyle: React.CSSProperties = { width: '100%', padding: '7px 10px', borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12, boxSizing: 'border-box', marginBottom: 6 };
@@ -443,7 +440,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const ls = {
   get: <T,>(key: string, fallback: T): T => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },
-  set: (key: string, v: unknown) => { localStorage.setItem(key, JSON.stringify(v)); syncAllToCloud(); },
+  set: (key: string, v: unknown) => { const s = JSON.stringify(v); localStorage.setItem(key, s); syncSingleKey(key, s); syncAllToCloud(); },
 };
 const field: React.CSSProperties = { width: "100%", padding: "8px 12px", borderRadius: 10, border: "1px solid #e2e8f0", fontSize: 13, boxSizing: "border-box", background: "#fff", color: "#0f172a" };
 const btnStyle = (bg: string, fg = "#fff"): React.CSSProperties => ({ padding: "8px 18px", background: bg, color: fg, border: "none", borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" as const });
@@ -467,7 +464,7 @@ const DEFAULT_NEWS = [
 ];
 const NewsTickerAdmin: React.FC = () => {
   const load = (): string[] => { try { return JSON.parse(localStorage.getItem("upmc-news-ticker") || "null") || DEFAULT_NEWS; } catch { return DEFAULT_NEWS; } };
-  const save = (items: string[]) => { localStorage.setItem("upmc-news-ticker", JSON.stringify(items)); syncAllToCloud(); window.dispatchEvent(new Event("news-ticker-updated")); };
+  const save = (items: string[]) => { const s = JSON.stringify(items); localStorage.setItem("upmc-news-ticker", s); syncSingleKey("upmc-news-ticker", s); syncAllToCloud(); window.dispatchEvent(new Event("news-ticker-updated")); };
   const [items, setItems] = React.useState<string[]>(load);
   const [draft, setDraft] = React.useState("");
   const add = () => { if (!draft.trim()) return; const n = [...items, draft.trim()]; setItems(n); save(n); setDraft(""); };
