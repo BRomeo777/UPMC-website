@@ -89,13 +89,13 @@ export function DeptSliders() {
                         const img = e.currentTarget;
                         img.style.width = "100%";
                         img.style.height = "100%";
-                        img.style.objectFit = "contain";
+                        img.style.objectFit = "cover";
                         img.style.objectPosition = "center";
                       }}
                       style={{
                         width: "100%", height: "100%",
                         maxWidth: "100%", maxHeight: "100%",
-                        objectFit: "contain", objectPosition: "center",
+                        objectFit: "cover", objectPosition: "center",
                         display: "block",
                       }}
                     />

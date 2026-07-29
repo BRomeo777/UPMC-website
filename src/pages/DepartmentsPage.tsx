@@ -75,7 +75,7 @@ function DeptPhoto({ deptId, fallback, title }: { deptId: string; fallback: stri
       <img
         src={photo}
         alt={title}
-        style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", objectFit: "contain", objectPosition: "center" }}
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
       />
       {/* Gradient overlay */}
       <div style={{
