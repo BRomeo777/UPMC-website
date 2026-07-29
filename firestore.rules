@@ -4,5 +4,8 @@ service cloud.firestore {
     match /upmc-site/{document=**} {
       allow read, write: if true;
     }
+    match /upmc-site-images/{document=**} {
+      allow read, write: if true;
+    }
   }
 }

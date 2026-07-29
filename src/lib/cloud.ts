@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import {
-  getFirestore, doc, getDoc, setDoc,
+  getFirestore, doc, getDoc, setDoc, getDocs, collection, deleteDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -25,6 +25,8 @@ function getFirebaseApp() {
 }
 
 const DATA_DOC_PATH = { collection: "upmc-site", doc: "data" };
+const IMAGES_COLLECTION = "upmc-site-images";
+const SIZE_THRESHOLD = 50000; // Values larger than 50KB go to separate image docs
 
 let _diagnosticsRun = false;
 export async function runDiagnostics(): Promise<void> {
@@ -116,9 +118,21 @@ export async function syncSingleKey(key: string, value: string): Promise<void> {
   if (!app) return;
   try {
     const db = getFirestore(app);
-    await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: value }, { merge: true });
+    if (value.length > SIZE_THRESHOLD) {
+      // Large value (image) → store in separate document to avoid 1MB limit
+      await setDoc(doc(db, IMAGES_COLLECTION, key), { v: value });
+      // Also remove it from the main doc if it was there before
+      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: "" }, { merge: true });
+    } else if (value === "") {
+      // Deletion: remove from main doc and delete image doc if it exists
+      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: "" }, { merge: true });
+      try { await deleteDoc(doc(db, IMAGES_COLLECTION, key)); } catch {}
+    } else {
+      // Small value → store in main doc
+      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: value }, { merge: true });
+    }
     markLocalUpdate(key);
-    console.log("[cloud] Synced single key:", key);
+    console.log("[cloud] Synced single key:", key, value.length > SIZE_THRESHOLD ? "(image doc)" : "(main doc)");
   } catch (err) { console.error("[cloud] syncSingleKey failed:", err); }
 }
 
@@ -127,13 +141,32 @@ export async function fetchAndSyncFromCloud(initial = false): Promise<void> {
   if (!app) return;
   try {
     const db = getFirestore(app);
-    const snap = await getDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc));
-    if (!snap.exists()) return;
-    const record = snap.data() as Record<string, string>;
     const now = Date.now();
     let count = 0;
-    Object.entries(record).forEach(([k, v]) => {
-      if (v == null) return;
+
+    // 1. Fetch main data document (text/JSON values)
+    const snap = await getDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc));
+    if (snap.exists()) {
+      const record = snap.data() as Record<string, string>;
+      Object.entries(record).forEach(([k, v]) => {
+        if (v == null || v === "") return;  // skip empty values (cleared image keys)
+        const lastLocal = _recentLocalUpdates[k] || 0;
+        if (now - lastLocal < RECENT_THRESHOLD_MS) return;
+        if (!initial) {
+          const localVal = localStorage.getItem(k);
+          if (localVal === v) return;
+        }
+        localStorage.setItem(k, v);
+        count++;
+      });
+    }
+
+    // 2. Fetch image documents from separate collection
+    const imgSnap = await getDocs(collection(db, IMAGES_COLLECTION));
+    imgSnap.forEach((d) => {
+      const k = d.id;
+      const v = (d.data() as Record<string, string>).v;
+      if (v == null || v === "") return;
       const lastLocal = _recentLocalUpdates[k] || 0;
       if (now - lastLocal < RECENT_THRESHOLD_MS) return;
       if (!initial) {
@@ -143,6 +176,7 @@ export async function fetchAndSyncFromCloud(initial = false): Promise<void> {
       localStorage.setItem(k, v);
       count++;
     });
+
     console.log(`[cloud] Synced ${count} keys from Firestore (${initial ? "initial" : "periodic"})`);
   } catch (err) { console.error("[cloud] fetchAndSyncFromCloud failed:", err); }
 }
@@ -154,17 +188,35 @@ export function syncAllToCloud(): void {
   if (_syncTimer) clearTimeout(_syncTimer);
   _syncTimer = setTimeout(async () => {
     try {
-      const data: Record<string, string> = {};
+      const db = getFirestore(app);
+      const smallData: Record<string, string> = {};
+      const largeKeys: { key: string; val: string }[] = [];
+
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (!key?.startsWith("upmc-")) continue;
         const val = localStorage.getItem(key);
-        if (val) data[key] = val;
+        if (!val) continue;
+        if (val.length > SIZE_THRESHOLD) {
+          largeKeys.push({ key, val });
+        } else {
+          smallData[key] = val;
+        }
       }
-      const db = getFirestore(app);
-      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), data, { merge: true });
-      Object.keys(data).forEach(k => markLocalUpdate(k));
-      console.log("[cloud] Synced", Object.keys(data).length, "keys to Firestore");
+
+      // Write small values to main doc
+      await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), smallData, { merge: true });
+
+      // Write each large value to its own image doc
+      for (const { key, val } of largeKeys) {
+        await setDoc(doc(db, IMAGES_COLLECTION, key), { v: val });
+        // Clear from main doc to avoid stale large values there
+        await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: "" }, { merge: true });
+      }
+
+      Object.keys(smallData).forEach(k => markLocalUpdate(k));
+      largeKeys.forEach(({ key }) => markLocalUpdate(key));
+      console.log(`[cloud] Synced ${Object.keys(smallData).length} small + ${largeKeys.length} image keys to Firestore`);
     } catch (err) { console.error("[cloud] syncAllToCloud failed:", err); }
   }, 600);
 }
