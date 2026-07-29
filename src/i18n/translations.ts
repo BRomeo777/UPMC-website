@@ -242,6 +242,7 @@ const rw: Translations = {
       "General Consultation": "Isuzuma Rusange",
       "Internal Medicine": "Indwara z'Imbere mu Mubiri",
       "Pediatrics": "Ubuvuzi bw'Abana",
+      "Hospitalisation": "Kwinjizwa mu Bitaro",
       "CPD Training": "Amahugurwa ya CPD",
     },
     subDepts: {
