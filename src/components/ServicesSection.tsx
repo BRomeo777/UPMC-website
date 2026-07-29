@@ -21,7 +21,7 @@ const DEFAULT_SERVICES: SvcCard[] = [
 
 function loadServices(): SvcCard[] {
   try {
-    const stored = localStorage.getItem("upmc-services-v2");
+    const stored = localStorage.getItem("upmc-services-v3");
     if (stored) return JSON.parse(stored);
   } catch { /* ignore */ }
   return DEFAULT_SERVICES;

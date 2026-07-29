@@ -631,15 +631,15 @@ const DEFAULT_SERVICES: SvcCard[] = [
   { id: "cardiology", dept: "Internal Medicine", subDept: "Cardiology", title: "Cardiology", description: "Comprehensive evaluation and management of cardiovascular diseases.", imageKey: "cardiology" },
   { id: "ecg", dept: "Internal Medicine", subDept: "Cardiology", title: "Electrocardiography (ECG)", description: "Non-invasive recording of the electrical activity of the heart.", imageKey: "ecg" },
   { id: "echocardiography", dept: "Internal Medicine", subDept: "Cardiology", title: "Echocardiography", description: "Ultrasound imaging of the heart to assess structure and function.", imageKey: "echocardiography" },
-  { id: "hospitalisation-internal", dept: "Internal Medicine", subDept: "Hospitalisation", title: "Hospitalisation", description: "Inpatient care for adult patients under the Internal Medicine team.", imageKey: "hospitalisation-internal" },
+  { id: "hospitalisation-internal", dept: "Hospitalisation", subDept: "", title: "Adult Hospitalisation", description: "Inpatient care for adult patients under the Internal Medicine team.", imageKey: "hospitalisation-internal" },
   { id: "pediatric-consult", dept: "Pediatrics", subDept: "", title: "General Pediatric Consultations", description: "Medical assessments for infants, children, and adolescents.", imageKey: "pediatric-consult" },
   { id: "endoscopy-peds", dept: "Pediatrics", subDept: "", title: "Endoscopy (Pediatrics)", description: "Minimally invasive endoscopic procedures adapted for children.", imageKey: "endoscopy-peds" },
-  { id: "hospitalisation-peds", dept: "Pediatrics", subDept: "", title: "Hospitalisation (Pediatrics)", description: "Dedicated inpatient care for children in a child-friendly environment.", imageKey: "hospitalisation-peds" },
+  { id: "hospitalisation-peds", dept: "Hospitalisation", subDept: "", title: "Pediatric Hospitalisation", description: "Dedicated inpatient care for children in a child-friendly environment.", imageKey: "hospitalisation-peds" },
   { id: "cpd-training", dept: "CPD Training", subDept: "", title: "CPD Training", description: "Accredited CPD programmes keeping clinical teams updated.", imageKey: "cpd-training" },
 ];
 
-export const loadServices = (): SvcCard[] => ls.get<SvcCard[]>("upmc-services-v2", DEFAULT_SERVICES);
-const saveServices = (d: SvcCard[]) => { ls.set("upmc-services-v2", d); syncAllToCloud(); window.dispatchEvent(new Event("services-updated")); };
+export const loadServices = (): SvcCard[] => ls.get<SvcCard[]>("upmc-services-v3", DEFAULT_SERVICES);
+const saveServices = (d: SvcCard[]) => { ls.set("upmc-services-v3", d); syncAllToCloud(); window.dispatchEvent(new Event("services-updated")); };
 
 const ServicesSectionAdmin: React.FC = () => {
   const [sub, setSub] = useState("cards");
