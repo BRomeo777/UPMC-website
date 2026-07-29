@@ -705,7 +705,7 @@ const ServicesSectionAdmin: React.FC = () => {
   return (
     <div>
       {sectionTitle("Services")}
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Add, edit or remove service cards. Upload photos for each service.</p>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Add, edit or remove service cards.</p>
 
       {/* Toast */}
       {toast && (
@@ -717,7 +717,7 @@ const ServicesSectionAdmin: React.FC = () => {
         </div>
       )}
 
-      <SubTabs tabs={[{ id: "cards", label: "📋 Service Cards" }, { id: "photos", label: "📷 Photos" }]} active={sub} onChange={setSub} />
+      <SubTabs tabs={[{ id: "cards", label: "📋 Service Cards" }]} active={sub} onChange={setSub} />
 
       {sub === "cards" && (
         <div>
@@ -803,19 +803,6 @@ const ServicesSectionAdmin: React.FC = () => {
         </div>
       )}
 
-      {sub === "photos" && (
-        <div>
-          <p style={{ fontSize: 12, color: "#94a3b8", marginBottom: 14 }}>Click a slot to upload a photo for that service. Photos are saved instantly.</p>
-          {depts.map(dept => (
-            <div key={dept} style={{ marginBottom: 22 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0d9488", marginBottom: 8 }}>{dept}</p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 10 }}>
-                {services.filter(s => s.dept === dept).map(s => <ServicePhotoSlot key={s.id} svcKey={s.imageKey} label={s.title} dept={s.subDept || s.dept} />)}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
@@ -1639,7 +1626,7 @@ const AppointmentsSectionAdmin: React.FC = () => {
 // ─────────────────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { id: "home",     icon: "🏠", label: "Home",                sub: "Logo, gallery & partners"          },
-  { id: "services", icon: "🏥", label: "Services",            sub: "Cards, text & photos"               },
+  { id: "services", icon: "🏥", label: "Services",            sub: "Cards & text"                       },
   { id: "research", icon: "🔬", label: "Research & Education",sub: "Team, areas, publications"          },
   { id: "doctors",  icon: "👨‍⚕️", label: "Doctors",            sub: "Add, edit & remove doctors"         },
   { id: "staff",    icon: "👥", label: "Staff & Depts",       sub: "Staff members & department photos"  },

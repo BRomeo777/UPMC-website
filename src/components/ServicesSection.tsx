@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 
 interface SvcCard { id: string; dept: string; subDept: string; title: string; description: string; imageKey: string; translations?: { rw?: { title?: string; description?: string }; fr?: { title?: string; description?: string }; sw?: { title?: string; description?: string }; }; }
@@ -37,46 +37,9 @@ function useServices() {
   return services;
 }
 
-/* ── Dept colour palette ── */
-const DEPT_PALETTES: Record<string, [string, string]> = {
-  "General Consultation": ["#0d9488", "#5eead4"],
-  "Internal Medicine":    ["#0f766e", "#a7f3d0"],
-  "Pulmonology":          ["#1e3a5f", "#93c5fd"],
-  "Cardiology":           ["#7f1d1d", "#fca5a5"],
-  "Hospitalisation":      ["#3b0764", "#d8b4fe"],
-  "Pediatrics":           ["#14532d", "#86efac"],
-  "CPD Training":         ["#78350f", "#fcd34d"],
-};
-const defaultPalette: [string, string] = ["#1e293b", "#cbd5e1"];
-const getDeptPalette = (d: string) => DEPT_PALETTES[d] ?? defaultPalette;
-
-/* ── Medical icons SVG per dept/sub ── */
-function DeptIcon({ dept }: { dept: string }) {
-  const icons: Record<string, React.ReactElement> = {
-    "Pulmonology": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v9m0 0c-1.5-2-4-2-5 0s-1 5 1 6 4-1 4-6zm0 0c1.5-2 4-2 5 0s1 5-1 6-4-1-4-6z"/></svg>,
-    "Cardiology": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-    "Hospitalisation": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>,
-    "Pediatrics": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>,
-    "General Consultation": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-    "CPD Training": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422A12 12 0 0 1 20 16.9V18a8 8 0 0 1-16 0v-1.1a12 12 0 0 1 1.84-6.322L12 14z"/></svg>,
-    "Internal Medicine": <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0H5m4 0h4m6-8v8m0 0h-4m4 0h2"/><circle cx="12" cy="17" r="3"/></svg>,
-  };
-  return icons[dept] ?? icons["Internal Medicine"];
-}
-
 /* ── Service Card ── */
 function ServiceCard({ svc, deptLabel }: { svc: SvcCard; deptLabel: string }) {
   const [hovered, setHovered] = useState(false);
-  const storageKey = `upmc-service-img-${svc.imageKey}`;
-  const [src, setSrc] = useState<string>(() => localStorage.getItem(storageKey) || "");
-
-  useEffect(() => {
-    const refresh = () => setSrc(localStorage.getItem(storageKey) || "");
-    window.addEventListener("service-photos-updated", refresh);
-    return () => window.removeEventListener("service-photos-updated", refresh);
-  }, [storageKey]);
-
-  const [bg, accent] = getDeptPalette(svc.subDept || svc.dept);
 
   return (
     <div
@@ -84,36 +47,24 @@ function ServiceCard({ svc, deptLabel }: { svc: SvcCard; deptLabel: string }) {
       onMouseLeave={() => setHovered(false)}
       style={{
         background: "#fff",
-        borderRadius: 18,
+        borderRadius: 14,
         overflow: "hidden",
-        boxShadow: hovered ? "0 20px 48px rgba(0,0,0,0.13)" : "0 2px 14px rgba(0,0,0,0.06)",
-        transform: hovered ? "translateY(-5px)" : "translateY(0)",
+        boxShadow: hovered ? "0 16px 40px rgba(0,0,0,0.10)" : "0 2px 12px rgba(0,0,0,0.05)",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
         transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
         border: "1px solid #e2e8f0",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      {/* Image / Placeholder */}
-      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", overflow: "hidden", flexShrink: 0, background: "#f8fafc" }}>
-        {src ? (
-          <img
-            src={src}
-            alt={svc.title}
-            className="upmc-service-img"
-            style={{ width: "100%", height: "100%", maxWidth: "none", objectFit: "cover", objectPosition: "center", display: "block" }}
-          />
-        ) : (
-          <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, ${bg} 0%, #0d9488 100%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: accent, opacity: 0.6, letterSpacing: "0.08em", textTransform: "uppercase" }}>Photo coming soon</span>
-          </div>
-        )}
-        {/* Teal accent bar */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, width: 56, height: 3, background: "#0d9488" }} />
-      </div>
+      {/* Teal accent bar */}
+      <div style={{ height: 4, background: "#0d9488", flexShrink: 0 }} />
 
       {/* Body */}
-      <div style={{ padding: "18px 20px 22px", flex: 1, display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "24px 22px 26px", flex: 1, display: "flex", flexDirection: "column" }}>
+        {svc.subDept && (
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#0d9488", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>{svc.subDept}</span>
+        )}
         <h3 style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", margin: "0 0 10px", lineHeight: 1.3, letterSpacing: "-0.01em" }}>
           {svc.title}
         </h3>
