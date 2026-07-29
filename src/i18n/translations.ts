@@ -82,9 +82,9 @@ const en: Translations = {
     doctors: "Doctors", about: "About Us", contact: "Contact", appointment: "Appointment",
   },
   hero: {
-    welcome: "WELCOME TO UMURINZI PETROS MEDICAL CENTER",
+    welcome: "WELCOME TO UMURINZI PETROS\nMEDICAL CENTER",
     tagline: "Care by excellence with data curation",
-    subtitle: "Umurinzi Petros Medical Center is a community-based healthcare and research center dedicated to transforming health through clinical excellence, innovation, and data-driven care. Guided by our core values of honesty, accountability, and dignity, our mission is to diagnose, treat, prevent disease, and educate communities and healthcare professionals.",
+    subtitle: "UMPC is a community-based center dedicated to transforming health through clinical excellence, innovation, and data-driven care. We diagnose, treat, prevent disease, and educate communities.",
   },
   about: {
     mission: "Mission",

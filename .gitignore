@@ -4,3 +4,9 @@ build/
 .env
 .vercel
 .env*.local
+
+# Exclude large zip files
+*.zip
+# Temp comparison folders
+_new/
+_comparison/
