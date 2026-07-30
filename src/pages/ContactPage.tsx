@@ -3,7 +3,7 @@
 interface ContactData { address: string; phone: string; email: string; hours: string; emergency: string; }
 
 const DEFAULT_CONTACT: ContactData = {
-  address: "Rwanda, Northern Province, Muhanga District, Nyamabuye Sector",
+  address: "Rwanda, Northern Province, Muhanga District, Shyogwe Sector",
   phone: "+250 795 161 628 | +250 783 644 479",
   email: "umurinzipetros@gmail.com",
   hours: "General Services: Monday to Sunday",
@@ -145,7 +145,7 @@ export function ContactPage() {
             <div style={{ padding: "14px 20px", background: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#0d9488", display: "inline-block" }} />
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#374151" }}>Nyamabuye Sector, Muhanga District, Rwanda</p>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#374151" }}>Shyogwe Sector, Muhanga District, Rwanda</p>
               </div>
               <a
                 href="https://www.google.com/maps/search/?api=1&query=Umurinzi+Petros+Medical+Center+Rwanda"

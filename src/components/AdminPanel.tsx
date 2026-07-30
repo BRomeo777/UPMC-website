@@ -1379,7 +1379,7 @@ const DoctorsSectionAdmin: React.FC = () => {
 //  CONTACTS SECTION
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_CONTACT: ContactInfo = {
-  address: "Rwanda, Northern Province, Muhanga District, Nyamabuye Sector",
+  address: "Rwanda, Northern Province, Muhanga District, Shyogwe Sector",
   phone: "+250 795 161 628 | +250 783 644 479",
   email: "umurinzipetros@gmail.com",
   hours: "General Services: Monday to Sunday",
