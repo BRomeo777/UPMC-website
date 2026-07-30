@@ -79,26 +79,28 @@ const PasswordGate: React.FC<{ onSuccess: () => void; onClose: () => void }> = (
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-gray-950/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-gray-950/85 backdrop-blur-md" onClick={onClose} />
 
       {/* Modal */}
-      <div className={`relative z-10 w-full max-w-sm mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden ${shake ? "animate-shake" : ""}`}>
+      <div className={`relative z-10 w-full max-w-sm mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden ${shake ? "animate-shake" : ""}`} style={{ boxShadow: "0 25px 60px rgba(0,0,0,0.3)" }}>
         {/* Header bar */}
-        <div className="bg-gradient-to-r from-teal-700 to-teal-500 px-8 py-6 text-white">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="px-8 py-7 text-white" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)" }}>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center" style={{ backdropFilter: "blur(4px)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <span className="text-xs font-semibold uppercase tracking-widest opacity-80">UPMC Admin</span>
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-widest opacity-70 block">UPMC Admin</span>
+              <h2 className="text-lg font-bold leading-tight">Secure Access</h2>
+            </div>
           </div>
-          <h2 className="text-xl font-bold">Secure Access</h2>
-          <p className="text-teal-100 text-sm mt-0.5">Enter your admin credentials to continue</p>
+          <p className="text-teal-50 text-sm mt-1 opacity-90">Enter your admin credentials to continue</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="px-8 py-7">
+        <form onSubmit={handleSubmit} className="px-8 py-8">
           <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Password</label>
           <input
             ref={inputRef}
@@ -106,17 +108,21 @@ const PasswordGate: React.FC<{ onSuccess: () => void; onClose: () => void }> = (
             value={pwd}
             onChange={e => { setPwd(e.target.value); setError(""); }}
             placeholder="Enter admin password"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+            style={{ fontSize: 15 }}
           />
           {error && (
-            <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+            <p className="mt-3 text-xs text-red-600 flex items-center gap-1.5" style={{ background: "#fef2f2", padding: "8px 12px", borderRadius: 8 }}>
+              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
               {error}
             </p>
           )}
           <button
             type="submit"
-            className="mt-5 w-full py-3 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+            className="mt-6 w-full py-3 text-white text-sm font-semibold rounded-xl transition-all duration-200"
+            style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)", boxShadow: "0 4px 14px rgba(13,148,136,0.35)" }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(13,148,136,0.45)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(13,148,136,0.35)"; e.currentTarget.style.transform = "translateY(0)"; }}
           >
             Unlock Admin Panel
           </button>
@@ -1647,39 +1653,41 @@ const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const activeItem = NAV_ITEMS.find(n => n.id === activeNav)!;
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", background: "#f8fafc" }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", background: "#f1f5f9" }}>
 
       {/* ── LEFT SIDEBAR ── */}
-      <div style={{ width: 260, background: "#0f172a", display: "flex", flexDirection: "column", flexShrink: 0, overflowY: "auto" }}>
+      <div style={{ width: 264, background: "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)", display: "flex", flexDirection: "column", flexShrink: 0, overflowY: "auto", boxShadow: "4px 0 24px rgba(0,0,0,0.12)", zIndex: 2 }}>
         {/* Branding */}
-        <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#0d9488,#0f766e)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🏥</div>
+        <div style={{ padding: "26px 20px 22px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 8 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #0d9488, #14b8a6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0, boxShadow: "0 4px 12px rgba(13,148,136,0.3)" }}>🏥</div>
             <div>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#f1f5f9" }}>UPMC Admin</p>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.01em" }}>UPMC Admin</p>
               <p style={{ margin: 0, fontSize: 10, color: "#64748b", fontWeight: 600 }}>Content Manager</p>
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 6px #4ade80", display: "inline-block" }} />
-            <span style={{ fontSize: 10, color: "#64748b", fontWeight: 700, letterSpacing: "0.08em" }}>SECURE SESSION</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 10, padding: "6px 10px", background: "rgba(74,222,128,0.08)", borderRadius: 8, width: "fit-content" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80", display: "inline-block" }} />
+            <span style={{ fontSize: 9, color: "#86efac", fontWeight: 700, letterSpacing: "0.1em" }}>SECURE SESSION</span>
           </div>
         </div>
 
         {/* Nav items */}
-        <nav style={{ flex: 1, padding: "12px 10px" }}>
+        <nav style={{ flex: 1, padding: "14px 10px" }}>
           {NAV_ITEMS.map(item => {
             const active = activeNav === item.id;
             return (
               <button key={item.id} onClick={() => setActiveNav(item.id)}
-                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 12px", borderRadius: 12, border: "none", cursor: "pointer", textAlign: "left", marginBottom: 4,
-                  background: active ? "rgba(20,184,166,0.12)" : "transparent",
-                  borderLeft: active ? "3px solid #0d9488" : "3px solid transparent",
-                  transition: "all 0.15s" }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
+                onMouseEnter={e => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; }}
+                style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 12, border: "none", cursor: "pointer", textAlign: "left", marginBottom: 3,
+                  background: active ? "linear-gradient(90deg, rgba(20,184,166,0.15), rgba(20,184,166,0.05))" : "transparent",
+                  borderLeft: active ? "3px solid #14b8a6" : "3px solid transparent",
+                  transition: "all 0.2s ease" }}>
+                <span style={{ fontSize: 18, flexShrink: 0, filter: active ? "none" : "grayscale(0.3)", opacity: active ? 1 : 0.7 }}>{item.icon}</span>
                 <div>
-                  <p style={{ margin: 0, fontSize: 13, fontWeight: active ? 700 : 500, color: active ? "#f1f5f9" : "#94a3b8" }}>{item.label}</p>
-                  <p style={{ margin: 0, fontSize: 10, color: "#475569" }}>{item.sub}</p>
+                  <p style={{ margin: 0, fontSize: 13, fontWeight: active ? 700 : 500, color: active ? "#f1f5f9" : "#94a3b8", transition: "color 0.2s" }}>{item.label}</p>
+                  <p style={{ margin: 0, fontSize: 10, color: active ? "#64748b" : "#475569" }}>{item.sub}</p>
                 </div>
               </button>
             );
@@ -1687,8 +1695,11 @@ const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </nav>
 
         {/* Close */}
-        <div style={{ padding: "16px 10px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <button onClick={onClose} style={{ width: "100%", padding: "11px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, color: "#f87171", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+        <div style={{ padding: "16px 10px 20px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+          <button onClick={onClose}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.15)"; e.currentTarget.style.borderColor = "rgba(239,68,68,0.3)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.borderColor = "rgba(239,68,68,0.2)"; }}
+            style={{ width: "100%", padding: "11px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, color: "#f87171", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
             ✕ Close Admin Panel
           </button>
         </div>
@@ -1697,16 +1708,22 @@ const AdminDashboard: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       {/* ── MAIN CONTENT ── */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {/* Top bar */}
-        <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #e2e8f0", padding: "16px 32px", display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: 26 }}>{activeItem.icon}</span>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a" }}>{activeItem.label}</h1>
-            <p style={{ margin: 0, fontSize: 12, color: "#94a3b8" }}>{activeItem.sub}</p>
+        <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #e2e8f0", padding: "18px 36px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{activeItem.icon}</div>
+            <div>
+              <h1 style={{ margin: 0, fontSize: 21, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em" }}>{activeItem.label}</h1>
+              <p style={{ margin: 0, fontSize: 12, color: "#94a3b8", fontWeight: 500 }}>{activeItem.sub}</p>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", background: "#f0fdfa", borderRadius: 20, border: "1px solid #ccfbf1" }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#14b8a6", display: "inline-block" }} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#0f766e" }}>LIVE</span>
           </div>
         </div>
 
         {/* Section content */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "32px" }}>
+        <div style={{ flex: 1, overflowY: "auto", padding: "32px 36px" }}>
           {activeNav === "home"     && <HomeSectionAdmin partners={partners} setPartners={setPartners} />}
           {activeNav === "services" && <ServicesSectionAdmin />}
           {activeNav === "research" && <ResearchSectionAdmin />}
