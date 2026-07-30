@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const CLINIC_EMAIL = "umurinzipetrosmedicalcenter@gmail.com";
+const FROM_EMAIL = "UPMC Appointments <appointments@umurinzipetrosmedicalcenter.com>";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -13,17 +14,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const gmailUser = process.env.GMAIL_USER || "bana.romeo77@gmail.com";
-  const gmailPass = process.env.GMAIL_APP_PASSWORD || "";
-
-  if (!gmailPass) {
-    return res.status(500).json({ error: "GMAIL_APP_PASSWORD not configured" });
+  const apiKey = process.env.RESEND_API_KEY || "";
+  if (!apiKey) {
+    return res.status(500).json({ error: "RESEND_API_KEY not configured" });
   }
 
-  const subject = `New appointment request — ${data.full_name} — ${data.department} — ${data.preferred_date}`;
+  const resend = new Resend(apiKey);
   const submittedAt = new Date().toLocaleString("en-GB", { timeZone: "Africa/Kigali" });
 
-  const html = `
+  // ── Email to clinic staff ──
+  const clinicHtml = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
       <h2 style="color: #0d9488; margin-bottom: 8px;">New Appointment Request</h2>
       <p style="color: #94a3b8; font-size: 13px; margin-bottom: 24px;">
@@ -47,20 +47,63 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </div>
   `;
 
+  // ── Confirmation email to patient (if email provided) ──
+  const patientHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <div style="text-align: center; margin-bottom: 32px;">
+        <h1 style="color: #0d9488; font-size: 24px; margin: 0 0 8px;">Umurinzi Petros Medical Center</h1>
+        <p style="color: #94a3b8; font-size: 14px; margin: 0;">Appointment Request Received</p>
+      </div>
+      <p style="color: #374151; font-size: 15px; line-height: 1.6;">Dear ${data.full_name},</p>
+      <p style="color: #475569; font-size: 15px; line-height: 1.6;">
+        Thank you for booking an appointment with us. We have received your request and our team will contact you shortly to confirm your appointment.
+      </p>
+      <div style="background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 12px; padding: 20px; margin: 24px 0;">
+        <h3 style="color: #0f766e; font-size: 14px; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 0.05em;">Appointment Details</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr><td style="padding: 6px 0; font-weight: bold; color: #374151; width: 140px;">Department:</td><td style="padding: 6px 0; color: #475569;">${data.department}</td></tr>
+          <tr><td style="padding: 6px 0; font-weight: bold; color: #374151;">Doctor:</td><td style="padding: 6px 0; color: #475569;">${data.preferred_doctor}</td></tr>
+          <tr><td style="padding: 6px 0; font-weight: bold; color: #374151;">Date:</td><td style="padding: 6px 0; color: #475569;">${data.preferred_date}</td></tr>
+          <tr><td style="padding: 6px 0; font-weight: bold; color: #374151;">Time:</td><td style="padding: 6px 0; color: #475569;">${data.preferred_time}</td></tr>
+        </table>
+      </div>
+      <p style="color: #475569; font-size: 15px; line-height: 1.6;">
+        If you need to reschedule or have any questions, please contact us at:<br/>
+        <strong>Phone:</strong> +250 795 161 628 | +250 783 644 479<br/>
+        <strong>Email:</strong> umurinzipetros@gmail.com
+      </p>
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+      <p style="font-size: 12px; color: #94a3b8; text-align: center;">
+        Umurinzi Petros Medical Center<br/>
+        Shyogwe Sector, Muhanga District, Rwanda
+      </p>
+    </div>
+  `;
+
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: gmailUser, pass: gmailPass },
-    });
-
-    const info = await transporter.sendMail({
-      from: `"UPMC Appointments" <${gmailUser}>`,
+    // Send email to clinic
+    const clinicRes = await resend.emails.send({
+      from: FROM_EMAIL,
       to: CLINIC_EMAIL,
-      subject,
-      html,
+      subject: `New appointment request — ${data.full_name} — ${data.department} — ${data.preferred_date}`,
+      html: clinicHtml,
     });
 
-    return res.status(200).json({ success: true, messageId: info.messageId });
+    // Send confirmation to patient if email provided
+    if (data.email && data.email.includes("@")) {
+      try {
+        await resend.emails.send({
+          from: FROM_EMAIL,
+          to: data.email,
+          subject: "Appointment Request Received — Umurinzi Petros Medical Center",
+          html: patientHtml,
+        });
+      } catch (patientErr: any) {
+        console.error("Patient email send error:", patientErr);
+      }
+    }
+
+    return res.status(200).json({ success: true, messageId: clinicRes.data?.id || "sent" });
   } catch (err: any) {
     console.error("Email send error:", err);
     return res.status(500).json({ error: "Failed to send email", details: err?.message || "" });
