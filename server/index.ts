@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 const CLINIC_EMAIL = "umurinzipetrosmedicalcenter@gmail.com";
-const FROM_EMAIL = "UPMC Appointments <appointments@umurinzipetrosmedicalcenter.com>";
+const FROM_EMAIL = "UPMC Appointments <appointments@upmc.org.rw>";
 
 // ── Health check ──
 app.get("/api/health", (_req, res) => {
