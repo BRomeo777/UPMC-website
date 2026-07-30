@@ -3,7 +3,7 @@ import { Star, Quote } from "lucide-react";
 
 const patients = [
   {
-    name: "Amina Uwase",
+    name: "",
     role: "Patient",
     avatar: "AU",
     avatarColor: "#0f766e",
@@ -11,7 +11,7 @@ const patients = [
     text: "The doctors and nurses at UPMC were incredibly kind and professional. My treatment was swift and I felt cared for every step of the way. I am truly grateful for such an amazing medical team.",
   },
   {
-    name: "Jean-Pierre Nkurunziza",
+    name: "",
     role: "Patient",
     avatar: "JN",
     avatarColor: "#0d9488",
@@ -19,7 +19,7 @@ const patients = [
     text: "I came in with a serious condition and left feeling completely recovered. The facilities are modern and clean, and the staff explained everything clearly. UPMC truly changed my life.",
   },
   {
-    name: "Marie Claire Ingabire",
+    name: "",
     role: "Patient",
     avatar: "MI",
     avatarColor: "#0f766e",

@@ -108,7 +108,7 @@ export function LocationSection() {
                   <div>
                     <h4 className="loc-info-title">Address</h4>
                     <p className="loc-info-val1">UMURINZI PETROS MEDICAL CENTER</p>
-                    <p className="loc-info-val2">Kigali, Rwanda</p>
+                    <p className="loc-info-val2">Muhanga, Rwanda</p>
                   </div>
                 </div>
 
