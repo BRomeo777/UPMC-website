@@ -738,6 +738,8 @@ const ServicesSectionAdmin: React.FC = () => {
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [addErr, setAddErr] = useState("");
 
+  const { dragId, overId, onDragStart, onDragOver, onDrop, onDragEnd, moveUp, moveDown } = useDragReorder(services, setServices, saveServices);
+
   const showToast = (msg: string, ok = true) => {
     setToast({ msg, ok });
     setTimeout(() => setToast(null), 3000);
@@ -791,7 +793,7 @@ const ServicesSectionAdmin: React.FC = () => {
   return (
     <div>
       {sectionTitle("Services")}
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Add, edit or remove service cards.</p>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>Add, edit or remove service cards. Drag cards or use ▲▼ to reorder.</p>
 
       {/* Toast */}
       {toast && (
@@ -844,8 +846,10 @@ const ServicesSectionAdmin: React.FC = () => {
           {depts.map(dept => (
             <div key={dept} style={{ marginBottom: 24 }}>
               <p style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: "#0d9488", marginBottom: 10 }}>{dept}</p>
-              {services.filter(s => s.dept === dept).map(s => (
-                <div key={s.id} style={{ ...cardBox, borderLeft: editId === s.id ? "3px solid #0d9488" : "3px solid transparent" }}>
+              {services.filter(s => s.dept === dept).map(s => {
+                const si = services.findIndex(sv => sv.id === s.id);
+                return (
+                <div key={s.id} style={{ ...cardBox, borderLeft: editId === s.id ? "3px solid #0d9488" : "3px solid transparent", opacity: dragId === s.id ? 0.4 : 1, border: overId === s.id ? "2px dashed #0d9488" : undefined }}>
                   {editId === s.id ? (
                     <div>
                       <LF label="Title"><input style={field} value={s.title} onChange={e => upd(s.id, "title", e.target.value)} /></LF>
@@ -870,7 +874,12 @@ const ServicesSectionAdmin: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <ReorderControls
+                        onUp={() => moveUp(s.id)} onDown={() => moveDown(s.id)} canUp={si > 0} canDown={si < services.length - 1}
+                        onDragStart={onDragStart(s.id)} onDragOver={onDragOver(s.id)} onDrop={onDrop(s.id)} onDragEnd={onDragEnd}
+                        isDragging={dragId === s.id} isOver={overId === s.id}
+                      />
                       <div style={{ flex: 1 }}>
                         <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#0f172a" }}>{s.title}</p>
                         {s.subDept && <p style={{ margin: "2px 0 0", fontSize: 11, color: "#0d9488" }}>{s.subDept}</p>}
@@ -883,7 +892,8 @@ const ServicesSectionAdmin: React.FC = () => {
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           ))}
         </div>
@@ -945,6 +955,10 @@ const ResearchSectionAdmin: React.FC = () => {
   const [newArea, setNewArea] = useState<{ category: string; items: string }>({ category: "", items: "" });
   const [newEdu, setNewEdu] = useState<Partial<EduItem>>({});
 
+  const teamDD = useDragReorder(team, setTeam, saveTeam);
+  const areasDD = useDragReorder(areas, setAreas, saveAreas);
+  const eduDD = useDragReorder(edu, setEdu, saveEdu);
+
   // Team helpers
   const updTeam = (id: string, k: keyof TeamMember, v: string) => setTeam(prev => prev.map(m => m.id === id ? { ...m, [k]: v } : m));
   const delTeam = (id: string) => { const u = team.filter(m => m.id !== id); setTeam(u); saveTeam(u); };
@@ -987,7 +1001,7 @@ const ResearchSectionAdmin: React.FC = () => {
   return (
     <div>
       {sectionTitle("Research & Education")}
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Manage the research team, areas, education offerings, publications and partner logos.</p>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Manage the research team, areas, education offerings, publications and partner logos. Drag cards or use ▲▼ to reorder.</p>
       <SubTabs tabs={[
         { id: "team", label: "👥 Team" },
         { id: "areas", label: "🔬 Research Areas" },
@@ -1008,8 +1022,8 @@ const ResearchSectionAdmin: React.FC = () => {
               <button style={btnStyle("#0d9488")} onClick={addTeamMember}>Save Member</button>
             </div>
           )}
-          {team.map(m => (
-            <div key={m.id} style={cardBox}>
+          {team.map((m, mi) => (
+            <div key={m.id} style={{ ...cardBox, opacity: teamDD.dragId === m.id ? 0.4 : 1, border: teamDD.overId === m.id ? "2px dashed #0d9488" : undefined }}>
               {editTeamId === m.id ? (
                 <div>
                   {/* Photo upload via ServicePhotoSlot */}
@@ -1026,6 +1040,11 @@ const ResearchSectionAdmin: React.FC = () => {
                 </div>
               ) : (
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <ReorderControls
+                    onUp={() => teamDD.moveUp(m.id)} onDown={() => teamDD.moveDown(m.id)} canUp={mi > 0} canDown={mi < team.length - 1}
+                    onDragStart={teamDD.onDragStart(m.id)} onDragOver={teamDD.onDragOver(m.id)} onDrop={teamDD.onDrop(m.id)} onDragEnd={teamDD.onDragEnd}
+                    isDragging={teamDD.dragId === m.id} isOver={teamDD.overId === m.id}
+                  />
                   <div style={{ flex: 1 }}>
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{m.name || <span style={{ color: "#94a3b8" }}>No name set</span>}</p>
                     <p style={{ margin: "2px 0 0", fontSize: 12, color: "#0d9488" }}>{m.role}</p>
@@ -1050,8 +1069,8 @@ const ResearchSectionAdmin: React.FC = () => {
               <button style={btnStyle("#0d9488")} onClick={addArea}>Save Area</button>
             </div>
           )}
-          {areas.map(a => (
-            <div key={a.id} style={cardBox}>
+          {areas.map((a, ai) => (
+            <div key={a.id} style={{ ...cardBox, opacity: areasDD.dragId === a.id ? 0.4 : 1, border: areasDD.overId === a.id ? "2px dashed #0d9488" : undefined }}>
               {editAreaId === a.id ? (
                 <div>
                   <LF label="Category Name"><input style={field} value={a.category} onChange={e => updArea(a.id, "category", e.target.value)} /></LF>
@@ -1070,7 +1089,12 @@ const ResearchSectionAdmin: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                  <ReorderControls
+                    onUp={() => areasDD.moveUp(a.id)} onDown={() => areasDD.moveDown(a.id)} canUp={ai > 0} canDown={ai < areas.length - 1}
+                    onDragStart={areasDD.onDragStart(a.id)} onDragOver={areasDD.onDragOver(a.id)} onDrop={areasDD.onDrop(a.id)} onDragEnd={areasDD.onDragEnd}
+                    isDragging={areasDD.dragId === a.id} isOver={areasDD.overId === a.id}
+                  />
                   <div style={{ flex: 1 }}>
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#0f172a" }}>{a.category}</p>
                     <p style={{ margin: "4px 0 0", fontSize: 11, color: "#64748b" }}>{a.items.length} topics</p>
@@ -1095,8 +1119,8 @@ const ResearchSectionAdmin: React.FC = () => {
               <button style={btnStyle("#0d9488")} onClick={addEduItem}>Save</button>
             </div>
           )}
-          {edu.map(e => (
-            <div key={e.id} style={cardBox}>
+          {edu.map((e, ei) => (
+            <div key={e.id} style={{ ...cardBox, opacity: eduDD.dragId === e.id ? 0.4 : 1, border: eduDD.overId === e.id ? "2px dashed #0d9488" : undefined }}>
               {editEduId === e.id ? (
                 <div>
                   <LF label="Title"><input style={field} value={e.title} onChange={ev => updEdu(e.id, "title", ev.target.value)} /></LF>
@@ -1107,7 +1131,12 @@ const ResearchSectionAdmin: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                  <ReorderControls
+                    onUp={() => eduDD.moveUp(e.id)} onDown={() => eduDD.moveDown(e.id)} canUp={ei > 0} canDown={ei < edu.length - 1}
+                    onDragStart={eduDD.onDragStart(e.id)} onDragOver={eduDD.onDragOver(e.id)} onDrop={eduDD.onDrop(e.id)} onDragEnd={eduDD.onDragEnd}
+                    isDragging={eduDD.dragId === e.id} isOver={eduDD.overId === e.id}
+                  />
                   <div style={{ flex: 1 }}>
                     <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{e.title}</p>
                     <p style={{ margin: "4px 0 0", fontSize: 12, color: "#64748b" }}>{e.description}</p>
