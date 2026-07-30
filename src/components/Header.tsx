@@ -46,6 +46,16 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
   }, []);
 
   useEffect(() => {
+    const link = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
+    if (!link) return;
+    if (logo) {
+      link.href = logo;
+    } else {
+      link.href = "/favicon.svg";
+    }
+  }, [logo]);
+
+  useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
       if (aboutRef.current && !aboutRef.current.contains(e.target as Node)) {
