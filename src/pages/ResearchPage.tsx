@@ -255,12 +255,7 @@ function ResearchPartnersSlider() {
   const logos = usePartnerLogos();
 
   if (!logos.length) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "56px 24px", borderRadius: 16, border: "2px dashed #e2e8f0", background: "#f8fafc" }}>
-        <span style={{ fontSize: 36, marginBottom: 10 }}>🤝</span>
-        <p style={{ fontSize: 14, fontWeight: 600, color: "#94a3b8", margin: 0 }}>Upload partner logos via Admin Panel</p>
-      </div>
-    );
+    return null;
   }
 
   const totalCopies = Math.ceil(20 / logos.length) * 2;
@@ -286,6 +281,18 @@ function ResearchPartnersSlider() {
         .rp-marquee-track:hover { animation-play-state: paused; }
         @keyframes rpScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
       `}</style>
+    </div>
+  );
+}
+
+function ResearchPartnersSection() {
+  const { t } = useLanguage();
+  const logos = usePartnerLogos();
+  if (!logos.length) return null;
+  return (
+    <div className="upmc-research-section" style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px 64px" }}>
+      <SectionHeading label={t.research.partners} />
+      <ResearchPartnersSlider />
     </div>
   );
 }
@@ -414,10 +421,7 @@ export function ResearchPage() {
       </div>
 
       {/* ── Research Partners ── */}
-      <div className="upmc-research-section" style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 24px 64px" }}>
-        <SectionHeading label={t.research.partners} />
-        <ResearchPartnersSlider />
-      </div>
+      <ResearchPartnersSection />
 
     </div>
   );
