@@ -7,5 +7,11 @@ service cloud.firestore {
     match /upmc-site-images/{document=**} {
       allow read, write: if true;
     }
+    match /upmc-analytics/{document=**} {
+      allow read, write: if true;
+    }
+    match /appointments/{document=**} {
+      allow read, write: if true;
+    }
   }
 }

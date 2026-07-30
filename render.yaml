@@ -24,3 +24,5 @@ services:
     envVars:
       - key: RESEND_API_KEY
         sync: false
+      - key: REPORT_TRIGGER_KEY
+        sync: false

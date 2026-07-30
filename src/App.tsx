@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchAndSyncFromCloud, runDiagnostics } from "./lib/cloud";
+import { trackPageView } from "./lib/analytics";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { AdminPanel } from "./components/AdminPanel";
 import { Header } from "./components/Header";
@@ -28,6 +29,10 @@ function AppInner() {
   };
 
   const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    trackPageView(`/${currentPage}`);
+  }, [currentPage]);
 
   useEffect(() => {
     const handleNav = (e: Event) => {
