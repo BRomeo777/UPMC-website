@@ -126,9 +126,6 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
                 title=""
                 aria-hidden="true"
               />
-              Developed by <span className="text-gray-300 font-semibold">B.Romeo</span> &nbsp;|&nbsp;
-              <a href="tel:+250783679400" className="text-gray-400 hover:text-teal-400 transition-colors">+250 783 679 400</a> &nbsp;|&nbsp;
-              <a href="mailto:bananeza777@gmail.com" className="text-gray-400 hover:text-teal-400 transition-colors">bananeza777@gmail.com</a>
             </div>
           </div>
         </div>
