@@ -30,7 +30,7 @@ export function HeroSection() {
   const { t } = useLanguage();
 
   return (
-    <section style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <section className="hero-section" style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
       {/* ── Background Image ── */}
       <div
@@ -43,7 +43,7 @@ export function HeroSection() {
       />
 
       {/* ── Dark-to-transparent overlay (left heavy) ── */}
-      <div style={{
+      <div className="hero-overlay" style={{
         position: "absolute", inset: 0, zIndex: 1,
         background: "linear-gradient(to right, rgba(10,30,40,0.92) 0%, rgba(10,30,40,0.70) 45%, rgba(10,30,40,0.15) 100%)",
       }} />
@@ -52,7 +52,7 @@ export function HeroSection() {
       <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", flex: 1 }}>
 
         {/* ── Content Row ── */}
-        <div style={{
+        <div className="hero-content-row" style={{
           flex: 1,
           display: "flex",
           alignItems: "center",
@@ -62,7 +62,7 @@ export function HeroSection() {
         }}>
 
           {/* LEFT: Text */}
-          <div style={{ maxWidth: 520, flex: "0 0 auto" }}>
+          <div className="hero-text-block" style={{ maxWidth: 520, flex: "0 0 auto" }}>
 
             {/* Badge */}
             <motion.div
@@ -224,4 +224,33 @@ export function HeroSection() {
       </div>
     </section>
   );
+}
+
+{/* ── Responsive overrides for mobile ── */}
+const heroResponsiveStyle = document.createElement("style");
+heroResponsiveStyle.textContent = `
+  @media (max-width: 768px) {
+    .hero-overlay {
+      background: linear-gradient(to bottom, rgba(10,30,40,0.88) 0%, rgba(10,30,40,0.82) 50%, rgba(10,30,40,0.75) 100%) !important;
+    }
+    .hero-content-row {
+      padding: 100px 20px 40px !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      gap: 24px !important;
+    }
+    .hero-text-block {
+      maxWidth: 100% !important;
+      width: 100% !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .hero-content-row {
+      padding: 90px 16px 30px !important;
+    }
+  }
+`;
+if (!document.getElementById("hero-responsive-style")) {
+  heroResponsiveStyle.id = "hero-responsive-style";
+  document.head.appendChild(heroResponsiveStyle);
 }
