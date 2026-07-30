@@ -157,7 +157,7 @@ const en: Translations = {
     quickLinks: "Quick Links", aboutUs: "About Us", ourDoctors: "Our Doctors",
     services: "Services", researchEd: "Research & Education",
     ourServices: "Our Services", contactUs: "Contact Us",
-    emergencyHours: "Emergency: 24/7", generalHours: "General: Monday to Sunday",
+    emergencyHours: "Open 24/7", generalHours: "Monday - Sunday: 24/24",
     rights: "©Umurinzi Petros Medical Center. All rights reserved.",
   },
   appointment: {
@@ -289,7 +289,7 @@ const rw: Translations = {
     quickLinks: "Amahuza Yihuse", aboutUs: "Ibitwerekeye", ourDoctors: "Abaganga Bacu",
     services: "Serivisi", researchEd: "Ubushakashatsi n'Uburezi",
     ourServices: "Serivisi Zacu", contactUs: "Twandikire",
-    emergencyHours: "Ubutabazi bwihutirwa: 24/7", generalHours: "Rusange: Kuwa Mbere kugeza Ku Cyumweru",
+    emergencyHours: "Fungura 24/7", generalHours: "Kuwa Mbere - Ku Cyumweru: 24/24",
     rights: "©Ibitaro by'Umurinzi Petros. Uburenganzira bwose burabitswe.",
   },
   appointment: {
@@ -392,7 +392,7 @@ const fr: Translations = {
     quickLinks: "Liens Rapides", aboutUs: "À Propos", ourDoctors: "Nos Médecins",
     services: "Services", researchEd: "Recherche & Éducation",
     ourServices: "Nos Services", contactUs: "Nous Contacter",
-    emergencyHours: "Urgences : 24h/24", generalHours: "Général : Lundi au Dimanche",
+    emergencyHours: "Ouvert 24/7", generalHours: "Lundi - Dimanche : 24h/24",
     rights: "©Centre Médical Umurinzi Petros. Tous droits réservés.",
   },
   appointment: {
@@ -495,7 +495,7 @@ const sw: Translations = {
     quickLinks: "Viungo Vya Haraka", aboutUs: "Kuhusu Sisi", ourDoctors: "Madaktari Wetu",
     services: "Huduma", researchEd: "Utafiti & Elimu",
     ourServices: "Huduma Zetu", contactUs: "Wasiliana Nasi",
-    emergencyHours: "Dharura: 24/7", generalHours: "Kawaida: Jumatatu hadi Jumapili",
+    emergencyHours: "Wazi 24/7", generalHours: "Jumatatu - Jumapili: 24/24",
     rights: "©Kituo cha Matibabu cha Umurinzi Petros. Haki zote zimehifadhiwa.",
   },
   appointment: {

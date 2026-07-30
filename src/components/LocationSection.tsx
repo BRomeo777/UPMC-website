@@ -121,8 +121,8 @@ export function LocationSection() {
                   </div>
                   <div>
                     <h4 className="loc-info-title">Working Hours</h4>
-                    <p className="loc-info-val1">Monday - Saturday: 8:00 AM - 8:00 PM</p>
-                    <p className="loc-info-val2">Sunday: Emergency Services Only</p>
+                    <p className="loc-info-val1">Monday - Sunday: 24/24</p>
+                    <p className="loc-info-val2">Emergency Services Available Anytime</p>
                   </div>
                 </div>
 
@@ -135,8 +135,8 @@ export function LocationSection() {
                   </div>
                   <div>
                     <h4 className="loc-info-title">Contact</h4>
-                    <p className="loc-info-val1">+250 788 000 000</p>
-                    <p className="loc-info-val2">info@umurinzimedical.com</p>
+                    <p className="loc-info-val1">+250 795 161 628</p>
+                    <p className="loc-info-val2">umurinzipetros@gmail.com</p>
                   </div>
                 </div>
               </div>

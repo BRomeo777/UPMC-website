@@ -158,65 +158,6 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* RIGHT: Stats Cards */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
-            style={{ display: "flex", flexDirection: "column", gap: 12, flexShrink: 0 }}
-            className="hidden md:flex"
-          >
-            {/* 1,500+ Happy Patients */}
-            <div style={{
-              background: "rgba(13,148,136,0.90)", backdropFilter: "blur(10px)",
-              borderRadius: 12, padding: "18px 24px",
-              display: "flex", alignItems: "center", gap: 14,
-              minWidth: 190,
-              border: "1px solid rgba(255,255,255,0.15)",
-            }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: 10,
-                background: "rgba(255,255,255,0.15)",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <Users size={22} color="#fff" />
-              </div>
-              <div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", lineHeight: 1 }}>
-                  <AnimatedCounter from={0} to={1500} /><span style={{ color: "#99f6e4" }}>+</span>
-                </div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>
-                  Happy Patients
-                </div>
-              </div>
-            </div>
-
-            {/* 45+ Medical Experts */}
-            <div style={{
-              background: "rgba(15,118,110,0.92)", backdropFilter: "blur(10px)",
-              borderRadius: 12, padding: "18px 24px",
-              display: "flex", alignItems: "center", gap: 14,
-              minWidth: 190,
-              border: "1px solid rgba(255,255,255,0.15)",
-            }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: 10,
-                background: "rgba(255,255,255,0.15)",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <Stethoscope size={22} color="#fff" />
-              </div>
-              <div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", lineHeight: 1 }}>
-                  <AnimatedCounter from={0} to={45} /><span style={{ color: "#99f6e4" }}>+</span>
-                </div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 4 }}>
-                  Medical Experts
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
         </div>
 
 
