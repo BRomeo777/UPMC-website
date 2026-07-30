@@ -111,7 +111,8 @@ export default function AppointmentPage() {
       await saveAppointment(appointmentData);
 
       try {
-        const emailRes = await fetch("/api/book-appointment", {
+        const API_URL = (import.meta.env.VITE_API_URL as string) || "https://upmc-api.onrender.com";
+        const emailRes = await fetch(`${API_URL}/api/book-appointment`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(appointmentData),

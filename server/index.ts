@@ -1,15 +1,25 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import express from "express";
+import cors from "cors";
 import { Resend } from "resend";
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(cors());
+app.use(express.json());
 
 const CLINIC_EMAIL = "umurinzipetrosmedicalcenter@gmail.com";
 const FROM_EMAIL = "UPMC Appointments <appointments@umurinzipetrosmedicalcenter.com>";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+// ── Health check ──
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
 
+// ── Book appointment endpoint ──
+app.post("/api/book-appointment", (req, res) => {
   const data = req.body;
+
   if (!data || !data.full_name || !data.phone || !data.department || !data.preferred_date || !data.preferred_time) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -80,32 +90,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     </div>
   `;
 
-  try {
-    // Send email to clinic
-    const clinicRes = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: CLINIC_EMAIL,
-      subject: `New appointment request — ${data.full_name} — ${data.department} — ${data.preferred_date}`,
-      html: clinicHtml,
-    });
+  (async () => {
+    try {
+      // Send email to clinic
+      const clinicRes = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: CLINIC_EMAIL,
+        subject: `New appointment request — ${data.full_name} — ${data.department} — ${data.preferred_date}`,
+        html: clinicHtml,
+      });
 
-    // Send confirmation to patient if email provided
-    if (data.email && data.email.includes("@")) {
-      try {
-        await resend.emails.send({
-          from: FROM_EMAIL,
-          to: data.email,
-          subject: "Appointment Request Received — Umurinzi Petros Medical Center",
-          html: patientHtml,
-        });
-      } catch (patientErr: any) {
-        console.error("Patient email send error:", patientErr);
+      // Send confirmation to patient if email provided
+      if (data.email && data.email.includes("@")) {
+        try {
+          await resend.emails.send({
+            from: FROM_EMAIL,
+            to: data.email,
+            subject: "Appointment Request Received — Umurinzi Petros Medical Center",
+            html: patientHtml,
+          });
+        } catch (patientErr: any) {
+          console.error("Patient email send error:", patientErr);
+        }
       }
-    }
 
-    return res.status(200).json({ success: true, messageId: clinicRes.data?.id || "sent" });
-  } catch (err: any) {
-    console.error("Email send error:", err);
-    return res.status(500).json({ error: "Failed to send email", details: err?.message || "" });
-  }
-}
+      return res.status(200).json({ success: true, messageId: clinicRes.data?.id || "sent" });
+    } catch (err: any) {
+      console.error("Email send error:", err);
+      return res.status(500).json({ error: "Failed to send email", details: err?.message || "" });
+    }
+  })();
+});
+
+app.listen(PORT, () => {
+  console.log(`UPMC API server running on port ${PORT}`);
+});
