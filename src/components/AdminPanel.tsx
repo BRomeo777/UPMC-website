@@ -2,7 +2,7 @@
 //  UPMC Full-Page Admin Panel
 // ──────────────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useRef } from "react";
-import { uploadToCloudinary, syncAllToCloud, syncSingleKey } from "../lib/cloud";
+import { uploadToCloudinary, syncAllToCloud, syncSingleKey, markLocalUpdate } from "../lib/cloud";
 import { fetchAppointments, updateAppointmentStatus, deleteAppointment, type Appointment, type AppointmentStatus } from "../lib/appointments";
 import { loadStaff, saveStaff, type StaffEntry } from "../pages/StaffPage";
 import { loadDeptItems, saveDeptItems, type DeptItem } from "../pages/DepartmentsPage";
@@ -344,9 +344,10 @@ const DoctorAdminSlot: React.FC<{ doc: typeof DOCTORS_ADMIN[0] }> = ({ doc }) =>
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     e.target.value = "";
+    markLocalUpdate(photoKey);
     uploadToCloudinary(file).then(url => { localStorage.setItem(photoKey, url); setPhoto(url); syncSingleKey(photoKey, url); syncAllToCloud(); dispatch(); });
   };
-  const removePhoto = () => { localStorage.removeItem(photoKey); setPhoto(""); syncSingleKey(photoKey, ""); syncAllToCloud(); dispatch(); };
+  const removePhoto = () => { markLocalUpdate(photoKey); localStorage.removeItem(photoKey); setPhoto(""); syncSingleKey(photoKey, ""); syncAllToCloud(); dispatch(); };
   const saveBio  = () => { localStorage.setItem(bioKey, bio);   syncSingleKey(bioKey, bio); syncAllToCloud(); dispatch(); };
 
   return (
@@ -392,6 +393,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
+    markLocalUpdate(storageKey);
     uploadToCloudinary(file).then(url => {
       localStorage.setItem(storageKey, url);
       setSrc(url);
@@ -402,6 +404,7 @@ const ServicePhotoSlot: React.FC<{ svcKey: string; label: string; dept: string }
   };
 
   const handleRemove = () => {
+    markLocalUpdate(storageKey);
     localStorage.removeItem(storageKey);
     setSrc("");
     syncSingleKey(storageKey, "");

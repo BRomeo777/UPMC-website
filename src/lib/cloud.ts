@@ -116,6 +116,9 @@ export function markLocalUpdate(key: string): void {
 export async function syncSingleKey(key: string, value: string): Promise<void> {
   const app = getFirebaseApp();
   if (!app) return;
+  // Mark local update IMMEDIATELY (before async Firestore ops) so that
+  // fetchAndSyncFromCloud doesn't overwrite localStorage with stale cloud data
+  markLocalUpdate(key);
   try {
     const db = getFirestore(app);
     if (value.length > SIZE_THRESHOLD) {
@@ -131,7 +134,6 @@ export async function syncSingleKey(key: string, value: string): Promise<void> {
       // Small value → store in main doc
       await setDoc(doc(db, DATA_DOC_PATH.collection, DATA_DOC_PATH.doc), { [key]: value }, { merge: true });
     }
-    markLocalUpdate(key);
     console.log("[cloud] Synced single key:", key, value.length > SIZE_THRESHOLD ? "(image doc)" : "(main doc)");
   } catch (err) { console.error("[cloud] syncSingleKey failed:", err); }
 }
