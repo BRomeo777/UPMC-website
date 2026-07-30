@@ -28,6 +28,7 @@ const ALL_SERVICES = [
   { key: "hospitalisation-peds",    label: "Hospitalisation",                   dept: "Pediatrics"            },
   { key: "general-consultation",    label: "General Consultation",              dept: "General Consultation"  },
   { key: "cpd-training",            label: "CPD Training",                      dept: "CPD Training"          },
+  { key: "laboratory",              label: "Laboratory Services",               dept: "Laboratory"            },
 ] as const;
 
 interface Partner {
@@ -455,6 +456,82 @@ const field: React.CSSProperties = { width: "100%", padding: "8px 12px", borderR
 const btnStyle = (bg: string, fg = "#fff"): React.CSSProperties => ({ padding: "8px 18px", background: bg, color: fg, border: "none", borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" as const });
 const cardBox: React.CSSProperties = { background: "#fff", border: "1px solid #e2e8f0", borderRadius: 14, padding: "14px 16px", marginBottom: 10 };
 const sectionTitle = (t: string) => <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", margin: "0 0 4px" }}>{t}</h2>;
+
+// ─── Drag-and-drop reorder helper ─────────────────────────────────────────────
+function useDragReorder<T extends { id: string }>(items: T[], setItems: (items: T[]) => void, onReorder: (items: T[]) => void) {
+  const [dragId, setDragId] = React.useState<string | null>(null);
+  const [overId, setOverId] = React.useState<string | null>(null);
+
+  const onDragStart = (id: string) => (e: React.DragEvent) => { setDragId(id); e.dataTransfer.effectAllowed = "move"; };
+  const onDragOver = (id: string) => (e: React.DragEvent) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (id !== dragId) setOverId(id); };
+  const onDrop = (id: string) => (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!dragId || dragId === id) { setDragId(null); setOverId(null); return; }
+    const from = items.findIndex(i => i.id === dragId);
+    const to = items.findIndex(i => i.id === id);
+    if (from < 0 || to < 0) { setDragId(null); setOverId(null); return; }
+    const copy = [...items];
+    const [moved] = copy.splice(from, 1);
+    copy.splice(to, 0, moved);
+    setItems(copy);
+    onReorder(copy);
+    setDragId(null);
+    setOverId(null);
+  };
+  const onDragEnd = () => { setDragId(null); setOverId(null); };
+
+  const moveUp = (id: string) => {
+    const idx = items.findIndex(i => i.id === id);
+    if (idx <= 0) return;
+    const copy = [...items];
+    [copy[idx - 1], copy[idx]] = [copy[idx], copy[idx - 1]];
+    setItems(copy);
+    onReorder(copy);
+  };
+  const moveDown = (id: string) => {
+    const idx = items.findIndex(i => i.id === id);
+    if (idx < 0 || idx >= items.length - 1) return;
+    const copy = [...items];
+    [copy[idx + 1], copy[idx]] = [copy[idx], copy[idx + 1]];
+    setItems(copy);
+    onReorder(copy);
+  };
+
+  return { dragId, overId, onDragStart, onDragOver, onDrop, onDragEnd, moveUp, moveDown };
+}
+
+const ReorderControls: React.FC<{
+  onUp: () => void; onDown: () => void; canUp: boolean; canDown: boolean;
+  onDragStart: (e: React.DragEvent) => void; onDragOver: (e: React.DragEvent) => void; onDrop: (e: React.DragEvent) => void; onDragEnd: () => void;
+  isDragging: boolean; isOver: boolean;
+}> = ({ onUp, onDown, canUp, canDown, onDragStart, onDragOver, onDrop, onDragEnd, isDragging, isOver }) => (
+  <div
+    draggable
+    onDragStart={onDragStart}
+    onDragOver={onDragOver}
+    onDrop={onDrop}
+    onDragEnd={onDragEnd}
+    style={{
+      display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+      cursor: "grab", padding: "4px 2px", borderRadius: 8, flexShrink: 0,
+      background: isOver ? "rgba(13,148,136,0.1)" : "transparent",
+      opacity: isDragging ? 0.4 : 1, transition: "opacity 0.15s",
+    }}
+    title="Drag to reorder"
+  >
+    <button
+      onClick={onUp} disabled={!canUp}
+      style={{ border: "none", background: "transparent", cursor: canUp ? "pointer" : "default", opacity: canUp ? 1 : 0.3, fontSize: 14, padding: "2px 4px", color: "#64748b" }}
+      title="Move up"
+    >▲</button>
+    <span style={{ fontSize: 10, color: "#94a3b8", lineHeight: 1 }}>⠿</span>
+    <button
+      onClick={onDown} disabled={!canDown}
+      style={{ border: "none", background: "transparent", cursor: canDown ? "pointer" : "default", opacity: canDown ? 1 : 0.3, fontSize: 14, padding: "2px 4px", color: "#64748b" }}
+      title="Move down"
+    >▼</button>
+  </div>
+);
 
 interface SvcCard { id: string; dept: string; subDept: string; title: string; description: string; imageKey: string; translations?: { rw?: { title?: string; description?: string }; fr?: { title?: string; description?: string }; sw?: { title?: string; description?: string }; }; }
 interface DocEntry { id: string; name: string; specialty: string; clinicalSpec: string; research: string; }
@@ -1205,6 +1282,8 @@ const StaffSectionAdmin: React.FC = () => {
   const [addOpen, setAddOpen] = useState(false);
   const [newStaff, setNewStaff] = useState<Partial<StaffEntry>>({});
 
+  const { dragId, overId, onDragStart, onDragOver, onDrop, onDragEnd, moveUp, moveDown } = useDragReorder(staff, setStaff, saveStaff);
+
   const upd = (id: string, k: keyof StaffEntry, v: string) => setStaff(prev => prev.map(s => s.id === id ? { ...s, [k]: v } : s));
   const saveItem = () => { saveStaff(staff); setEditId(null); };
   const del = (id: string) => { if (!window.confirm("Remove this staff member?")) return; const u = staff.filter(s => s.id !== id); setStaff(u); saveStaff(u); };
@@ -1218,7 +1297,7 @@ const StaffSectionAdmin: React.FC = () => {
   return (
     <div>
       {sectionTitle("Staff & Departments")}
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Manage staff members and department photos shown on the About Us pages.</p>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Manage staff members and department photos shown on the About Us pages. Drag cards or use ▲▼ to reorder.</p>
       <SubTabs tabs={[{ id: "members", label: "👥 Staff Members" }, { id: "dept-photos", label: "🖼 Dept Photos" }, { id: "dept-services", label: "✅ Dept Services" }]} active={sub} onChange={setSub} />
 
       {sub === "dept-photos" && <DeptPhotosAdmin />}
@@ -1240,8 +1319,8 @@ const StaffSectionAdmin: React.FC = () => {
         </div>
       )}
 
-      {staff.map(member => (
-        <div key={member.id} style={cardBox}>
+      {staff.map((member, mi) => (
+        <div key={member.id} style={{ ...cardBox, opacity: dragId === member.id ? 0.4 : 1, border: overId === member.id ? "2px dashed #0d9488" : cardBox.border as string }}>
           {editId === member.id ? (
             <div>
               <LF label="Photo">
@@ -1257,6 +1336,11 @@ const StaffSectionAdmin: React.FC = () => {
             </div>
           ) : (
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <ReorderControls
+                onUp={() => moveUp(member.id)} onDown={() => moveDown(member.id)} canUp={mi > 0} canDown={mi < staff.length - 1}
+                onDragStart={onDragStart(member.id)} onDragOver={onDragOver(member.id)} onDrop={onDrop(member.id)} onDragEnd={onDragEnd}
+                isDragging={dragId === member.id} isOver={overId === member.id}
+              />
               <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", border: "1px solid #e2e8f0", flexShrink: 0, background: "#f1f5f9" }}>
                 {(() => { const photo = localStorage.getItem(`upmc-service-img-staff-${member.id}`); return photo ? <img src={photo} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>👤</div>; })()}
               </div>
@@ -1320,6 +1404,8 @@ const DoctorsSectionAdmin: React.FC = () => {
   const [addOpen, setAddOpen] = useState(false);
   const [newDoc, setNewDoc] = useState<Partial<DocEntry>>({});
 
+  const { dragId, overId, onDragStart, onDragOver, onDrop, onDragEnd, moveUp, moveDown } = useDragReorder(doctors, setDoctors, saveDoctors);
+
   const upd = (id: string, k: keyof DocEntry, v: string) => setDoctors(prev => prev.map(d => d.id === id ? { ...d, [k]: v } : d));
   const saveDoc = () => { saveDoctors(doctors); setEditId(null); };
   const del = (id: string) => { if (!window.confirm("Remove this doctor?")) return; const u = doctors.filter(d => d.id !== id); setDoctors(u); saveDoctors(u); };
@@ -1332,7 +1418,7 @@ const DoctorsSectionAdmin: React.FC = () => {
   return (
     <div>
       {sectionTitle("Doctors")}
-      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Add, edit or remove doctors. Upload their photos and update their bio.</p>
+      <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Add, edit or remove doctors. Upload their photos and update their bio. Drag cards or use ▲▼ to reorder.</p>
       <button style={{ ...btnStyle("#0d9488"), marginBottom: 16 }} onClick={() => setAddOpen(o => !o)}>{addOpen ? "✕ Cancel" : "+ Add New Doctor"}</button>
 
       {addOpen && (
@@ -1344,8 +1430,8 @@ const DoctorsSectionAdmin: React.FC = () => {
         </div>
       )}
 
-      {doctors.map(doc => (
-        <div key={doc.id} style={cardBox}>
+      {doctors.map((doc, di) => (
+        <div key={doc.id} style={{ ...cardBox, opacity: dragId === doc.id ? 0.4 : 1, border: overId === doc.id ? "2px dashed #0d9488" : cardBox.border as string }}>
           {editId === doc.id ? (
             <div>
               <LF label="Photo">
@@ -1361,6 +1447,11 @@ const DoctorsSectionAdmin: React.FC = () => {
             </div>
           ) : (
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <ReorderControls
+                onUp={() => moveUp(doc.id)} onDown={() => moveDown(doc.id)} canUp={di > 0} canDown={di < doctors.length - 1}
+                onDragStart={onDragStart(doc.id)} onDragOver={onDragOver(doc.id)} onDrop={onDrop(doc.id)} onDragEnd={onDragEnd}
+                isDragging={dragId === doc.id} isOver={overId === doc.id}
+              />
               <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", border: "1px solid #e2e8f0", flexShrink: 0, background: "#f1f5f9" }}>
                 {(() => { const photo = localStorage.getItem(`upmc-service-img-doctor-${doc.id}`); return photo ? <img src={photo} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>👨‍⚕️</div>; })()}
               </div>
@@ -1382,7 +1473,7 @@ const DoctorsSectionAdmin: React.FC = () => {
 //  CONTACTS SECTION
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_CONTACT: ContactInfo = {
-  address: "Rwanda, Northern Province, Muhanga District, Shyogwe Sector",
+  address: "Rwanda, Southern Province, Muhanga District, Shyogwe Sector",
   phone: "+250 795 161 628 | +250 783 644 479",
   email: "umurinzipetros@gmail.com",
   hours: "General Services: Monday to Sunday",

@@ -3,7 +3,7 @@
 interface ContactData { address: string; phone: string; email: string; hours: string; emergency: string; }
 
 const DEFAULT_CONTACT: ContactData = {
-  address: "Rwanda, Northern Province, Muhanga District, Shyogwe Sector",
+  address: "Rwanda, Southern Province, Muhanga District, Shyogwe Sector",
   phone: "+250 795 161 628 | +250 783 644 479",
   email: "umurinzipetros@gmail.com",
   hours: "General Services: Monday to Sunday",

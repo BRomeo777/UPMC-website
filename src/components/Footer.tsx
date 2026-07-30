@@ -76,6 +76,7 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
               <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Internal Medicine</button></li>
               <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Pulmonology</button></li>
               <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Pediatrics</button></li>
+              <li><button onClick={() => handleNavClick("services")} className="text-gray-300 hover:text-teal-400 transition-colors">Laboratory</button></li>
             </ul>
           </div>
 

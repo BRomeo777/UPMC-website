@@ -17,6 +17,7 @@ const DEFAULT_SERVICES: SvcCard[] = [
   { id: "endoscopy-peds", dept: "Pediatrics", subDept: "", title: "Endoscopy", description: "Safe, minimally invasive endoscopic procedures adapted for children, used for diagnosis and treatment of gastrointestinal and respiratory conditions.", imageKey: "endoscopy-peds" },
   { id: "hospitalisation-peds", dept: "Hospitalisation", subDept: "", title: "Pediatric Hospitalisation", description: "Dedicated inpatient care for children requiring observation, treatment, and recovery in a safe, child-friendly environment with specialist support.", imageKey: "hospitalisation-peds" },
   { id: "cpd-training", dept: "CPD Training", subDept: "", title: "CPD Training", description: "Accredited Continuing Professional Development programmes for healthcare workers, keeping clinical teams updated with the latest evidence-based practices and skills.", imageKey: "cpd-training" },
+  { id: "laboratory", dept: "Laboratory", subDept: "", title: "Laboratory Services", description: "Comprehensive diagnostic laboratory testing including hematology, biochemistry, microbiology, and immunology to support accurate diagnosis and effective treatment.", imageKey: "laboratory" },
 ];
 
 function loadServices(): SvcCard[] {
