@@ -4,7 +4,7 @@ import { motion, useMotionValue, useTransform, animate, useMotionValueEvent } fr
 import { useState } from "react";
 import { ArrowRight, Users, Stethoscope, Shield, HeartPulse, MonitorSmartphone, Heart } from "lucide-react";
 
-const ADOBE_BG = "/assets1/AdobeStock_393940632-2048x1152.jpeg";
+const ADOBE_BG = "/assets1/UPMCBII.jpeg";
 
 /* ── Animated Counter ── */
 function AnimatedCounter({ from, to }: { from: number; to: number }) {

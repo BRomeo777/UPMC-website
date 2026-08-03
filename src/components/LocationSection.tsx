@@ -54,10 +54,8 @@ export function LocationSection() {
         
         @media (min-width: 1024px) {
           .loc-section { padding: 80px 0; }
-          .loc-top-cols { flex-direction: row; align-items: stretch; }
-          .loc-img-col { flex: 1 1 50%; min-width: 0; }
-          .loc-card-col { flex: 1 1 50%; min-width: 0; }
-          .loc-img-wrapper { height: 100%; min-height: 450px; }
+          .loc-top-cols { flex-direction: row; align-items: stretch; justify-content: center; }
+          .loc-card-col { flex: 1 1 100%; min-width: 0; max-width: 800px; margin: 0 auto; }
           .loc-card { padding: 48px; }
           .loc-title { font-size: 36px; }
           .loc-features-grid { flex-direction: row; flex-wrap: nowrap; gap: 16px; align-items: center; }
@@ -68,21 +66,8 @@ export function LocationSection() {
       
       <div className="loc-container">
         
-        {/* Top Two Columns */}
+        {/* Location Details Card */}
         <div className="loc-top-cols">
-          
-          {/* Left: Image */}
-          <div className="loc-img-col">
-            <div className="loc-img-wrapper">
-              <img 
-                src="/iiii.jpeg" 
-                alt="Our Facility Location" 
-                className="loc-img"
-              />
-            </div>
-          </div>
-
-          {/* Right: Location Details Card */}
           <div className="loc-card-col">
             <div className="loc-card">
               
