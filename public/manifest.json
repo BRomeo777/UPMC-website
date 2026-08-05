@@ -1,0 +1,22 @@
+{
+  "name": "Umurinzi Petros Medical Center",
+  "short_name": "UPMC",
+  "description": "Healthcare facility in Muhanga, Rwanda. Internal medicine, surgery, maternal & child health, 24/7 emergency care, diagnostics, pharmacy, and laboratory services.",
+  "start_url": "https://upmc.org.rw/",
+  "scope": "https://upmc.org.rw/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#0d9488",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["medical", "health", "healthcare"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
