@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://upmc.org.rw/sitemap.xml
