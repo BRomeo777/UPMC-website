@@ -18,7 +18,7 @@ const aboutSubItems = [
 
 export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
   const { t, lang, setLang } = useLanguage();
-  const [logo, setLogo] = useState(() => localStorage.getItem("upmc-logo") || "");
+  const [logo, setLogo] = useState(() => localStorage.getItem("upmc-logo") || "/upmc-logo.png");
   const [langOpen, setLangOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -40,7 +40,7 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
   }, [clearCloseTimer]);
 
   useEffect(() => {
-    const refresh = () => setLogo(localStorage.getItem("upmc-logo") || "");
+    const refresh = () => setLogo(localStorage.getItem("upmc-logo") || "/upmc-logo.png");
     window.addEventListener("site-images-updated", refresh);
     return () => window.removeEventListener("site-images-updated", refresh);
   }, []);
@@ -51,7 +51,7 @@ export function Header({ currentPage = "home", onNavigate }: HeaderProps) {
     if (logo) {
       link.href = logo;
     } else {
-      link.href = "/favicon.svg";
+      link.href = "/upmc-logo.png";
     }
   }, [logo]);
 
