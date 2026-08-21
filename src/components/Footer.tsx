@@ -85,11 +85,18 @@ export function Footer({ onNavigate, onAdminOpen }: FooterProps) {
             <h3 className="font-semibold mb-6">{t.footer.contactUs}</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
-                <div className="text-gray-300">
-                
-                
-                </div>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Umurinzi+Petros+Medical+Center+Rwanda"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start space-x-3 hover:opacity-80 transition-opacity"
+                  title="View on Google Maps"
+                >
+                  <MapPin className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0 cursor-pointer" />
+                  <div className="text-gray-300 hover:text-teal-400 transition-colors">
+                    Shyogwe Sector, Muhanga District<br />Southern Province, Rwanda
+                  </div>
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-teal-400 flex-shrink-0" />
